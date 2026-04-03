@@ -632,7 +632,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 		if (ak.num(event_level,axis=0) > 0): #Iff any events left
 			btau_4vec = ak.zip({"t": boostedtau.E, "x": boostedtau.Px, "y": boostedtau.Py, "z": boostedtau.Pz},with_name="Momentum4D")
 			lead_btau, btau_others = akunzip(ak.cartesian([btau_4vec[:,0], btau_4vec], axis = 1, nested = False))
-			deltaR_Arr = ak.values_astype(lead_btau,np.float64).deltaR(ak.values_astype(btau_4vec np.float64))
+			deltaR_Arr = ak.values_astype(lead_btau,np.float64).deltaR(ak.values_astype(btau_4vec,np.float64))
 
 			#Remove leading tau from consideration
 			lead_pair_btau = boostedtau[deltaR_Arr != 0]
@@ -662,7 +662,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			#Find Second pair
 			btau_4vec_rem = ak.zip({"t": btau_rem.E, "x": btau_rem.Px, "y": btau_rem.Py, "z": btau_rem.Pz},with_name="Momentum4D")
 			next_lead_btau, rem_btau_others = akunzip(ak.cartesian([rem_btau_4vec[:,0], rem_btau_4vec], axis = 1, nested = False))
-			deltaR_Arr = ak.values_astype(next_lead_btau,np.float64).deltaR(ak.values_astype(rem_btau_4vec np.float64))
+			deltaR_Arr = ak.values_astype(next_lead_btau,np.float64).deltaR(ak.values_astype(rem_btau_4vec, np.float64))
 
 			next_lead_pair_btau = btau_rem[deltaR_Arr != 0]
 			deltaR_Arr = deltaR_Arr[deltaR_Arr != 0]	
