@@ -48,7 +48,7 @@ def move_X509():
 
 if __name__ == "__main__":
 	#Condor related stuff
-	run_on_condor = False
+	run_on_condor = True 
 	os.environ["CONDOR_CONFIG"] = "/etc/condor/condor_config"
 	
 	#Xrootd setup
@@ -245,8 +245,8 @@ if __name__ == "__main__":
 		}
 	
 	#Set file dictionary and list of backgrounds prior to running processor
-	file_dict = file_dict_data_test
-	#file_dict = file_dict_full
+	#file_dict = file_dict_data_test
+	file_dict = file_dict_full
 
 	#Pull in the weight and event count prior to skimming information
 	with open("genWeightSum_JSON.json") as json_file:
