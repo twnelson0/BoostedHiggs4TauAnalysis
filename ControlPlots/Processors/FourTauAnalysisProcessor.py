@@ -106,7 +106,7 @@ def delta_phi(vec1,vec2):
 	return (vec1.phi - vec2.phi + pi) % (2*pi) - pi	
 
 def MET_delta_phi(part1,MET_obj):
-	return (part1.phi - MET_obj.pfMETPhi + pi) % (2*pi) - pi
+	return (part1.phi - MET_obj.MET_Phi + pi) % (2*pi) - pi
 
 def deltaR(part1, part2):
 	return np.sqrt((part2.eta - part1.eta)**2 + (delta_phi(part1,part2))**2)
@@ -232,7 +232,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				"mass": events.Muon_mass, 
 				#"IDbit": events.muIDbit, #No idea what the nanoAOD analog is for this 
 				#"IDbit": events.Muon_IDbit,
-				"IDSelec_Med": events.Muon_mediumId,
+				"IDSelec": events.Muon_mediumId,
 				"D0": events.Muon_dxy,
 				"Dz": events.Muon_dz,
 				"LooseId": events.Muon_looseId,
@@ -470,6 +470,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 		#############
 		#Trigger and Offline Cuts
 		#############
+		n_Trigger = 0
 		if (self.ApplyTrigger):
 			if (self.isData):
 				if ("SingleMuon" in dataset):
@@ -631,10 +632,11 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 		#############
 		if (ak.num(event_level,axis=0) > 0): #Iff any events left
 			btau_4vec = ak.zip({"t": boostedtau.E, "x": boostedtau.Px, "y": boostedtau.Py, "z": boostedtau.Pz},with_name="Momentum4D")
-			lead_btau, btau_others = akunzip(ak.cartesian([btau_4vec[:,0], btau_4vec], axis = 1, nested = False))
+			lead_btau, btau_others = ak.unzip(ak.cartesian([btau_4vec[:,0], btau_4vec], axis = 1, nested = False))
 			deltaR_Arr = ak.values_astype(lead_btau,np.float64).deltaR(ak.values_astype(btau_4vec,np.float64))
 
 			#Remove leading tau from consideration
+			lead_btau = boostedtau[deltaR_Arr == 0]
 			lead_pair_btau = boostedtau[deltaR_Arr != 0]
 			deltaR_Arr = deltaR_Arr[deltaR_Arr != 0]
 
@@ -656,22 +658,23 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			lead_pair_btau_4vec = ak.firsts(ak.zip({"t": lead_pair_btau.E, "x": lead_pair_btau.Px, "y": lead_pair_btau.Py, "z": lead_pair_btau.Pz},with_name="Momentum4D"))
 
 			#Drop first pair of boosted taus form consideration
-			rem_btau_req = ak.values_aktype(lead_btau_4vec, np.float64).deltaR(ak.values_astype(btau_4vec)) == 0 & ak.values_aktype(lead_pair_btau_4vec, np.float64).deltaR(ak.values_astype(btau_4vec))
+			rem_btau_req = (ak.values_astype(lead_btau_4vec, np.float64).deltaR(ak.values_astype(btau_4vec, np.float64)) != 0) & (ak.values_astype(lead_pair_btau_4vec, np.float64).deltaR(ak.values_astype(btau_4vec, np.float64)) != 0)
 			btau_rem = boostedtau[rem_btau_req]
 			
 			#Find Second pair
-			btau_4vec_rem = ak.zip({"t": btau_rem.E, "x": btau_rem.Px, "y": btau_rem.Py, "z": btau_rem.Pz},with_name="Momentum4D")
-			next_lead_btau, rem_btau_others = akunzip(ak.cartesian([rem_btau_4vec[:,0], rem_btau_4vec], axis = 1, nested = False))
+			rem_btau_4vec = ak.zip({"t": btau_rem.E, "x": btau_rem.Px, "y": btau_rem.Py, "z": btau_rem.Pz},with_name="Momentum4D")
+			next_lead_btau, rem_btau_others = ak.unzip(ak.cartesian([rem_btau_4vec[:,0], rem_btau_4vec], axis = 1, nested = False))
 			deltaR_Arr = ak.values_astype(next_lead_btau,np.float64).deltaR(ak.values_astype(rem_btau_4vec, np.float64))
 
+			next_lead_btau = btau_rem[deltaR_Arr == 0]
 			next_lead_pair_btau = btau_rem[deltaR_Arr != 0]
 			deltaR_Arr = deltaR_Arr[deltaR_Arr != 0]	
 			next_lead_pair_btau = next_lead_pair_btau[deltaR_Arr == ak.min(deltaR_Arr,axis=1)] 
 
 			#Keep only the 2 identified pairs of taus
-			boostedtau = ak.concatenate(lead_btau, lead_pair_btau)
-			boostedtau = ak.concatenate(boostedtau, next_lead_btau)
-			boostedtau = ak.concatenate(boostedtau, next_lead_pair_btau)
+			boostedtau = ak.concatenate((lead_btau, lead_pair_btau),axis=1)
+			boostedtau = ak.concatenate((boostedtau, next_lead_btau),axis=1)
+			boostedtau = ak.concatenate((boostedtau, next_lead_pair_btau),axis=1)
 
 			#Memory management
 			del deltaR_Arr, rem_btau_req
@@ -681,6 +684,8 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 		#############
 		#Selections fromp paired objects
 		#############
+		n_VisMass = 0
+		n_DeltaR = 0
 		if (ak.num(event_level,axis=0) > 0): #Only do this if there are any events left
 			#Leading and next leading pair 4-vectors
 			leading_higgs = ak.zip({
@@ -702,14 +707,14 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			#Visable mass selection
 			vis_mass1 = leading_higgs.mass
 			vis_mass2 = nextleading_higgs.mass
-			vis_mass_cond = vis_mass1 >= 10 & vis_mass2 >= 10
+			vis_mass_cond = (vis_mass1 >= 10) & (vis_mass2 >= 10)
 
-			boostedtau_HT = boostedtau_HT[vis_mass_cond]
-			AK8Jet_HT = AK8Jet_HT[vis_mass_cond]
-			Jet_HT = Jet_HT[vis_mass_cond]
-			electron_HT = electron_HT[vis_mass_cond]
-			muon_HT = muon_HT[vis_mass_cond]
-			event_level_HT = event_level_HT[vis_mass_cond]
+			boostedtau = boostedtau[vis_mass_cond]
+			AK8Jet = AK8Jet[vis_mass_cond]
+			Jet = Jet[vis_mass_cond]
+			electron = electron[vis_mass_cond]
+			muon = muon[vis_mass_cond]
+			event_level = event_level[vis_mass_cond]
 
 			#Fill post visable mass entries in skim and N-1 histograms
 			n_VisMass = np.size(event_level.nFatJet)
@@ -720,12 +725,12 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			#Topology selection
 			topo_cond = leading_higgs.deltaR(nextleading_higgs) >= 2
 
-			boostedtau_HT = boostedtau_HT[topo_cond]
-			AK8Jet_HT = AK8Jet_HT[topo_cond]
-			Jet_HT = Jet_HT[topo_cond]
-			electron_HT = electron_HT[topo_cond]
-			muon_HT = muon_HT[topo_cond]
-			event_level_HT = event_level_HT[topo_cond]
+			boostedtau = boostedtau[topo_cond]
+			AK8Jet = AK8Jet[topo_cond]
+			Jet = Jet[topo_cond]
+			electron = electron[topo_cond]
+			muon = muon[topo_cond]
+			event_level = event_level[topo_cond]
 
 			#Fill post visable mass entries in skim and N-1 histograms
 			n_DeltaR = np.size(event_level.nFatJet)
@@ -742,19 +747,18 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			def Z_Mult_Function(lepton,lep_flavor): 
 				#Make Good muon selection
 				if (lep_flavor == "mu"):
-					if (self.trigger_bit == 39): #This should have already been selected for
-						id_cond = muon.IDSelec 
-						d0_cond = np.abs(lepton.D0) < 0.045
-						dz_cond = np.abs(lepton.Dz) < 0.2
-						good_lepton_cond = id_cond & d0_cond & dz_cond
-						good_lepton = lepton[good_lepton_cond]
-					else:
-						good_lepton = lepton
+					id_cond = muon.IDSelec 
+					d0_cond = np.abs(lepton.D0) < 0.045
+					dz_cond = np.abs(lepton.Dz) < 0.2
+					good_lepton_cond = id_cond & d0_cond & dz_cond
+					good_lepton = lepton[good_lepton_cond]
+					#else:
+						#good_lepton = lepton
 				#Make good electron selection
 				if (lep_flavor == "ele"):
-					cond1 = np.abs(lepton.SCEta) <= 0.8 & lepton.IDMVANoIso > 0.837
-					cond2 = (np.abs(lepton.SCEta) > 0.8 & np.abs(lepton.SCEta) <= 1.5) & electron.IDMVANoIso > 0.715
-					cond3 = np.abs(lepton.SCEta) >= 1.5 & electron.IDMVANoIso > 0.357
+					cond1 = (np.abs(lepton.SCEta) <= 0.8) & (lepton.IDMVANoIso > 0.837)
+					cond2 = ((np.abs(lepton.SCEta) > 0.8) & (np.abs(lepton.SCEta) <= 1.5)) & (electron.IDMVANoIso > 0.715)
+					cond3 = (np.abs(lepton.SCEta) >= 1.5) & (electron.IDMVANoIso > 0.357)
 					good_lepton_cond = cond1 | cond2 | cond3
 					good_lepton = lepton[good_lepton_cond]
 				
@@ -765,7 +769,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 
 			#Apply BJet multiplicity selection
 			#Apply pt, eta, loose ID, and deep csv tag cut
-			Jet_B = Jet[Jet.PFLooseId > 0.5]
+			Jet_B = Jet[Jet.JetId > 0.5]
 			Jet_B = Jet_B[Jet_B.pt > 30]
 			Jet_B = Jet_B[np.abs(Jet_B.eta) < 2.4]
 			Jet_B = Jet_B[Jet_B.DeepCSVTags_b > 0.7527]
@@ -784,11 +788,23 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 		#############
 		if (ak.num(event_level,axis=0) > 0):
 			#Get pair delta R and delta phi Distributions
-			leading_dR_Arr = ak.ravel(deltaR(tau[:,0],tau[:,1]))
-			leading_dPhi_Arr = ak.ravel(delta_phi(tau[:,0],tau[:,1]))
-			nextleading_dR_Arr = ak.ravel(deltaR(tau[:,2],tau[:,3]))
-			nextleading_dPhi_Arr = ak.ravel(delta_phi(tau[:,2],tau[:,3]))
-				
+			leading_dR_Arr = ak.ravel(deltaR(boostedtau[:,0],boostedtau[:,1]))
+			leading_dPhi_Arr = ak.ravel(delta_phi(boostedtau[:,0],boostedtau[:,1]))
+			nextleading_dR_Arr = ak.ravel(deltaR(boostedtau[:,2],boostedtau[:,3]))
+			nextleading_dPhi_Arr = ak.ravel(delta_phi(boostedtau[:,2],boostedtau[:,3]))
+			
+			#Get the leading Higgs 4-momenta
+			PxLeading = boostedtau[:,0].Px + boostedtau[:,1].Px
+			PyLeading = boostedtau[:,0].Py + boostedtau[:,1].Py
+			PzLeading = boostedtau[:,0].Pz + boostedtau[:,1].Pz
+			ELeading = boostedtau[:,0].E + boostedtau[:,1].E
+			
+			#Get the subleading Higgs 4-momenta
+			PxSubLeading = boostedtau[:,2].Px + boostedtau[:,3].Px
+			PySubLeading = boostedtau[:,2].Py + boostedtau[:,3].Py
+			PzSubLeading = boostedtau[:,2].Pz + boostedtau[:,3].Pz
+			ESubLeading = boostedtau[:,2].E + boostedtau[:,3].E
+
 			#Reconstructed Higgs Objects
 			Higgs_Leading = ak.zip(
 				{
@@ -825,9 +841,9 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			Radion_4Vec = ak.zip({"t": Radion_Reco.E,"x": Radion_Reco.Px,"y": Radion_Reco.Py,"z": Radion_Reco.Pz},with_name="Momentum4D")
 			Radion_Reco["phi"] = ak.from_iter(np.arctan2(Radion_Reco.Py,Radion_Reco.Px))
 			Radion_Reco["eta"] = Radion_4Vec.eta #ak.from_iter(np.arcsinh(Radion_Reco.Pz)/np.sqrt(Radion_Reco.Px**2 + Radion_Reco.Py**2 + Radion_Reco.Pz**2))
-			event_level["Radion_Charge"] = tau[:,0].charge + tau[:,1].charge + tau[:,2].charge + tau[:,3].charge
-			event_level["LeadingPair_Charge"] = tau[:,0].charge + tau[:,1].charge
-			event_level["SubleadingPair_Charge"] = tau[:,2].charge + tau[:,3].charge
+			event_level["Radion_Charge"] = boostedtau[:,0].charge + boostedtau[:,1].charge + boostedtau[:,2].charge + boostedtau[:,3].charge
+			event_level["LeadingPair_Charge"] = boostedtau[:,0].charge + boostedtau[:,1].charge
+			event_level["SubleadingPair_Charge"] = boostedtau[:,2].charge + boostedtau[:,3].charge
 
 			if (len(Higgs_Leading.eta) != 0):
 				#print("Mass Reconstructed")
@@ -862,85 +878,85 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			#Obtain delat Phi between MET and Radion
 			radionMET_dPhi = ak.ravel(MET_delta_phi(Radion_Reco,event_level))
 
-			#print(len(tau))
-			FourTau_Mass_Arr = four_mass([tau[:,0],tau[:,1],tau[:,2],tau[:,3]])
+			FourTau_Mass_Arr = four_mass([boostedtau[:,0],boostedtau[:,1],boostedtau[:,2],boostedtau[:,3]])
 
 		
 		#############
 		#Fill histograms
 		#############
-		#def region_cond(region_name, var)
-		#["All","ZCR","BCR","FakeCR"]
-		for region in region_array:
-			if (region == "ZCR"):
-				region_cond = event_level.ZMult >= 1 & event_level.nBJets < 1
-			if (region == "BCR"):
-				region_cond = event_level.ZMult < 1 & event_level.nBJets >= 1
-			if (region == "FakeCR"):
-				region_cond = (event_level.ZMult < 1 & event_level.nBJets < 1) & (event_level.LeadingPair_Charge | event_level.SubleadingPair_Charge)
-			else:
-				region_cond = ak.ones_like(event_level.event_num) == 1
+		if (ak.num(event_level,axis=0) > 0):
+			#def region_cond(region_name, var)
+			#["All","ZCR","BCR","FakeCR"]
+			for region in region_array:
+				if (region == "ZCR"):
+					region_cond = event_level.ZMult >= 1 & event_level.nBJets < 1
+				if (region == "BCR"):
+					region_cond = event_level.ZMult < 1 & event_level.nBJets >= 1
+				if (region == "FakeCR"):
+					region_cond = (event_level.ZMult < 1 & event_level.nBJets < 1) & (event_level.LeadingPair_Charge | event_level.SubleadingPair_Charge)
+				else:
+					region_cond = ak.ones_like(event_level.event_num) == 1
 
 		
-			#Boosted Taus
-			h_boostedtau_pT_Trigger.fill(ak.ravel(boostedtau[region_cond].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level.event_weight*CrossSec_Weight),ak.ones_like(boostedtau[region_cond].pt))[0]), region = region)
-			
-			if (self.nBoostedTau_Selec >= 1):
-				h_Leadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.num(boostedtau,axis=1) >= self.nBoostedTau_Selec][:,0].pt),weight=ak.ravel(event_level[ak.num(boostedtau,axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
-			
-			if (self.nBoostedTau_Selec >= 2):
-				h_Subleadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.num(boostedtau,axis=1) >= self.nBoostedTau_Selec][:,1].pt),weight=ak.ravel(event_level[ak.num(boostedtau,axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
-			
-			if (self.nBoostedTau_Selec >= 3):
-				h_Thirdleadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.num(boostedtau,axis=1) >= self.nBoostedTau_Selec][:,2].pt),weight=ak.ravel(event_level[ak.num(boostedtau,axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
-			
-			if (self.nBoostedTau_Selec >= 4):
-				h_Fourthleadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.num(boostedtau,axis=1) >= self.nBoostedTau_Selec][:,3].pt),weight=ak.ravel(event_level[ak.num(boostedtau,axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
-			
-			h_boostedtau_eta_Trigger.fill(ak.ravel(boostedtau[region_cond].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(boostedtau[region_cond].eta))[0]), region = region)
-			h_boostedtau_phi_Trigger.fill(ak.ravel(boostedtau[region_cond].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(boostedtau[region_cond].phi))[0]), region = region)
-			h_boostedtau_raw_iso_Trigger.fill(ak.ravel(boostedtau[region_cond].iso),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(boostedtau[region_cond].iso))[0]), region = region)
-			
-			#Electrons
-			h_electron_pT_Trigger.fill(ak.ravel(electron[region_cond].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(electron[region_cond].pt))[0]), region = region)
-			h_Leadingelectron_pT_Trigger.fill(ak.ravel(electron[region_cond][ak.num(electron[region_cond],axis=1) > 0][:,0].pt),weight=ak.ravel(event_level[region_cond][ak.num(electron[region_cond],axis=1) > 0].event_weight*CrossSec_Weight), region = region)
-			h_electron_eta_Trigger.fill(ak.ravel(electron[region_cond].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(electron[region_cond].eta))[0]), region = region)
-			h_electron_phi_Trigger.fill(ak.ravel(electron[region_cond].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(electron[region_cond].phi))[0]), region = region)
+				#Boosted Taus
+				h_boostedtau_pT_Trigger.fill(ak.ravel(boostedtau[region_cond].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level.event_weight*CrossSec_Weight),ak.ones_like(boostedtau[region_cond].pt))[0]), region = region)
+				
+				if (self.nBoostedTau_Selec >= 1):
+					h_Leadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.num(boostedtau,axis=1) >= self.nBoostedTau_Selec][:,0].pt),weight=ak.ravel(event_level[ak.num(boostedtau,axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
+				
+				if (self.nBoostedTau_Selec >= 2):
+					h_Subleadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.num(boostedtau,axis=1) >= self.nBoostedTau_Selec][:,1].pt),weight=ak.ravel(event_level[ak.num(boostedtau,axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
+				
+				if (self.nBoostedTau_Selec >= 3):
+					h_Thirdleadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.num(boostedtau,axis=1) >= self.nBoostedTau_Selec][:,2].pt),weight=ak.ravel(event_level[ak.num(boostedtau,axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
+				
+				if (self.nBoostedTau_Selec >= 4):
+					h_Fourthleadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.num(boostedtau,axis=1) >= self.nBoostedTau_Selec][:,3].pt),weight=ak.ravel(event_level[ak.num(boostedtau,axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
+				
+				h_boostedtau_eta_Trigger.fill(ak.ravel(boostedtau[region_cond].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(boostedtau[region_cond].eta))[0]), region = region)
+				h_boostedtau_phi_Trigger.fill(ak.ravel(boostedtau[region_cond].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(boostedtau[region_cond].phi))[0]), region = region)
+				h_boostedtau_raw_iso_Trigger.fill(ak.ravel(boostedtau[region_cond].iso),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(boostedtau[region_cond].iso))[0]), region = region)
+				
+				#Electrons
+				h_electron_pT_Trigger.fill(ak.ravel(electron[region_cond].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(electron[region_cond].pt))[0]), region = region)
+				h_Leadingelectron_pT_Trigger.fill(ak.ravel(electron[region_cond][ak.num(electron[region_cond],axis=1) > 0][:,0].pt),weight=ak.ravel(event_level[region_cond][ak.num(electron[region_cond],axis=1) > 0].event_weight*CrossSec_Weight), region = region)
+				h_electron_eta_Trigger.fill(ak.ravel(electron[region_cond].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(electron[region_cond].eta))[0]), region = region)
+				h_electron_phi_Trigger.fill(ak.ravel(electron[region_cond].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(electron[region_cond].phi))[0]), region = region)
 
-			#Muons
-			h_muon_pT_Trigger.fill(ak.ravel(muon[region_cond].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(muon[region_cond].pt))[0]), region = region)
-			h_Leadingmuon_pT_Trigger.fill(ak.ravel(muon[ak.num(muon[region_cond].pt,axis=1) > 0][:,0].pt),weight=ak.ravel(event_level[ak.num(muon[region_cond].pt,axis=1) > 0].event_weight*CrossSec_Weight), region = region)
-			h_muon_eta_Trigger.fill(ak.ravel(muon[region_cond].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(muon[region_cond].eta))[0]), region = region)
-			h_Leadingmuon_eta_Trigger.fill(ak.ravel(muon[ak.num(muon[region_cond].pt,axis=1) > 0][:,0].eta),weight=ak.ravel(event_level[ak.num(muon[region_cond].pt,axis=1) > 0].event_weight*CrossSec_Weight), region = region)
-			h_muon_phi_Trigger.fill(ak.ravel(muon[region_cond].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(muon[region_cond].phi))[0]), region = region)
+				#Muons
+				h_muon_pT_Trigger.fill(ak.ravel(muon[region_cond].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(muon[region_cond].pt))[0]), region = region)
+				h_Leadingmuon_pT_Trigger.fill(ak.ravel(muon[ak.num(muon[region_cond].pt,axis=1) > 0][:,0].pt),weight=ak.ravel(event_level[ak.num(muon[region_cond].pt,axis=1) > 0].event_weight*CrossSec_Weight), region = region)
+				h_muon_eta_Trigger.fill(ak.ravel(muon[region_cond].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(muon[region_cond].eta))[0]), region = region)
+				h_Leadingmuon_eta_Trigger.fill(ak.ravel(muon[ak.num(muon[region_cond].pt,axis=1) > 0][:,0].eta),weight=ak.ravel(event_level[ak.num(muon[region_cond].pt,axis=1) > 0].event_weight*CrossSec_Weight), region = region)
+				h_muon_phi_Trigger.fill(ak.ravel(muon[region_cond].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(muon[region_cond].phi))[0]), region = region)
 
-			#Jets 
-			h_Jet_pT_Trigger.fill(ak.ravel(Jet[region_cond].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(Jet[region_cond].pt))[0]), region = region)
-			h_LeadingJet_pT_Trigger.fill(ak.ravel(Jet[region_cond][ak.num(Jet[region_cond],axis=1) > 0][:,0].pt),weight=ak.ravel(event_level[region_cond][ak.num(Jet[region_cond],axis=1) > 0].event_weight[region_cond]*CrossSec_Weight), region = region)
-			h_Jet_eta_Trigger.fill(ak.ravel(Jet[region_cond].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(Jet[region_cond].eta))[0]), region = region)
-			h_Jet_phi_Trigger.fill(ak.ravel(Jet[region_cond].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(Jet[region_cond].phi))[0]), region = region)
-			
-			#AK8/Fat Jets
-			h_AK8Jet_pT_Trigger.fill(ak.ravel(AK8Jet[region_cond].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(AK8Jet[region_cond].pt))[0]), region = region)
-			h_LeadingAK8Jet_pT_Trigger.fill(ak.ravel(AK8Jet[region_cond][ak.num(AK8Jet,axis=1) > 0][:,0].pt),weight=ak.ravel(event_level[region_cond][ak.num(AK8Jet[region_cond],axis=1) > 0].event_weight*CrossSec_Weight), region = region)
-			h_AK8Jet_eta_Trigger.fill(ak.ravel(AK8Jet[region_cond].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(AK8Jet[region_cond].eta))[0]), region = region)
-			h_AK8Jet_phi_Trigger.fill(ak.ravel(AK8Jet[region_cond].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(AK8Jet[region_cond].phi))[0]), region = region)
+				#Jets 
+				h_Jet_pT_Trigger.fill(ak.ravel(Jet[region_cond].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(Jet[region_cond].pt))[0]), region = region)
+				h_LeadingJet_pT_Trigger.fill(ak.ravel(Jet[region_cond][ak.num(Jet[region_cond],axis=1) > 0][:,0].pt),weight=ak.ravel(event_level[region_cond][ak.num(Jet[region_cond],axis=1) > 0].event_weight[region_cond]*CrossSec_Weight), region = region)
+				h_Jet_eta_Trigger.fill(ak.ravel(Jet[region_cond].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(Jet[region_cond].eta))[0]), region = region)
+				h_Jet_phi_Trigger.fill(ak.ravel(Jet[region_cond].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(Jet[region_cond].phi))[0]), region = region)
+				
+				#AK8/Fat Jets
+				h_AK8Jet_pT_Trigger.fill(ak.ravel(AK8Jet[region_cond].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(AK8Jet[region_cond].pt))[0]), region = region)
+				h_LeadingAK8Jet_pT_Trigger.fill(ak.ravel(AK8Jet[region_cond][ak.num(AK8Jet,axis=1) > 0][:,0].pt),weight=ak.ravel(event_level[region_cond][ak.num(AK8Jet[region_cond],axis=1) > 0].event_weight*CrossSec_Weight), region = region)
+				h_AK8Jet_eta_Trigger.fill(ak.ravel(AK8Jet[region_cond].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(AK8Jet[region_cond].eta))[0]), region = region)
+				h_AK8Jet_phi_Trigger.fill(ak.ravel(AK8Jet[region_cond].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight),ak.ones_like(AK8Jet[region_cond].phi))[0]), region = region)
 
-			#Store MET, HT and MHT
-			h_MET_Trigger.fill(ak.ravel(event_level[region_cond].MET_pt),weight=ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight), region = region)
-			h_HT_Trigger.fill(ak.ravel(event_level[region_cond].HT),weight=ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight), region = region)
-			h_MHT_Trigger.fill(ak.ravel(event_level[region_cond].MHT),weight=ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight), region = region)
+				#Store MET, HT and MHT
+				h_MET_Trigger.fill(ak.ravel(event_level[region_cond].MET_pt),weight=ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight), region = region)
+				h_HT_Trigger.fill(ak.ravel(event_level[region_cond].HT),weight=ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight), region = region)
+				h_MHT_Trigger.fill(ak.ravel(event_level[region_cond].MHT),weight=ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight), region = region)
 
-			#Store Z and BJet Mupltiplcity
-			h_ZMult.fill(ak.ravel(event_level[region_cond].ZMult),weight=ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight), region = region)
-			h_bJetMult.fill(ak.ravel(event_level[region_cond].nBJets),weight=ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight), region = region)
+				#Store Z and BJet Mupltiplcity
+				h_ZMult.fill(ak.ravel(event_level[region_cond].ZMult),weight=ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight), region = region)
+				h_bJetMult.fill(ak.ravel(event_level[region_cond].nBJets),weight=ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight), region = region)
 
-			#Store Di-boosted tau delta R
-			h_leading_boostedtau_deltaR.fill(leading_dR_Arr[region_cond], weight=ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight), region = region)
-			h_nextleading_boostedtau_deltaR.fill(nextleading_dR_Arr[region_cond], weight=ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight), region = region)
+				#Store Di-boosted tau delta R
+				h_leading_boostedtau_deltaR.fill(leading_dR_Arr[region_cond], weight=ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight), region = region)
+				h_nextleading_boostedtau_deltaR.fill(nextleading_dR_Arr[region_cond], weight=ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight), region = region)
 
-			#Four Mass
-			h_FourTau_Mass.fill(FourTau_Mass_Arr[region_cond], weight=ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight), region = region)
+				#Four Mass
+				h_FourTau_Mass.fill(FourTau_Mass_Arr[region_cond], weight=ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight), region = region)
 		
 		return{
 			dataset: {
@@ -949,14 +965,13 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				"Weight": ak.to_list(event_level.event_weight*CrossSec_Weight), 
 				"Event_Count": np.sum(ak.to_list(event_level.event_weight*CrossSec_Weight)),
 				"n_Skim": n_Skim,
-				"n_MET": n_MET,
-				"n_FatJet": n_FatJet,
-				"n_FlagSelec": n_FlagSelec,
-				"n_PVSelec": n_PVSelec,
 				"n_LeadBoostedTau": n_LeadBoostedTau,
 				"n_SubLeadBoostedTau": n_SubLeadBoostedTau,
 				"n_3rdLeadBoostedTau": n_3rdLeadBoostedTau,
 				"n_4thLeadBoostedTau": n_4thLeadBoostedTau,
+				"n_Trigger": n_Trigger,
+				"n_VisMass": n_VisMass,
+				"n_Higgs_dR": n_DeltaR,
 				
 				#Boosted Tau kineamtic distirubtions
 				"boostedtau_pt_Trigg": h_boostedtau_pT_Trigger,

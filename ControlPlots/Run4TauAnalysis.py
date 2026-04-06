@@ -48,7 +48,7 @@ def move_X509():
 
 if __name__ == "__main__":
 	#Condor related stuff
-	run_on_condor = True
+	run_on_condor = False
 	os.environ["CONDOR_CONFIG"] = "/etc/condor/condor_config"
 	
 	#Xrootd setup
@@ -245,8 +245,8 @@ if __name__ == "__main__":
 		}
 	
 	#Set file dictionary and list of backgrounds prior to running processor
-	#file_dict = file_dict_data_test
-	file_dict = file_dict_full
+	file_dict = file_dict_data_test
+	#file_dict = file_dict_full
 
 	#Pull in the weight and event count prior to skimming information
 	with open("genWeightSum_JSON.json") as json_file:
@@ -261,7 +261,7 @@ if __name__ == "__main__":
 	for n_taus in range(4,5):
 		print("About to run processor")
 		start_time = time.time()
-		fourtau_out = runner(file_dict, treename="Events", processor_instance=AnalysisProcessor.Analysis4TauProcessor(sumWEvents_Dict = sumWEvents_Dict, nBoostedTaus = n_taus, ApplyTrigger = False)) #Modified for NanoAOD (changd treename)
+		fourtau_out = runner(file_dict, treename="Events", processor_instance=AnalysisProcessor.Analysis4TauProcessor(sumWEvents_Dict = sumWEvents_Dict, nBoostedTaus = n_taus, ApplyTrigger = True)) #Modified for NanoAOD (changd treename)
 		end_time = time.time()
 		
 		time_running = end_time-start_time
