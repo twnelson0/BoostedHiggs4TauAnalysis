@@ -241,7 +241,7 @@ if __name__ == "__main__":
 			"WJetsToLNu_HT-1200To2500": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WJetsToLNu_HT1200To2500_2018],
 			"WJetsToLNu_HT-2500ToInf": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WJetsToLNu_HT2500ToInf_2018],
 			"Data_Mu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(SingleMu_2018A, np.append(SingleMu_2018B, np.append(SingleMu_2018C,SingleMu_2018D)))],
-			"Data_JetHT": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(JetHT_2018A, np.append(JetHT_2018B, np.append(JetHT_2018C,JetHT_2018D)))]
+			#"Data_JetHT": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(JetHT_2018A, np.append(JetHT_2018B, np.append(JetHT_2018C,JetHT_2018D)))]
 		}
 	
 	#Set file dictionary and list of backgrounds prior to running processor
@@ -268,7 +268,6 @@ if __name__ == "__main__":
 		print("It takes about %.1f s to run the coffea processor with %d boosted tau selections"%(time_running,n_taus))
 		
         #Save coffea file
-		#outfile = os.path.join(os.getcwd() + "/Output_4Tau/", f"output_{n_taus}_boosted_tau_selec_Full4TauSamples_NewArch.coffea")
-		outfile = os.path.join(os.getcwd() + "/Output_4Tau/", f"output_{n_taus}_boosted_tau_selec.coffea")
+		outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec.coffea")
 		util.save(fourtau_out, outfile)
 		print(f"Saved output to {outfile}")	
