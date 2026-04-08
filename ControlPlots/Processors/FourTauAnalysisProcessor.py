@@ -391,25 +391,6 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 		h_CutFlow.fill("nFatJetReq",weight=n_FatJet)
 		h_NMinus1.fill("nFatJetReq",weight=n_MET - n_FatJet)
 
-		#Flag conditions
-		Flag_Array = ["Flag_goodVertices", "Flag_globalSuperTightHalo2016Filter", "Flag_HBHENoiseFilter", "Flag_HBHENoiseIsoFilter", "Flag_EcalDeadCellTriggerPrimitiveFilter", "Flag_BadPFMuonFilter", "Flag_BadPFMuonDzFilter", "Flag_hfNoisyHitsFilter", "Flag_eeBadScFilter", "Flag_ecalBadCalibFilter"]
-		flag_cond = event_level[Flag_Array[0]] #Initialize the condition as the first flag since logical and it with itself will act like an identiy operator
-		
-		for flag in Flag_Array:
-			flag_cond = flag_cond & event_level[flag]
-		
-		boostedtau = boostedtau[flag_cond]
-		AK8Jet = AK8Jet[flag_cond]
-		Jet = Jet[flag_cond]
-		electron = electron[flag_cond]
-		muon = muon[flag_cond]
-		event_level = event_level[flag_cond]	
-
-		#Fill post flag selections entries in skim and N-1 histograms
-		n_FlagSelec = np.size(event_level.nFatJet)
-		h_CutFlow.fill("FlagReq",weight=n_FlagSelec)
-		h_NMinus1.fill("FlagReq",weight=n_FatJet - n_FlagSelec)
-
 		#PV selections
 		ndof_cond = event_level.PV_ndof > 4
 		PVz_cond = np.abs(event_level.PV_z) < 24
@@ -426,7 +407,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 		#Fill post PV selection entries in skim and N-1 histograms
 		n_PVSelec = np.size(event_level.nFatJet)
 		h_CutFlow.fill("PVSelec",weight=n_PVSelec)
-		h_NMinus1.fill("PVSelec",weight=n_FlagSelec - n_PVSelec)
+		h_NMinus1.fill("PVSelec",weight=n_FatJet - n_PVSelec)
 
 		n_PreTrigger = n_PVSelec #Set number of events left before trigger seleciton to PV selection	
 		#Temp values of the Tau selections
@@ -1020,7 +1001,6 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				"n_Skim": n_Skim,
 				"n_MET": n_MET,
 				"n_FatJet": n_FatJet,
-				"n_FlagSelec": n_FlagSelec,
 				"n_PVSelec": n_PVSelec,
 				"n_LeadBoostedTau": n_LeadBoostedTau,
 				"n_SubLeadBoostedTau": n_SubLeadBoostedTau,
