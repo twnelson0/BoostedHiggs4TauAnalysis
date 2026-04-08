@@ -309,6 +309,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 		h_LeadingAK8Jet_pT_Trigger = hist.Hist.new.Regular(50,0,700, label = r"AK8Jet Leading $p_T$ [GeV]").StrCat(region_array, growth=False, name = "region").Double()
 		h_AK8Jet_eta_Trigger = hist.Hist.new.Regular(20,-4,4, label = r"AK8Jet $\eta$").StrCat(region_array, growth=False, name = "region").Double()
 		h_AK8Jet_phi_Trigger = hist.Hist.new.Regular(20,-pi,pi, label = r"AK8Jet $\phi$").StrCat(region_array, growth=False, name = "region").Double()
+		h_nAK8Jet_Trigger = hist.Hist.new.Regular(10,0,10, label=r"Number of AK8Jets").StrCat(region_array, growth=False, name = "region").Double()
 		
 		#Add MET, HT and MHT histogram
 		h_MET_Trigger = hist.Hist.new.Regular(20,0,500, label=r"MET [GeV]").StrCat(region_array, growth=False, name = "region").Double()
@@ -392,24 +393,24 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 		h_NMinus1.fill("nFatJetReq",weight=n_MET - n_FatJet)
 
 		#PV selections
-		ndof_cond = event_level.PV_ndof > 4
-		PVz_cond = np.abs(event_level.PV_z) < 24
-		PVr_cond = np.sqrt(event_level.PV_x**2 + event_level.PV_y**2) < 2
-		PV_Cond = np.bitwise_and(ndof_cond,np.bitwise_and(PVz_cond,PVr_cond))
-		
-		boostedtau = boostedtau[PV_Cond]
-		AK8Jet = AK8Jet[PV_Cond]
-		Jet = Jet[PV_Cond]
-		electron = electron[PV_Cond]
-		muon = muon[PV_Cond]
-		event_level = event_level[PV_Cond]	
+	#	ndof_cond = event_level.PV_ndof > 4
+	#	PVz_cond = np.abs(event_level.PV_z) < 24
+	#	PVr_cond = np.sqrt(event_level.PV_x**2 + event_level.PV_y**2) < 2
+	#	PV_Cond = np.bitwise_and(ndof_cond,np.bitwise_and(PVz_cond,PVr_cond))
+	#	
+	#	boostedtau = boostedtau[PV_Cond]
+	#	AK8Jet = AK8Jet[PV_Cond]
+	#	Jet = Jet[PV_Cond]
+	#	electron = electron[PV_Cond]
+	#	muon = muon[PV_Cond]
+	#	event_level = event_level[PV_Cond]	
 
-		#Fill post PV selection entries in skim and N-1 histograms
-		n_PVSelec = np.size(event_level.nFatJet)
-		h_CutFlow.fill("PVSelec",weight=n_PVSelec)
-		h_NMinus1.fill("PVSelec",weight=n_FatJet - n_PVSelec)
+	#	#Fill post PV selection entries in skim and N-1 histograms
+	#	n_PVSelec = np.size(event_level.nFatJet)
+	#	h_CutFlow.fill("PVSelec",weight=n_PVSelec)
+	#	h_NMinus1.fill("PVSelec",weight=n_FatJet - n_PVSelec)
 
-		n_PreTrigger = n_PVSelec #Set number of events left before trigger seleciton to PV selection	
+		n_PreTrigger = n_MET #Set number of events left before trigger seleciton to PV selection	
 		#Temp values of the Tau selections
 		n_LeadBoostedTau = -1
 		n_SubLeadBoostedTau = -1
@@ -975,6 +976,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				h_LeadingAK8Jet_pT_Trigger.fill(ak.ravel(AK8Jet[ak.ravel(region_cond)][ak.num(AK8Jet[ak.ravel(region_cond)],axis=1) > 0][:,0].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(AK8Jet[ak.ravel(region_cond)][ak.ravel(region_cond)],axis=1) > 0].event_weight*CrossSec_Weight), region = region)
 				h_AK8Jet_eta_Trigger.fill(ak.ravel(AK8Jet[ak.ravel(region_cond)].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(AK8Jet[ak.ravel(region_cond)].eta))[0]), region = region)
 				h_AK8Jet_phi_Trigger.fill(ak.ravel(AK8Jet[ak.ravel(region_cond)].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(AK8Jet[ak.ravel(region_cond)].phi))[0]), region = region)
+				h_nAK8Jet_Trigger.fill(ak.ravel(event_level[ak.ravel(region_cond)].nFatJet),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
 
 				#Store MET, HT and MHT
 				h_MET_Trigger.fill(ak.ravel(event_level[ak.ravel(region_cond)].MET_pt),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
@@ -1001,7 +1003,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				"n_Skim": n_Skim,
 				"n_MET": n_MET,
 				"n_FatJet": n_FatJet,
-				"n_PVSelec": n_PVSelec,
+				#"n_PVSelec": n_PVSelec,
 				"n_LeadBoostedTau": n_LeadBoostedTau,
 				"n_SubLeadBoostedTau": n_SubLeadBoostedTau,
 				"n_3rdLeadBoostedTau": n_3rdLeadBoostedTau,

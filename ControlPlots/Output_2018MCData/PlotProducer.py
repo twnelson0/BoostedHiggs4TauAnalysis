@@ -154,7 +154,7 @@ if __name__ == "__main__":
 	print("Number of events after MET selection: %d"%coffea_input["Data_Mu"]["n_MET"])
 	print("Number of events after FatJet selection: %d"%coffea_input["Data_Mu"]["n_FatJet"])
 	#print("Number of events after quality flag selection: %d"%coffea_input["Data_Mu"]["n_FlagSelec"])
-	print("Number of events after Primary Vertex selection: %d"%coffea_input["Data_Mu"]["n_PVSelec"])
+	#print("Number of events after Primary Vertex selection: %d"%coffea_input["Data_Mu"]["n_PVSelec"])
 	print("Number of events after Leading Boosted Tau selection: %d"%coffea_input["Data_Mu"]["n_LeadBoostedTau"])
 	print("Number of events after Sub-Leading Boosted Tau selection: %d"%coffea_input["Data_Mu"]["n_SubLeadBoostedTau"])
 	print("Number of events after 3rd-Leading Boosted Tau selection: %d"%coffea_input["Data_Mu"]["n_3rdLeadBoostedTau"])
