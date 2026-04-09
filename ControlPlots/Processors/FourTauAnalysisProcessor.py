@@ -379,44 +379,12 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 		h_CutFlow.fill("METCut",weight=n_MET)
 		h_NMinus1.fill("METCut",weight=n_Skim - n_MET)	
 
-		#Impose all events have at least one fat Jet
-		boostedtau = boostedtau[event_level.nFatJet > 0]
-		AK8Jet = AK8Jet[event_level.nFatJet > 0]
-		Jet = Jet[event_level.nFatJet > 0]
-		electron = electron[event_level.nFatJet > 0]
-		muon = muon[event_level.nFatJet > 0]
-		event_level = event_level[event_level.nFatJet > 0]	
-
-		#Fill post FatJet entries in skim and N-1 histograms
-		n_FatJet = np.size(event_level.nFatJet)
-		h_CutFlow.fill("nFatJetReq",weight=n_FatJet)
-		h_NMinus1.fill("nFatJetReq",weight=n_MET - n_FatJet)
-
-		#PV selections
-	#	ndof_cond = event_level.PV_ndof > 4
-	#	PVz_cond = np.abs(event_level.PV_z) < 24
-	#	PVr_cond = np.sqrt(event_level.PV_x**2 + event_level.PV_y**2) < 2
-	#	PV_Cond = np.bitwise_and(ndof_cond,np.bitwise_and(PVz_cond,PVr_cond))
-	#	
-	#	boostedtau = boostedtau[PV_Cond]
-	#	AK8Jet = AK8Jet[PV_Cond]
-	#	Jet = Jet[PV_Cond]
-	#	electron = electron[PV_Cond]
-	#	muon = muon[PV_Cond]
-	#	event_level = event_level[PV_Cond]	
-
-	#	#Fill post PV selection entries in skim and N-1 histograms
-	#	n_PVSelec = np.size(event_level.nFatJet)
-	#	h_CutFlow.fill("PVSelec",weight=n_PVSelec)
-	#	h_NMinus1.fill("PVSelec",weight=n_FatJet - n_PVSelec)
-
 		n_PreTrigger = n_MET #Set number of events left before trigger seleciton to PV selection	
 		#Temp values of the Tau selections
 		n_LeadBoostedTau = -1
 		n_SubLeadBoostedTau = -1
 		n_3rdLeadBoostedTau = -1
 		n_4thLeadBoostedTau = -1
-	#	n_PreTrigger = n_Skim
 
         #Boosted tau selections
 		if (self.nBoostedTau_Selec > 0):
@@ -1002,8 +970,6 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				"Event_Count": np.sum(ak.to_list(event_level.event_weight*CrossSec_Weight)),
 				"n_Skim": n_Skim,
 				"n_MET": n_MET,
-				"n_FatJet": n_FatJet,
-				#"n_PVSelec": n_PVSelec,
 				"n_LeadBoostedTau": n_LeadBoostedTau,
 				"n_SubLeadBoostedTau": n_SubLeadBoostedTau,
 				"n_3rdLeadBoostedTau": n_3rdLeadBoostedTau,
