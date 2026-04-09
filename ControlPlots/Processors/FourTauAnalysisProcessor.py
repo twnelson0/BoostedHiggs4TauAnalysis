@@ -1046,6 +1046,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				"LeadingAK8Jet_pt_Trigg": h_LeadingAK8Jet_pT_Trigger,
 				"AK8Jet_eta_Trigg": h_AK8Jet_eta_Trigger,
 				"AK8Jet_phi_Trigg": h_AK8Jet_phi_Trigger,
+				"nAK8Jet_Trigg": h_nAK8Jet_Trigger, 
 				
 				#Print MET
 				"MET": h_MET_Trigger,

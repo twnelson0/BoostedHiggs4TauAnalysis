@@ -57,7 +57,7 @@ if __name__ == "__main__":
 			"electron_pt_Trigg","electron_eta_Trigg","electron_phi_Trigg",
 			"muon_pt_Trigg","muon_eta_Trigg","muon_phi_Trigg","Leadingmuon_pt_Trigg","Leadingmuon_eta_Trigg",
 			"Jet_pt_Trigg","Jet_eta_Trigg","Jet_phi_Trigg",
-			"AK8Jet_pt_Trigg","AK8Jet_eta_Trigg","AK8Jet_phi_Trigg",
+			"AK8Jet_pt_Trigg","AK8Jet_eta_Trigg","AK8Jet_phi_Trigg","nAK8Jet_Trigg",
 			"MET","HT","MHT" #, "Mini_Cutflow", "Mini_NMinus1"
 			]
 
@@ -134,6 +134,7 @@ if __name__ == "__main__":
 		"LeadingAK8Jet_pt_Trigg": "AK8Jet_Leading_pT_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
 		"AK8Jet_eta_Trigg": "AK8Jet_eta_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
 		"AK8Jet_phi_Trigg": "AK8Jet_phi_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
+        "nAK8Jet_Trigg": "nAK8Jets_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
 		"MET": "MET_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
 		"HT": "HT_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
 		"MHT": "MHT_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
