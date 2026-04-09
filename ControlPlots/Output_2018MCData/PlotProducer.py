@@ -152,7 +152,7 @@ if __name__ == "__main__":
 	print("=============================================")
 
 	print("Number of events prior to selections: %d"%coffea_input["Data_Mu"]["n_Skim"])
-	print("Number of events after MET selection: %d"%coffea_input["Data_Mu"]["n_MET"])
+	#print("Number of events after MET selection: %d"%coffea_input["Data_Mu"]["n_MET"])
 	#print("Number of events after FatJet selection: %d"%coffea_input["Data_Mu"]["n_FatJet"])
 	#print("Number of events after quality flag selection: %d"%coffea_input["Data_Mu"]["n_FlagSelec"])
 	#print("Number of events after Primary Vertex selection: %d"%coffea_input["Data_Mu"]["n_PVSelec"])
@@ -178,6 +178,7 @@ if __name__ == "__main__":
 
 	#Prdouce histograms from the coffea file
 	for hist_name in four_tau_hist_list: #Loop over all histograms
+		print("Producing histogram " + hist_name)
 
 		temp_hist_dict = dict.fromkeys(background_list) # create dictionary of histograms for each background type
 				

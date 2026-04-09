@@ -366,20 +366,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 		#############
 		#Cut Selections
 		#############
-		#MET selection
-		boostedtau = boostedtau[event_level.MET_pt > 100]
-		AK8Jet = AK8Jet[event_level.MET_pt > 100]
-		Jet = Jet[event_level.MET_pt > 100]
-		electron = electron[event_level.MET_pt > 100]
-		muon = muon[event_level.MET_pt > 100]
-		event_level = event_level[event_level.MET_pt > 100]	
-
-		#Fill post MET entries in skim and N-1 histograms
-		n_MET = np.size(event_level.nFatJet)
-		h_CutFlow.fill("METCut",weight=n_MET)
-		h_NMinus1.fill("METCut",weight=n_Skim - n_MET)	
-
-		n_PreTrigger = n_MET #Set number of events left before trigger seleciton to PV selection	
+		n_PreTrigger = n_Skim #Set number of events left before trigger seleciton to PV selection	
 		#Temp values of the Tau selections
 		n_LeadBoostedTau = -1
 		n_SubLeadBoostedTau = -1
@@ -969,7 +956,6 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				"Weight": ak.to_list(event_level.event_weight*CrossSec_Weight), 
 				"Event_Count": np.sum(ak.to_list(event_level.event_weight*CrossSec_Weight)),
 				"n_Skim": n_Skim,
-				"n_MET": n_MET,
 				"n_LeadBoostedTau": n_LeadBoostedTau,
 				"n_SubLeadBoostedTau": n_SubLeadBoostedTau,
 				"n_3rdLeadBoostedTau": n_3rdLeadBoostedTau,
