@@ -67,8 +67,8 @@ if __name__ == "__main__":
 	for process in proc_arr:
 		print("Relative yield of " + str(process) + ": %.4f"%process_yield(process,total_yield,coffea_input))
 	
-	for sample in DY_Arr:
-		print("Relative yield of " + str(sample) + ": %.4f"%sample_yield(sample,total_yield,coffea_input))
+#	for sample in DY_Arr:
+#		print("Relative yield of " + str(sample) + ": %.4f"%sample_yield(sample,total_yield,coffea_input))
 
 	#Verify that this code is working by verifying the sum of all processes is 1
 #	check_sum = 0
