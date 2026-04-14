@@ -281,7 +281,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 
 		#Basic Kinematic histograms Boosted tau
 		h_boostedtau_pT_Trigger = hist.Hist.new.Regular(20,0,400, label = r"Boosted $\tau$ $p_T$ [GeV]").StrCat(region_array, growth=False, name = "region").Double()
-		h_Leadingboostedtau_pT_Trigger = hist.Hist.new.Regular(20,0,50000, label = r"Boosted $\tau$ Leading $p_T$ [GeV]").StrCat(region_array, growth=False, name = "region").Double()
+		h_Leadingboostedtau_pT_Trigger = hist.Hist.new.Regular(20,0,400, label = r"Boosted $\tau$ Leading $p_T$ [GeV]").StrCat(region_array, growth=False, name = "region").Double()
 		h_Subleadingboostedtau_pT_Trigger = hist.Hist.new.Regular(20,0,400, label = r"Boosted $\tau$ Subleading $p_T$ [GeV]").StrCat(region_array, growth=False, name = "region").Double()
 		h_Thirdleadingboostedtau_pT_Trigger = hist.Hist.new.Regular(20,0,400, label = r"Boosted $\tau$ 3rd-leading $p_T$ [GeV]").StrCat(region_array, growth=False, name = "region").Double()
 		h_Fourthleadingboostedtau_pT_Trigger = hist.Hist.new.Regular(20,0,400, label = r"Boosted $\tau$ 4th-leading $p_T$ [GeV]").StrCat(region_array, growth=False, name = "region").Double()
@@ -295,7 +295,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 		h_electron_eta_Trigger = hist.Hist.new.Regular(20,-4,4, label = r"e $\eta$").StrCat(region_array, growth=False, name = "region").Double()
 		h_electron_phi_Trigger = hist.Hist.new.Regular(20,-pi,pi, label = r"e Leading $\phi$").StrCat(region_array, growth=False, name = "region").Double()
 		h_muon_pT_Trigger = hist.Hist.new.Regular(15,0,300, label = r"$\mu$ $p_T$ [GeV]").StrCat(region_array, growth=False, name = "region").Double()
-		h_Leadingmuon_pT_Trigger = hist.Hist.new.Regular(15,0,50000, label = r"$\mu$ Leading $p_T$ [GeV]").StrCat(region_array, growth=False, name = "region").Double()
+		h_Leadingmuon_pT_Trigger = hist.Hist.new.Regular(15,0,300, label = r"$\mu$ Leading $p_T$ [GeV]").StrCat(region_array, growth=False, name = "region").Double()
 		h_muon_eta_Trigger = hist.Hist.new.Regular(20,-4,4, label = r"$\mu$ $\eta$").StrCat(region_array, growth=False, name = "region").Double()
 		h_Leadingmuon_eta_Trigger = hist.Hist.new.Regular(20,-4,4, label = r"$\mu$ $\eta$").StrCat(region_array, growth=False, name = "region").Double()
 		h_muon_phi_Trigger = hist.Hist.new.Regular(20,-pi,pi, label = r"$\mu$ $\phi$").StrCat(region_array, growth=False, name = "region").Double()
@@ -312,7 +312,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 		h_nAK8Jet_Trigger = hist.Hist.new.Regular(10,0,10, label=r"Number of AK8Jets").StrCat(region_array, growth=False, name = "region").Double()
 		
 		#Add MET, HT and MHT histogram
-		h_MET_Trigger = hist.Hist.new.Regular(20,0,50000, label=r"MET [GeV]").StrCat(region_array, growth=False, name = "region").Double()
+		h_MET_Trigger = hist.Hist.new.Regular(20,0,500, label=r"MET [GeV]").StrCat(region_array, growth=False, name = "region").Double()
 		h_HT_Trigger = hist.Hist.new.Regular(40,0,1200, label=r"HT [GeV]").StrCat(region_array, growth=False, name = "region").Double()
 		h_MHT_Trigger = hist.Hist.new.Regular(20,0,500, label=r"MHT [GeV]").StrCat(region_array, growth=False, name = "region").Double()
 
