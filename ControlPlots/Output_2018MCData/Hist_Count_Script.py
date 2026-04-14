@@ -156,7 +156,7 @@ if __name__ == "__main__":
 	hist_dict_signal = dict.fromkeys(four_tau_hist_list)
 	hist_dict_data = dict.fromkeys(four_tau_hist_list)
 
-	four_tau_hist_list = ["Leadingmuon_pt_Trigg", "Leadingboostedtau_pt_Trigg"]
+	four_tau_hist_list = ["Leadingmuon_pt_Trigg", "Leadingboostedtau_pt_Trigg", "MET"]
 
 	#Count the number of data and background in each sample
 	for hist_name in four_tau_hist_list: #Loop over all histograms

@@ -38,10 +38,6 @@ parse.add_argument("-r", "--ControlRegion", help = "Specify the Control Region")
 args = parse.parse_args()
 
 if __name__ == "__main__":
-	#coffea_file = "output_2018_run20260201_081729.coffea" #Store coffea file as hardcoded variable
-	#coffea_file = "third_leading_boostedtau.coffea" #Store coffea file as hardcoded variable
-	#coffea_file = "fourth_leading_boostedtau.coffea" #Store coffea file as hardcoded variable
-
 	print("Running on file " + args.File)
 	print("With " + args.NumberTau + " Boosted taus required")
 
@@ -99,7 +95,6 @@ if __name__ == "__main__":
 			"W+Jets HT 600-800 GeV": ["WJetsToLNu_HT-600To800"],"W+Jets HT 800-1200 GeV": ["WJetsToLNu_HT-800To1200"],
 			"W+Jets HT 1200-2500 GeV": ["WJetsToLNu_HT-1200To2500"], "W+Jets HT 2500-Inf GeV": ["WJetsToLNu_HT-2500ToInf"],
 			r"$ZZ \rightarrow 4l$" : ["ZZ4l"],
-			#"QCD": ["QCD_HT50to100","QCD_HT100to200","QCD_HT200to300","QCD_HT300to500","QCD_HT500to700","QCD_HT700to1000","QCD_HT1000to1500","QCD_HT1500to2000","QCD_HT2000toInf"],
 	}
 	
 	#Dictinary with file names
@@ -185,74 +180,35 @@ if __name__ == "__main__":
 						
 			#Loop over all backgrounds
 			for background in backgrounds:
-				#print("%s"%background)
-				if (True): #Only need to generate single background once
-					
-					#Plot the cutflow for each background
-					if (hist_name == "cutflow_table"):
-						#print(coffea_input[background]["cutflow_table"].axes)
-						if (background == backgrounds[0]):
-							cutflow_hist = coffea_input[background]["cutflow_table"]
-						else:
-							cutflow_hist += coffea_input[background]["cutflow_table"]
-							
-					#	if (background == backgrounds[-1]):
-					#		fig2p5, ax2p5 = plt.subplots()
-					#		cutflow_hist.plot1d(ax=ax2p5)
-					#		plt.title(background_type + " Cutflow Table")
-					#		ax2p5.set_yscale('log')
-					#		plt.savefig("SingleBackground" + background_plot_names[background_type] + "CutFlowTable")
-					#		plt.close()
-							
-						#Plot the weights for each background
-						if (background == backgrounds[0]):
-							weight_hist = coffea_input[background]["weight_Hist"]
-						else:
-							weight_hist += coffea_input[background]["weight_Hist"]
-						if (background == backgrounds[-1]):
-							figweight, axweight = plt.subplots()
-							weight_hist.plot1d(ax=axweight)
-							plt.title(background_type + " Weight Histogram")
-							plt.savefig("SingleBackground" + background_plot_names[background_type] + "Weight")
-							plt.close()
-							
-					if (hist_name == "Radion_Charge_Arr"):
-						lumi_table_data["MC Sample"].append(background)
-						lumi_table_data["Luminosity"].append(coffea_input[background]["Lumi_Val"])
-						lumi_table_data["Cross Section (pb)"].append(coffea_input[background]["CrossSec_Val"])
-						#lumi_table_data["Number of Events"].append(coffea_input[background]["NEvent_Val"])
-						lumi_table_data["Gen SumW"].append(coffea_input[background]["SumWEvent_Val"])
-						lumi_table_data["Calculated Weight"].append(coffea_input[background]["Weight_Val"])
-							
-					if (hist_name != "Electron_tau_dR_Arr" and hist_name != "Muon_tau_dR_Arr"):
-						if (background == backgrounds[0]):
-							crnt_hist = coffea_input[background][hist_name][{"region": args.ControlRegion}]
-							#print("Background: " + background)
-							#print("Sum of entries: %f"%coffea_input[background][hist_name].sum())
-						else:
-							crnt_hist += coffea_input[background][hist_name][{"region": args.ControlRegion}]
-							#print("Background: " + background)
-							#print("Sum of entries: %f"%coffea_input[background][hist_name].sum())
-						if (background == backgrounds[-1]):
-							#fig2, ax2 = plt.subplots()
-							temp_hist_dict[background_type] = crnt_hist #Try to fix stacking bug
-							#crnt_hist.plot1d(ax=ax2)
-							#if (hist_name == "FourTau_Mass_Arr"):
-							#print("Background: " + background_type)
-							#print("Sum of entries: %f"%crnt_hist.sum())
-							#print("Number of Entries: %d"%coffea_input[background]["num_events"])
-							#plt.title(background_type)
-							#plt.savefig("SingleBackground" + background_plot_names[background_type] + four_tau_names[hist_name])
-							#plt.close()
-
-					else: #lepton-tau delta R 
-					#	fig2, ax2 = plt.subplots()
-						coffea_input[background][hist_name].plot1d(ax=ax2)
-					#	ax2.set_yscale('log')
-					#	plt.title(background_type)
-					#	plt.savefig("SingleBackground" + background_plot_names[background_type] + four_tau_names[hist_name])
-					#	plt.close()
+				#Plot the cutflow for each background
+				if (hist_name == "cutflow_table"):
+					if (background == backgrounds[0]):
+						cutflow_hist = coffea_input[background]["cutflow_table"]
+					else:
+						cutflow_hist += coffea_input[background]["cutflow_table"]
 						
+					#Plot the weights for each background
+					if (background == backgrounds[0]):
+						weight_hist = coffea_input[background]["weight_Hist"]
+					else:
+						weight_hist += coffea_input[background]["weight_Hist"]
+					if (background == backgrounds[-1]):
+						figweight, axweight = plt.subplots()
+						weight_hist.plot1d(ax=axweight)
+						plt.title(background_type + " Weight Histogram")
+						plt.savefig("SingleBackground" + background_plot_names[background_type] + "Weight")
+						plt.close()
+						
+				if (hist_name != "Electron_tau_dR_Arr" and hist_name != "Muon_tau_dR_Arr"):
+					if (background == backgrounds[0]):
+						crnt_hist = coffea_input[background][hist_name][{"region": args.ControlRegion}]
+					else:
+						crnt_hist += coffea_input[background][hist_name][{"region": args.ControlRegion}]
+					if (background == backgrounds[-1]):
+						temp_hist_dict[background_type] = crnt_hist #Try to fix stacking bug
+
+				else: #lepton-tau delta R 
+					coffea_input[background][hist_name].plot1d(ax=ax2)
 
 		#Combine the backgrounds together
 		hist_dict_background[hist_name] = hist.Stack.from_dict(temp_hist_dict) #This could be causing the problems 
@@ -293,17 +249,5 @@ if __name__ == "__main__":
 		hep.cms.label(data=True, ax = ax_main, text = "2018 Data Preliminary")	
 		plt.savefig(four_tau_names[hist_name] + "_" + str(args.NumberTau) + "TauSelec")
 		plt.close()
-
-					
-		#Stack background distributions and plot signal + data distribution
-#		fig,ax = plt.subplots()
-#		hep.histplot(background_array,ax=ax,stack=True,histtype="fill",label=background_list,facecolor=TABLEAU_COLORS[:len(background_list)],edgecolor=TABLEAU_COLORS[:len(background_list)])
-#		#hep.histplot(signal_array,ax=ax,stack=True,histtype="step",label=signal_list,edgecolor=TABLEAU_COLORS[len(background_list)+1],linewidth=2.95)
-#		hep.histplot(data_array,ax=ax,stack=False,histtype="errorbar", yerr=True,label=["Data"],marker="o",color = "k") #,facecolor='black',edgecolor='black') #,mec='k')
-#		hep.cms.text("Preliminary",loc=0,fontsize=13)
-#		ax.set_title("2018 Data",loc = "right")
-#		ax.legend(fontsize=10, loc='upper right')
-#		plt.savefig(four_tau_names[hist_name])
-#		plt.close()
 
 
