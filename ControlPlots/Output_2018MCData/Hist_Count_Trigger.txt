@@ -1,0 +1,75 @@
+Running on file output_4_boosted_tau_SignleMuon.coffea
+With 4 Boosted taus required
+Four Boosted taus required
+==================Hist Leadingboostedtau_pt_Trigg================
+Background Sum: 2805.156
+Data Sum: 4326.000
+==================Hist Subleadingboostedtau_pt_Trigg================
+Background Sum: 2871.079
+Data Sum: 4415.000
+==================Hist Thirdleadingboostedtau_pt_Trigg================
+Background Sum: 2874.303
+Data Sum: 4419.000
+==================Hist Fourthleadingboostedtau_pt_Trigg================
+Background Sum: 2874.423
+Data Sum: 4419.000
+==================Hist boostedtau_pt_Trigg================
+Background Sum: 11655.370
+Data Sum: 17941.000
+==================Hist boostedtau_eta_Trigg================
+Background Sum: 11728.111
+Data Sum: 18038.000
+==================Hist boostedtau_phi_Trigg================
+Background Sum: 11727.296
+Data Sum: 18037.000
+==================Hist electron_pt_Trigg================
+Background Sum: 3618.983
+Data Sum: 5828.000
+==================Hist electron_eta_Trigg================
+Background Sum: 3690.483
+Data Sum: 5938.000
+==================Hist electron_phi_Trigg================
+Background Sum: 3690.091
+Data Sum: 5938.000
+==================Hist muon_pt_Trigg================
+Background Sum: 4069.163
+Data Sum: 6713.000
+==================Hist muon_eta_Trigg================
+Background Sum: 4163.045
+Data Sum: 6841.000
+==================Hist muon_phi_Trigg================
+Background Sum: 4163.220
+Data Sum: 6841.000
+==================Hist Leadingmuon_pt_Trigg================
+Background Sum: 2783.239
+Data Sum: 4293.000
+==================Hist Leadingmuon_eta_Trigg================
+Background Sum: 2874.425
+Data Sum: 4419.000
+==================Hist Jet_pt_Trigg================
+Background Sum: 28207.001
+Data Sum: 43574.000
+==================Hist Jet_eta_Trigg================
+Background Sum: 27302.851
+Data Sum: 42856.000
+==================Hist Jet_phi_Trigg================
+Background Sum: 28357.865
+Data Sum: 43754.000
+==================Hist AK8Jet_pt_Trigg================
+Background Sum: 5265.201
+Data Sum: 8094.000
+==================Hist AK8Jet_eta_Trigg================
+Background Sum: 5461.421
+Data Sum: 8342.000
+==================Hist AK8Jet_phi_Trigg================
+Background Sum: 5460.690
+Data Sum: 8342.000
+==================Hist MET================
+Background Sum: 2849.538
+Data Sum: 4389.000
+==================Hist HT================
+Background Sum: 2487.410
+Data Sum: 3868.000
+==================Hist MHT================
+Background Sum: 2850.094
+Data Sum: 4393.000

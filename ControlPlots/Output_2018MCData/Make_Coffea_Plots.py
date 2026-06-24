@@ -27,10 +27,18 @@ import argparse
 hep.style.use(hep.style.CMS)
 TABLEAU_COLORS = ['blue','orange','green','red','purple','brown','pink','gray','olive','cyan']
 
+#Control Region dictionary
+reigon_dict = {"All": "",
+			"ZCR": "ZControlRegion",
+			"BCR": "TopControlRegion",
+			"FakeCR": "FakeContorlRegion",
+		}
+
 #Use arguement parser to handle command line arguemetns
 parse = argparse.ArgumentParser()
 parse.add_argument("-f", "--File", help = "Input coffea file")
 parse.add_argument("-n", "--NumberTau", help = "Number of boosted taus in selection")
+parse.add_argument("-r", "--ControlRegion", help = "Specify the Control Region")
 args = parse.parse_args()
 
 if __name__ == "__main__":
