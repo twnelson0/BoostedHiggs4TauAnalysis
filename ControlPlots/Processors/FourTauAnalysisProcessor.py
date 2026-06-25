@@ -405,9 +405,9 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 		#############	
 
 		#Control Regions Axis
-		#region_array = ["All","ZCR","TCR","FakeCR"]
+		region_array = ["All","ZCR","TCR","FakeCR"]
 		#region_array = ["All","TCR","NotTCR","ZCR","NotZCR"]
-		region_array = ["All","TightTCR","NotTCR","LooseTCR","ZCR","NotZCR"] #"NotZCR"]
+		#region_array = ["All","TightTCR","NotTCR","LooseTCR","ZCR","NotZCR"] #"NotZCR"]
 		#region_array = ["All"] 
 		category_axis = hist.axis.StrCategory(region_array, growth=False, name = "category")
 
@@ -1168,156 +1168,176 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 		#############
 		#Store Parquet Files
 		############
-	#	if (ak.num(event_level.HT,axis=0) > 0):
-	#		var_nn = ak.zip( #Variables to be exported to .parquet file
-	#			{
-	#				"radion_pt": radionPT_Arr,
-	#				"vis_mass": LeadingHiggs_mass_Arr,
-	#				"vis_mass2": SubLeadingHiggs_mass_Arr,
-	#				"radion_eta": Radion_Reco.eta,
-	#				"higgs1_dr": leading_dR_Arr,
-	#				"higgs2_dr": nextleading_dR_Arr,
-	#				"dphi_H1": phi_leading,
-	#				"dphi_H2": phi_subleading,
-	#				"dphi_H1_MET": leadingHiggs_MET_dPhi_Arr,
-	#				"dphi_H2_MET": subleadingHiggs_MET_dPhi_Arr,
-	#				"dr_HH": diHiggs_dR_Arr, 
-	#				"dphi_HH": Higgs_DeltaPhi_Arr,
-	#				"dr_H1_Rad": leadingHiggs_Rad_dR,
-	#				"dr_H2_Rad": subleadingHiggs_Rad_dR,
-	#				"dphi_rad_MET": radionMET_dPhi,
-	#				"H1OS": event_level.LeadingPair_Charge,
-	#				"H2OS": event_level.SubleadingPair_Charge,
-	#				"ZMult": ak.ravel(event_level.ZMult), 
-	#				"numBJet": event_level.nBJets,
-	#				"RecoRadion_Mass": FourTau_Mass_Arr,
-	#				"LeadingTau_pT": boostedtau[:,0].pt,
-	#				"weight": event_level.event_weight*CrossSec_Weight,
-	#			}
-	#		)
-            
+		if (ak.num(event_level.HT,axis=0) > 0):
+			var_nn = ak.zip( #Variables to be exported to .parquet file
+				{
+					"radion_pt": radionPT_Arr,
+					"vis_mass": LeadingHiggs_mass_Arr,
+					"vis_mass2": SubLeadingHiggs_mass_Arr,
+					"radion_eta": Radion_Reco.eta,
+					"higgs1_dr": leading_dR_Arr,
+					"higgs2_dr": nextleading_dR_Arr,
+					"dphi_H1": phi_leading,
+					"dphi_H2": phi_subleading,
+					"dphi_H1_MET": leadingHiggs_MET_dPhi_Arr,
+					"dphi_H2_MET": subleadingHiggs_MET_dPhi_Arr,
+					"dr_HH": diHiggs_dR_Arr, 
+					"dphi_HH": Higgs_DeltaPhi_Arr,
+					"dr_H1_Rad": leadingHiggs_Rad_dR,
+					"dr_H2_Rad": subleadingHiggs_Rad_dR,
+					"dphi_rad_MET": radionMET_dPhi,
+					"H1OS": event_level.LeadingPair_Charge,
+					"H2OS": event_level.SubleadingPair_Charge,
+					"ZMult": ak.ravel(event_level.ZMult), 
+					"numBJet": event_level.nBJets,
+					"RecoRadion_Mass": FourTau_Mass_Arr,
+					"LeadingTau_pT": boostedtau[:,0].pt,
+					"weight": event_level.event_weight*CrossSec_Weight,
+				}
+			)
+			#Save parquet files
+			if not(self.isData):
+				file_Name = dataset + "_BoostedTau.parquet"
+				if (dataset != "Signal"):
+					file_name = dataset + ".parquet"
+					if (os.path.isfile(file_name)):
+						file_data = ak.from_parquet(file_name)
+						var_nn = ak.concatenate([file_data,var_nn])
+						ak.to_parquet(var_nn,file_name)
+					else:
+						if (ak.num(FourTau_Mass_Arr,axis=0) > 0):
+							ak.to_parquet(var_nn,file_name)
+			else:
+				if (os.path.isfile(file_name)):
+					file_data = ak.from_parquet(file_name)
+					var_nn = ak.concatenate([file_data,var_nn])
+					ak.to_parquet(var_nn,file_name)
+				else:
+					if (ak.num(FourTau_Mass_Arr,axis=0) > 0):
+						ak.to_parquet(var_nn,file_name)
+
             #Save parquet files
-	#       if not(self.isData):
-	#           file_name = dataset + "_BoostedTau.parquet"
-	#           if (dataset != "Signal"):
-	#               if (mass == "2000"):
-	#                   file_name = dataset  + ".parquet"
-	#                   #file_name = dataset  + "_MVA.parquet"
-	#                   if (os.path.isfile(file_name)): #Append to existing parquet file
-	#                       file_data = ak.from_parquet(file_name)
-	#                       var_nn = ak.concatenate([file_data,var_nn])
-	#                       ak.to_parquet(var_nn,file_name)
-	#                   else:
-	#                       if (ak.num(FourTau_Mass_Arr,axis=0) > 0):
-	#                           ak.to_parquet(var_nn,file_name) #Create parquet file
-	#                   #print("Background")
-	#           else:
-	#               file_name = dataset + "_mass_" + self.massVal + "GeV.parquet"
-	#               if (os.path.isfile(file_name)): #Append to existing parquet file
-	#                   file_data = ak.from_parquet(file_name)
-	#                   var_nn = ak.concatenate([file_data,var_nn])
-	#                   ak.to_parquet(var_nn,file_name)
-	#               else:
-	#                   ak.to_parquet(var_nn,file_name) #Create parquet file
-	#       else:
-	#           file_name = (dataset + "_MVA.parquet")
-	#           if (mass == "2000"):
-	#               if (os.path.isfile(file_name)): #Append to existing parquet file
-	#                   file_data = ak.from_parquet(file_name)
-	#                   var_nn = ak.concatenate([file_data,var_nn])
-	#                   ak.to_parquet(var_nn,file_name)
-	#               else:
-	#                   if (ak.num(FourTau_Mass_Arr,axis=0)>0):
-	#                       ak.to_parquet(var_nn,file_name) #Create parquet file
+	       # if not(self.isData):
+		   # 	file_name = dataset + "_BoostedTau.parquet"
+		   # 	if (dataset != "Signal"):
+		   # 		if (mass == "2000"):
+		   # 			file_name = dataset  + ".parquet"
+		   # 			if (os.path.isfile(file_name)): #Append to existing parquet file
+		   # 				file_data = ak.from_parquet(file_name)
+	       #                var_nn = ak.concatenate([file_data,var_nn])
+	       #                ak.to_parquet(var_nn,file_name)
+	       #            else:
+	       #                if (ak.num(FourTau_Mass_Arr,axis=0) > 0):
+	       #                    ak.to_parquet(var_nn,file_name) #Create parquet file
+	       #            #print("Background")
+	       #    else:
+	       #        file_name = dataset + "_mass_" + self.massVal + "GeV.parquet"
+	       #        if (os.path.isfile(file_name)): #Append to existing parquet file
+	       #            file_data = ak.from_parquet(file_name)
+	       #            var_nn = ak.concatenate([file_data,var_nn])
+	       #            ak.to_parquet(var_nn,file_name)
+	       #        else:
+	       #            ak.to_parquet(var_nn,file_name) #Create parquet file
+	       #else:
+	       #    file_name = dataset + "_BoostedTau.parquet"
+	       #    if (mass == "2000"):
+	       #        if (os.path.isfile(file_name)): #Append to existing parquet file
+	       #            file_data = ak.from_parquet(file_name)
+	       #            var_nn = ak.concatenate([file_data,var_nn])
+	       #            ak.to_parquet(var_nn,file_name)
+	       #        else:
+	       #            if (ak.num(FourTau_Mass_Arr,axis=0)>0):
+	       #                ak.to_parquet(var_nn,file_name) #Create parquet file
 		
 		
 		#############
 		#Fill histograms
 		#############
-		#if (ak.num(event_level,axis=0) > 0):
-		for region in region_array:
-			print("!!==================Region==================!!")
-			print(region)
-			if (region == "ZCR"):
-				region_cond = (event_level.ZMult >= 1) & (event_level.nBJets < 1) & (event_level.nBJetsLoose < 1)
-			elif (region == "TCR"):
-				#print("Top Region")
-				#region_cond = (event_level.ZMult) < 1 & (event_level.nBJets >= 1)
-				region_cond = event_level.nBJets >= 1
-				#print("Sum of true entries: " + str(ak.sum(region_cond)))
-			elif (region == "NotTCR"):
-				#print("Not Top Region")
-				region_cond = (event_level.nBJets < 1) & (event_level.nBJetsLoose < 1)
-				#print("Sum of true entries: " + str(ak.sum(region_cond)))
-			elif (region == "FakeCR"):
-				region_cond = ((event_level.ZMult < 1) & (event_level.nBJets < 1)) & ((event_level.LeadingPair_Charge != 0) | (event_level.SubleadingPair_Charge != 0))
-			elif (region == "NotZCR"):
-				region_cond = (event_level.ZMult < 1) & (event_level.nBJets < 1) & (event_level.nBJetsLoose < 1)
-			elif (region == "TightTCR"):
-				region_cond = event_level.nBJets >= 1
-			elif (region == "LooseTCR"):
-				region_cond = (event_level.nBJets < 1) & (event_level.nBJetsLoose >= 1)
-			else:
-				region_cond = ak.ones_like(event_level.event_num) == 1
-		
-			#Boosted Taus
-			#h_boostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(boostedtau[ak.ravel(region_cond)].pt))[0]), region = region)
-			if (self.nBoostedTau_Selec >= 1):
-				h_Leadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)][:,0].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(boostedtau[ak.ravel(region_cond)],axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
-
-			if (self.nBoostedTau_Selec >= 2):
-				h_Subleadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)][:,1].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(boostedtau[ak.ravel(region_cond)],axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
+		if (ak.num(event_level.HT,axis=0) > 0):
+			for region in region_array:
+				print("!!==================Region==================!!")
+				print(region)
+				if (region == "ZCR"):
+					region_cond = (event_level.ZMult >= 1) & (event_level.nBJets < 1) # & (event_level.nBJetsLoose < 1)
+				elif (region == "TCR"):
+					#print("Top Region")
+					region_cond = (event_level.ZMult) < 1 & (event_level.nBJets >= 1)
+					#region_cond = event_level.nBJets >= 1
+					#print("Sum of true entries: " + str(ak.sum(region_cond)))
+				elif (region == "NotTCR"):
+					#print("Not Top Region")
+					region_cond = (event_level.nBJets < 1) & (event_level.nBJetsLoose < 1)
+					#print("Sum of true entries: " + str(ak.sum(region_cond)))
+				elif (region == "FakeCR"):
+					region_cond = ((event_level.ZMult < 1) & (event_level.nBJets < 1)) & ((event_level.LeadingPair_Charge != 0) | (event_level.SubleadingPair_Charge != 0))
+				elif (region == "NotZCR"):
+					region_cond = (event_level.ZMult < 1) & (event_level.nBJets < 1) & (event_level.nBJetsLoose < 1)
+				elif (region == "TightTCR"):
+					region_cond = event_level.nBJets >= 1
+				elif (region == "LooseTCR"):
+					region_cond = (event_level.nBJets < 1) & (event_level.nBJetsLoose >= 1)
+				else:
+					region_cond = ak.ones_like(event_level.event_num) == 1
 			
-			if (self.nBoostedTau_Selec >= 3):
-				h_Thirdleadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)][:,2].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(boostedtau[ak.ravel(region_cond)],axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
-			
-			if (self.nBoostedTau_Selec >= 4):
-				h_Fourthleadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)][:,3].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(boostedtau[ak.ravel(region_cond)],axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
-			
-			h_boostedtau_eta_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(boostedtau[ak.ravel(region_cond)].eta))[0]), region = region)
-			h_boostedtau_phi_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(boostedtau[ak.ravel(region_cond)].phi))[0]), region = region)
-			h_boostedtau_raw_iso_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)].iso),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(boostedtau[ak.ravel(region_cond)].iso))[0]), region = region)
+				#Boosted Taus
+				#h_boostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(boostedtau[ak.ravel(region_cond)].pt))[0]), region = region)
+				if (self.nBoostedTau_Selec >= 1):
+					h_Leadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)][:,0].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(boostedtau[ak.ravel(region_cond)],axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
 
-			#Electrons
-			h_electron_pT_Trigger.fill(ak.ravel(electron[ak.ravel(region_cond)].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(electron[ak.ravel(region_cond)].pt))[0]), region = region)
-			#h_Leadingelectron_pT_Trigger.fill(ak.ravel(ak.firsts(electron[ak.ravel(region_cond)].pt)),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
-			h_electron_eta_Trigger.fill(ak.ravel(electron[ak.ravel(region_cond)].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(electron[ak.ravel(region_cond)].eta))[0]), region = region)
-			h_electron_phi_Trigger.fill(ak.ravel(electron[ak.ravel(region_cond)].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(electron[ak.ravel(region_cond)].phi))[0]), region = region)
-			
-			#Muons
-			h_muon_pT_Trigger.fill(ak.ravel(muon[ak.ravel(region_cond)].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(muon[ak.ravel(region_cond)].pt))[0]), region = region)
-			h_muon_eta_Trigger.fill(ak.ravel(muon[ak.ravel(region_cond)].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(muon[ak.ravel(region_cond)].eta))[0]), region = region)
-			#h_Leadingmuon_eta_Trigger.fill(ak.ravel(ak.firsts(muon[region_cond].eta)),weight=ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight), region = region)
-			h_muon_phi_Trigger.fill(ak.ravel(muon[ak.ravel(region_cond)].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(muon[ak.ravel(region_cond)].phi))[0]), region = region)
+				if (self.nBoostedTau_Selec >= 2):
+					h_Subleadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)][:,1].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(boostedtau[ak.ravel(region_cond)],axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
+				
+				if (self.nBoostedTau_Selec >= 3):
+					h_Thirdleadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)][:,2].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(boostedtau[ak.ravel(region_cond)],axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
+				
+				if (self.nBoostedTau_Selec >= 4):
+					h_Fourthleadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)][:,3].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(boostedtau[ak.ravel(region_cond)],axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
+				
+				h_boostedtau_eta_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(boostedtau[ak.ravel(region_cond)].eta))[0]), region = region)
+				h_boostedtau_phi_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(boostedtau[ak.ravel(region_cond)].phi))[0]), region = region)
+				h_boostedtau_raw_iso_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)].iso),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(boostedtau[ak.ravel(region_cond)].iso))[0]), region = region)
 
-			#Jets 
-			h_Jet_pT_Trigger.fill(ak.ravel(Jet[ak.ravel(region_cond)].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(Jet[ak.ravel(region_cond)].pt))[0]), region = region)
-			#h_LeadingJet_pT_Trigger.fill(ak.ravel(Jet[ak.ravel(region_cond)][ak.num(Jet[ak.ravel(region_cond)],axis=1) > 0][:,0].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(Jet[ak.ravel(region_cond)],axis=1) > 0].event_weight[ak.ravel(region_cond)]*CrossSec_Weight), region = region)
-			h_Jet_eta_Trigger.fill(ak.ravel(Jet[ak.ravel(region_cond)].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(Jet[ak.ravel(region_cond)].eta))[0]), region = region)
-			h_Jet_phi_Trigger.fill(ak.ravel(Jet[ak.ravel(region_cond)].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(Jet[ak.ravel(region_cond)].phi))[0]), region = region)
-			
-			#AK8/Fat Jets
-			h_AK8Jet_pT_Trigger.fill(ak.ravel(AK8Jet[ak.ravel(region_cond)].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(AK8Jet[ak.ravel(region_cond)].pt))[0]), region = region)
-			#h_LeadingAK8Jet_pT_Trigger.fill(ak.ravel(ak.firsts(AK8Jet[ak.ravel(region_cond)].pt)),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
-			h_AK8Jet_eta_Trigger.fill(ak.ravel(AK8Jet[ak.ravel(region_cond)].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(AK8Jet[ak.ravel(region_cond)].eta))[0]), region = region)
-			h_AK8Jet_phi_Trigger.fill(ak.ravel(AK8Jet[ak.ravel(region_cond)].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(AK8Jet[ak.ravel(region_cond)].phi))[0]), region = region)
-			h_nAK8Jet_Trigger.fill(ak.ravel(event_level[ak.ravel(region_cond)].nFatJet),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
+				#Electrons
+				h_electron_pT_Trigger.fill(ak.ravel(electron[ak.ravel(region_cond)].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(electron[ak.ravel(region_cond)].pt))[0]), region = region)
+				#h_Leadingelectron_pT_Trigger.fill(ak.ravel(ak.firsts(electron[ak.ravel(region_cond)].pt)),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
+				h_electron_eta_Trigger.fill(ak.ravel(electron[ak.ravel(region_cond)].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(electron[ak.ravel(region_cond)].eta))[0]), region = region)
+				h_electron_phi_Trigger.fill(ak.ravel(electron[ak.ravel(region_cond)].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(electron[ak.ravel(region_cond)].phi))[0]), region = region)
+				
+				#Muons
+				h_muon_pT_Trigger.fill(ak.ravel(muon[ak.ravel(region_cond)].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(muon[ak.ravel(region_cond)].pt))[0]), region = region)
+				h_muon_eta_Trigger.fill(ak.ravel(muon[ak.ravel(region_cond)].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(muon[ak.ravel(region_cond)].eta))[0]), region = region)
+				#h_Leadingmuon_eta_Trigger.fill(ak.ravel(ak.firsts(muon[region_cond].eta)),weight=ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight), region = region)
+				h_muon_phi_Trigger.fill(ak.ravel(muon[ak.ravel(region_cond)].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(muon[ak.ravel(region_cond)].phi))[0]), region = region)
 
-			#Store MET, HT and MHT
-			h_MET_Trigger.fill(ak.ravel(event_level[ak.ravel(region_cond)].MET_pt),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
-			h_HT_Trigger.fill(ak.ravel(event_level[ak.ravel(region_cond)].HT),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
-			h_MHT_Trigger.fill(ak.ravel(event_level[ak.ravel(region_cond)].MHT),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
+				#Jets 
+				h_Jet_pT_Trigger.fill(ak.ravel(Jet[ak.ravel(region_cond)].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(Jet[ak.ravel(region_cond)].pt))[0]), region = region)
+				#h_LeadingJet_pT_Trigger.fill(ak.ravel(Jet[ak.ravel(region_cond)][ak.num(Jet[ak.ravel(region_cond)],axis=1) > 0][:,0].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(Jet[ak.ravel(region_cond)],axis=1) > 0].event_weight[ak.ravel(region_cond)]*CrossSec_Weight), region = region)
+				h_Jet_eta_Trigger.fill(ak.ravel(Jet[ak.ravel(region_cond)].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(Jet[ak.ravel(region_cond)].eta))[0]), region = region)
+				h_Jet_phi_Trigger.fill(ak.ravel(Jet[ak.ravel(region_cond)].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(Jet[ak.ravel(region_cond)].phi))[0]), region = region)
+				
+				#AK8/Fat Jets
+				h_AK8Jet_pT_Trigger.fill(ak.ravel(AK8Jet[ak.ravel(region_cond)].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(AK8Jet[ak.ravel(region_cond)].pt))[0]), region = region)
+				#h_LeadingAK8Jet_pT_Trigger.fill(ak.ravel(ak.firsts(AK8Jet[ak.ravel(region_cond)].pt)),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
+				h_AK8Jet_eta_Trigger.fill(ak.ravel(AK8Jet[ak.ravel(region_cond)].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(AK8Jet[ak.ravel(region_cond)].eta))[0]), region = region)
+				h_AK8Jet_phi_Trigger.fill(ak.ravel(AK8Jet[ak.ravel(region_cond)].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(AK8Jet[ak.ravel(region_cond)].phi))[0]), region = region)
+				h_nAK8Jet_Trigger.fill(ak.ravel(event_level[ak.ravel(region_cond)].nFatJet),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
 
-			#Store Z and BJet Mupltiplcity
-		#	h_ZMult.fill(ak.ravel(event_level[ak.ravel(region_cond)].ZMult),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
-		#	h_bJetMult.fill(ak.ravel(event_level[ak.ravel(region_cond)].nBJets),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
+				#Store MET, HT and MHT
+				h_MET_Trigger.fill(ak.ravel(event_level[ak.ravel(region_cond)].MET_pt),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
+				h_HT_Trigger.fill(ak.ravel(event_level[ak.ravel(region_cond)].HT),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
+				h_MHT_Trigger.fill(ak.ravel(event_level[ak.ravel(region_cond)].MHT),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
 
-			#Store Di-boosted tau delta R
-		#	h_leading_boostedtau_deltaR.fill(leading_dR_Arr[ak.ravel(region_cond)], weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
-		#	h_nextleading_boostedtau_deltaR.fill(nextleading_dR_Arr[ak.ravel(region_cond)], weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
+				#Store Z and BJet Mupltiplcity
+				h_ZMult.fill(ak.ravel(event_level[ak.ravel(region_cond)].ZMult),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
+				h_bJetMult.fill(ak.ravel(event_level[ak.ravel(region_cond)].nBJets),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
+				
+				if (ak.num(event_level.HT, axis=0) > 0):
+					#Store Di-boosted tau delta R
+					h_leading_boostedtau_deltaR.fill(leading_dR_Arr[ak.ravel(region_cond)], weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
+					h_nextleading_boostedtau_deltaR.fill(nextleading_dR_Arr[ak.ravel(region_cond)], weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
 
-			#Four Mass
-		#	h_FourTau_Mass.fill(FourTau_Mass_Arr[ak.ravel(region_cond)], weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
+					#Four Mass
+					h_FourTau_Mass.fill(FourTau_Mass_Arr[ak.ravel(region_cond)], weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
 		
 		return{
 			dataset: {
@@ -1383,12 +1403,13 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				#"Mini_NMinus1": h_NMinus1,
 
 				#Multiplicites
-			#	"ZMult": h_ZMult,
+				"ZMult": h_ZMult,
 				"bJetMult": h_bJetMult,
 
 				#Pair Delta Rs
-			#	"LeadingPair_dR": h_leading_boostedtau_deltaR,
-			#	"NexLeadingPair_dR": h_nextleading_boostedtau_deltaR 
+				"LeadingPair_dR": h_leading_boostedtau_deltaR,
+				"NextLeadingPair_dR": h_nextleading_boostedtau_deltaR,
+				"FourTauMass": h_FourTau_Mass
 			}
 		}
 

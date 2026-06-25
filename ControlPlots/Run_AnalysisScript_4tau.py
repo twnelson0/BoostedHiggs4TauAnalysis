@@ -330,17 +330,6 @@ if __name__ == "__main__":
 		print("It takes about %.1f s to run the coffea processor with %d boosted tau selections"%(time_running,n_taus))
 		
         #Save coffea file
-		#outfile = os.path.join(os.getcwd() + "/Output_4Tau/", f"output_{n_taus}_boosted_tau_selec_SingleMuData_4TauSamples_WithSingleMuTrigger_Test.coffea")
-		#outfile = os.path.join(os.getcwd() + "/Output_4Tau/", f"output_{n_taus}_boosted_tau_selec_SingleMuData_4TauSamples_WithSingleMuTrigger_FixedMuonSelec_WithQCD.coffea")
-		#outfile = os.path.join(os.getcwd() + "/Output_4Tau/", f"output_{n_taus}_boosted_tau_selec_SingleMuData_4TauSamples_WithSingleMuTrigger_WithQCD_TightBoostedTau_Corrections_V3_FixedMuonReq_IsoReq.coffea")
-		#outfile = os.path.join(os.getcwd() + "/Output_4Tau/", f"output_{n_taus}_boosted_tau_selec_SingleMuData_4TauSamples_WithSingleMuTrigger_WithQCD_TightBoostedTau_Corrections_WithPU_Reweighting_Test.coffea")
-		#outfile = os.path.join(os.getcwd() + "/Output_4Tau/", f"output_{n_taus}_boosted_tau_selec_SingleMuData_4TauSamples_WithSingleMuTrigger_WithQCD_TightBoostedTau_Corrections_With_NoisePVCorrections_GoldenJSON_Test2.coffea")
-		#outfile = os.path.join(os.getcwd() + "/Output_4Tau/", f"output_{n_taus}_boosted_tau_selec_SingleMuData_4TauSamples_kFactorWeight_Test.coffea")
-		#outfile = os.path.join(os.getcwd() + "/Output_4Tau/", f"output_{n_taus}_boosted_tau_selec_SingleMuData_4TauSamples_WithSingleMuTrigger_WithQCD_TightBoostedTau_Corrections_MuonIDTrigger.coffea")
-		#outfile = os.path.join(os.getcwd() + "/Output_4Tau/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_BothTriggers_WithQCD_TightBoostedTau_Corrections_MuonIDTrigger.coffea")
-		#outfile = os.path.join(os.getcwd() + "/Output_4Tau/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_BothTriggers.coffea")
-		outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_BothTriggersLogic_WithVisMassTopoSelec.coffea")
-		#outfile = os.path.join(os.getcwd() + "/Output_4Tau/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_BothTriggersLogic.coffea")
-		#outfile = os.path.join(os.getcwd() + "/Output_4Tau/", f"output_{n_taus}_boosted_tau_selec_SingleMuData_4TauSamples_TestGoldenJSON.coffea")
+		outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_BothTriggers.coffea")
 		util.save(fourtau_out, outfile)
 		print(f"Saved output to {outfile}")	
