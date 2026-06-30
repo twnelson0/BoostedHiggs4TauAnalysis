@@ -20,7 +20,7 @@ pip install --force-reinstall -v "numpy==1.24.0"
 
 All plotting scripts can only be run from the virtual environment due to the current mismatch in mplhep versions.
 
-### Installation for Running Control Plot Processor Offline
+### Setup for Running Control Plot Processor Offline
 Due to versioning issues on the Wisconsin AF the control plot processor can only be run offline (not on HTC) in a python virtual environment. 
 This environment can be the same virtual environment that is set up for the plotting scripts or it can be in a new virtual environment.
 In either case the following commands must be run in the virtual environment to handle the version discrepancies:

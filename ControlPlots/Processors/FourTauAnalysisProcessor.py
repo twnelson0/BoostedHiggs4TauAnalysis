@@ -454,18 +454,18 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 
 
 		#di-boosted tau delta Rs
-		h_leading_boostedtau_deltaR = hist.Hist.new.Regular(10,0,5, label = r"Leading boosted \tau pair \Delta R",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		h_nextleading_boostedtau_deltaR = hist.Hist.new.Regular(10,0,5, label = r"Next leading boosted \tau pair \Delta R",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+		h_leading_boostedtau_deltaR = hist.Hist.new.Regular(10,0,5, label = r"Leading boosted $\tau$ pair $\Delta$R",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+		h_nextleading_boostedtau_deltaR = hist.Hist.new.Regular(10,0,5, label = r"Next leading boosted $\tau$ pair $\Delta$R",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
 
 		#Reconstructed Mass
 		h_FourTau_Mass = hist.Hist.new.Regular(15,0,3000,label=r"Reconstructed Radion Mass [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
 
 		#Add cutflow and N-1 tables
 		if (self.ApplyTrigger):
-			h_CutFlow = hist.Hist.new.StrCategory(["SkimOnly","METCut","nFatJetReq","FlagReq","PVSelec","LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","Trigger","VisMassSelec","Higgs_dR"]).Double()
+			h_CutFlow = hist.Hist.new.StrCategory(["SkimOnly","Trigger""LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]).Double()
 			#h_NMinus1 = hist.Hist.new.StrCategory(["SkimOnly","METCut","nFatJetReq","FlagReq","PVSelec","LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","Trigger","VisMassSelec","Higgs_dR"]).Double()
 		else:
-			h_CutFlow = hist.Hist.new.StrCategory(["SkimOnly","METCut","nFatJetReq","FlagReq","PVSelec","LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]).Double()
+			h_CutFlow = hist.Hist.new.StrCategory(["SkimOnly","LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]).Double()
 			#h_NMinus1 = hist.Hist.new.StrCategory(["SkimOnly","METCut","nFatJetReq","FlagReq","PVSelec","LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]).Double()
 
 		#Fill initial entries in skim and N-1 histograms
@@ -757,7 +757,6 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			electron = electron[Muon_Events]
 			muon = muon[Muon_Events]
 			event_level = event_level[Muon_Events]
-
 		
 			
 		#############
@@ -894,8 +893,6 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 
 				#n_PreTrigger = n_4thLeadBoostedTau				
 		
-
-		
 		#############
 		#Find 2 valid tau pairings
 		#############
@@ -1014,7 +1011,6 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			n_DeltaR = np.size(event_level.nFatJet)
 			h_CutFlow.fill("Higgs_dR",weight=n_DeltaR)
 			#h_NMinus1.fill("Higgs_dR",weight=n_VisMass - n_DeltaR)
-
 
 
 		#############
@@ -1196,59 +1192,34 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				}
 			)
 			#Save parquet files
+			file_path = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/"
 			if not(self.isData):
-				file_Name = dataset + "_BoostedTau.parquet"
+				print("Not Data")
+				file_name = dataset + "_BoostedTau.parquet"
 				if (dataset != "Signal"):
 					file_name = dataset + ".parquet"
-					if (os.path.isfile(file_name)):
-						file_data = ak.from_parquet(file_name)
+					if (os.path.isfile(file_path + file_name)): #Append to the parquet file
+						print("Appending file")
+						file_data = ak.from_parquet(file_path + file_name)
 						var_nn = ak.concatenate([file_data,var_nn])
-						ak.to_parquet(var_nn,file_name)
-					else:
+						ak.to_parquet(var_nn,file_path + file_name)
+					else: #Create the parquet file
+						print("Creating file")
 						if (ak.num(FourTau_Mass_Arr,axis=0) > 0):
-							ak.to_parquet(var_nn,file_name)
+							ak.to_parquet(var_nn,file_path + file_name)
 			else:
-				if (os.path.isfile(file_name)):
-					file_data = ak.from_parquet(file_name)
+				print("Is Data")
+				file_name = dataset + "_BoostedTau.parquet"
+				if (os.path.isfile(file_path + file_name)): #Append to the parquet file
+					print("Appending file")
+					file_data = ak.from_parquet(file_path + file_name)
 					var_nn = ak.concatenate([file_data,var_nn])
-					ak.to_parquet(var_nn,file_name)
-				else:
+					ak.to_parquet(var_nn,file_path + file_name)
+				else: #Create the parquet file
+					print("Creating file")
 					if (ak.num(FourTau_Mass_Arr,axis=0) > 0):
-						ak.to_parquet(var_nn,file_name)
+						ak.to_parquet(var_nn,file_path + file_name)
 
-            #Save parquet files
-	       # if not(self.isData):
-		   # 	file_name = dataset + "_BoostedTau.parquet"
-		   # 	if (dataset != "Signal"):
-		   # 		if (mass == "2000"):
-		   # 			file_name = dataset  + ".parquet"
-		   # 			if (os.path.isfile(file_name)): #Append to existing parquet file
-		   # 				file_data = ak.from_parquet(file_name)
-	       #                var_nn = ak.concatenate([file_data,var_nn])
-	       #                ak.to_parquet(var_nn,file_name)
-	       #            else:
-	       #                if (ak.num(FourTau_Mass_Arr,axis=0) > 0):
-	       #                    ak.to_parquet(var_nn,file_name) #Create parquet file
-	       #            #print("Background")
-	       #    else:
-	       #        file_name = dataset + "_mass_" + self.massVal + "GeV.parquet"
-	       #        if (os.path.isfile(file_name)): #Append to existing parquet file
-	       #            file_data = ak.from_parquet(file_name)
-	       #            var_nn = ak.concatenate([file_data,var_nn])
-	       #            ak.to_parquet(var_nn,file_name)
-	       #        else:
-	       #            ak.to_parquet(var_nn,file_name) #Create parquet file
-	       #else:
-	       #    file_name = dataset + "_BoostedTau.parquet"
-	       #    if (mass == "2000"):
-	       #        if (os.path.isfile(file_name)): #Append to existing parquet file
-	       #            file_data = ak.from_parquet(file_name)
-	       #            var_nn = ak.concatenate([file_data,var_nn])
-	       #            ak.to_parquet(var_nn,file_name)
-	       #        else:
-	       #            if (ak.num(FourTau_Mass_Arr,axis=0)>0):
-	       #                ak.to_parquet(var_nn,file_name) #Create parquet file
-		
 		
 		#############
 		#Fill histograms

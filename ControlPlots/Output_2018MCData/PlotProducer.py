@@ -45,7 +45,7 @@ region_dict = {"All": "NoControlRegion",
 			"NotTCR": "NotTopControlRegion",
 			"TightTCR": "TightTopControlRegion",
 			"LooseTCR": "LooseTopControlRegion",
-			"FakeCR": "FakeContorlRegion",
+			"FakeCR": "FakeControlRegion",
 		}
 
 #Use arguement parser to handle command line arguemetns
@@ -60,6 +60,8 @@ if __name__ == "__main__":
 	print("With " + args.NumberTau + " Boosted taus required")
 	print("Control Region " + args.ControlRegion)
 
+	cutflow_csv_bool = False
+
 	coffea_file = args.File
 
 	#Dictionaries and arrays with information on plot constrution, naming and samples
@@ -70,7 +72,7 @@ if __name__ == "__main__":
 			"Jet_pt_Trigg","Jet_eta_Trigg","Jet_phi_Trigg",
 			"AK8Jet_pt_Trigg","AK8Jet_eta_Trigg","AK8Jet_phi_Trigg","nAK8Jet_Trigg",
 			"MET","HT","MHT", #, "Mini_Cutflow", "Mini_NMinus1"
-			"ZMult" "bJetMult",
+			"ZMult", "bJetMult",
 			"LeadingPair_dR", "NextLeadingPair_dR", "FourTauMass"
 			]
 
@@ -137,7 +139,7 @@ if __name__ == "__main__":
 	#print(TABLEAU_COLORS)
 	
 	#Dictinary with file names
-	trigger_name = "SingleMu_Trigger"
+	trigger_name = "BothTriggers"
 	four_tau_names = {
 		"boostedtau_pt_Trigg": "BoostedTau_pT_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
 		"Leadingboostedtau_pt_Trigg": "BoostedTau_Leading_pT_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
@@ -170,6 +172,11 @@ if __name__ == "__main__":
 		"MHT": "MHT_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
 		"Mini_Cutflow": "Mini_Cutflow_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
 		"Mini_NMinus1": "Mini_NMinus1_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
+        "ZMult": "ZBosonMult_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
+        "bJetMult": "bJetMult_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
+        "LeadingPair_dR": "LeadDiTau_DeltaR_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
+        "NextLeadingPair_dR": "NextLeadDiTau_DeltaR_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
+        "FourTauMass": "FourTauMass_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
 	}
 
 
@@ -216,16 +223,42 @@ if __name__ == "__main__":
 	print("Number of JetHT data events after topology selection: %d"%(coffea_input["Data_HT"]["n_Higgs_dR"]))
 	print("=============================================")
 
-	#print("Number of events prior to selections: %d"%coffea_input["Data_Mu"]["n_Skim"])
-	##print("Number of events after MET selection: %d"%coffea_input["Data_Mu"]["n_MET"])
-	##print("Number of events after FatJet selection: %d"%coffea_input["Data_Mu"]["n_FatJet"])
-	##print("Number of events after quality flag selection: %d"%coffea_input["Data_Mu"]["n_FlagSelec"])
-	##print("Number of events after Primary Vertex selection: %d"%coffea_input["Data_Mu"]["n_PVSelec"])
-	#print("Number of events after Leading Boosted Tau selection: %d"%coffea_input["Data_Mu"]["n_LeadBoostedTau"])
-	#print("Number of events after Sub-Leading Boosted Tau selection: %d"%coffea_input["Data_Mu"]["n_SubLeadBoostedTau"])
-	#print("Number of events after 3rd-Leading Boosted Tau selection: %d"%coffea_input["Data_Mu"]["n_3rdLeadBoostedTau"])
-	#print("Number of events after 4th-Leading Boosted Tau selection: %d"%coffea_input["Data_Mu"]["n_4thLeadBoostedTau"])
-	#print("Number of events after Trigger selection: %d"%coffea_input["Data_Mu"]["n_Trigger"])
+	print("Number of events prior to selections: %d"%coffea_input["Data_Mu"]["n_Skim"])
+	print("Number of events after Trigger selection: %d"%(coffea_input["Data_Mu"]["n_Trigger"]+coffea_input["Data_HT"]["n_Trigger"]))
+	print("Number of events after Leading Boosted Tau selection: %d"%(coffea_input["Data_Mu"]["n_LeadBoostedTau"]+coffea_input["Data_HT"]["n_LeadBoostedTau"]))
+	print("Number of events after Sub-Leading Boosted Tau selection: %d"%(coffea_input["Data_Mu"]["n_SubLeadBoostedTau"]+coffea_input["Data_HT"]["n_SubLeadBoostedTau"]))
+	print("Number of events after 3rd-Leading Boosted Tau selection: %d"%(coffea_input["Data_Mu"]["n_3rdLeadBoostedTau"]+coffea_input["Data_HT"]["n_3rdLeadBoostedTau"]))
+	print("Number of events after 4th-Leading Boosted Tau selection: %d"%(coffea_input["Data_Mu"]["n_4thLeadBoostedTau"]+coffea_input["Data_HT"]["n_4thLeadBoostedTau"]))
+	print("Number of events after di-tau mass selections: %d"%(coffea_input["Data_Mu"]["n_VisMass"]+coffea_input["Data_HT"]["n_VisMass"]))
+	print("Number of events after di-tau Delta R selection: %d"%(coffea_input["Data_Mu"]["n_Higgs_dR"]+coffea_input["Data_HT"]["n_Higgs_dR"]))
+
+	#Produce csv table
+	if (cutflow_csv_bool):
+		table_keys = ["Sample","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]
+		table_array = []
+		var_dict = {
+				"SkimOnly": "n_Skim" ,"Trigger" : "n_Trigger", "LeadingBoostedTau": "n_LeadBoostedTau","SubleadingBoostedTau": "n_SubLeadBoostedTau",
+				"3rdLeadingBoostedTau": "n_3rdLeadBoostedTau","4thLeadingBoostedTau": "n_4thLeadBoostedTau","VisMassSelec": "n_VisMass","Higgs_dR" : "n_Higgs_dR"
+			}
+		#table_dict["Sample"] = ["Muon Data Set","HT Data Set", "Both Sets of Data"]
+		
+		for sample in ["Muon_DataSet","HT_DataSet","Both_DataSets"]:
+			table_dict = dict.fromkeys(["Sample","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"])
+			table_dict["Sample"] = sample
+			for key in var_dict.keys():
+				if (sample == "Muon_DataSet"):
+					table_dict[key] = coffea_input["Data_Mu"][var_dict[key]]
+				if (sample == "HT_DataSet"):
+					table_dict[key] = coffea_input["Data_HT"][var_dict[key]]
+				if (sample == "Both_DataSets"):
+					table_dict[key] = coffea_input["Data_Mu"][var_dict[key]] + coffea_input["Data_HT"][var_dict[key]]
+			table_array.append(table_dict)
+
+		with open("NanoAOD_UL_Data_Cutflow.csv", "w", newline="") as f:
+			w = csv.DictWriter(f,table_keys)
+			w.writeheader()
+			w.writerows(table_array)
+
 
 	#Produce N-1 and cutflow plots for data
 	figcut, axcut = plt.subplots()

@@ -6,12 +6,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 import mplhep as hep
 from coffea import processor, nanoevents
-from coffea.nanoevents import BaseSchema
+from coffea.nanoevents import NanoEventsFactory, NanoAODSchema, BaseSchema
+from coffea.nanoevents.methods import candidate, vector
 from coffea import util
 from math import pi
 import numba 
 import pandas as pd
 from matplotlib.backends.backend_pdf import PdfPages
+import vector
 import os
 import time
 import datetime
@@ -20,15 +22,6 @@ from dask_jobqueue import HTCondorCluster
 import csv
 import glob
 import json
-from Processors import FourTauAnalysisProcessor as AnalysisProcessor
-import Corrections
-#import Data
-import cowtools.jobqueue
-import cloudpickle
-
-#import warnings
-#warnings.filterwarnings("error")
-
 
 #X509 function (for HTC)
 def move_X509():
@@ -50,107 +43,43 @@ def move_X509():
 	os.system(f"cp {_x509_localpath} {_x509_path}")
 	return os.path.basename(_x509_localpath)
 
+class CountingProcessor(processor.ProcessorABC):
+	def __init__(self):
+		self.isData = False
+		#pass
+	def process(self,events):
+		dataset = events.metadata['dataset']
+		if ("Data_" in dataset):
+			self.isData = True
+
+		if (self.isData):
+			event_count = 1 
+			genWeightSum = 1 
+		else:
+			event_count = np.sum(events.genEventCount)
+			genWeightSum = np.sum(events.genEventSumw)
+
+		return {dataset: {
+            "n_events": event_count,
+            "genWeightSum": genWeightSum
+            }
+        }
+
+	def postprocess(self, accumulator):
+		pass
+
 if __name__ == "__main__":
-	#Condor related stuff
-	run_on_condor = True
-	os.environ["CONDOR_CONFIG"] = "/etc/condor/condor_config"
-	
-	if (run_on_condor):
-		print("Run on Condor")
-		#Xrootd setup
-		_x509_path = move_X509()
-		print(f"x509 path: {_x509_path}")
-		htc_log_err_dir = "/scratch/twnelson/ControlPlot_HTC/Run_" + str(time.localtime()[0]) + "_" + str(time.localtime()[1]) + "_" + str(time.localtime()[2]) + "_" + str(time.localtime()[3]) + f".{time.localtime()[4]:02d}"
-		os.makedirs(htc_log_err_dir)
-
-		cluster = HTCondorCluster(
-				cores=1,
-				memory="4 GB",
-				disk="2 GB",
-				death_timeout = '60',
-				#python = "/usr/local/bin/python3",
-				job_extra_directives={
-					"+JobFlavour": '"tomorrow"',
-					"log": "dask_job_output.$(PROCESS).$(CLUSTER).log",
-					"output": "dask_job_output.$(PROCESS).$(CLUSTER).out",
-					"error": "dask_job_output.$(PROCESS).$(CLUSTER).err",
-					"should_transfer_files": "yes",
-					"when_to_transfer_ouput": "ON_EXIT_OR_EVICT",
-					"transfer_executable": "false",
-					"Requirements": "HasSingularityJobStart",
-					"container_image": "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/coffeateam/coffea-base-almalinux9:0.7.30-py3.10",
-					"InitialDir": f'/scratch/{os.environ["USER"]}',
-					'transfer_input_files': f'{os.environ["PWD"]}, {_x509_path}',
-
-				},
-				job_script_prologue = [
-					"export XRD_RUNFORKHANDLER=1",
-					f"export X509_USER_PROXY={_x509_path}",
-				]
-		)
-		cluster.adapt(minimum=1, maximum=500)
-
-	#	cluster = cowtools.jobqueue.GetCondorClient(
-	#					memory = "4 GB",
-	#					disk = "2 GB",
-	#					max_workers=500,
-	#					container_image = "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/coffeateam/coffea-dask-cc7:latest-py3.10"
-	#				)
-
-		runner = processor.Runner(
-			executor = processor.DaskExecutor(client=Client(cluster),status=False),
-			#executor = processor.DaskExecutor(client=cluster,status=False),
-			schema=BaseSchema,
-			skipbadfiles=True,
-			xrootdtimeout=1000,
-            #chunksize=500000,
-            #maxchunks = 1
-		)
-
-		#Pass modules to HTC
-		cloudpickle.register_pickle_by_value(AnalysisProcessor)
-		cloudpickle.register_pickle_by_value(Corrections)
-		#cloudpickle.register_pickle_by_value(Data)
-		#cloudpickle.register_pickle_by_value(Corrections.kFactor)
-		#cloudpickle.register_pickle_by_value(Corrections.PU_Reweighting)
-    
-	else: #Iterative runner
-		print("Run Iteratively")
-		runner = processor.Runner(executor = processor.IterativeExecutor(), schema=BaseSchema)
-
-	#Diretory for files
+    #Diretory for files
 	Skimmed_4tau_base_MC = "root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/MC/"
 	Skimmed_4tau_base_Data = "root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/Data/"
 	Skimmed_4tau_loc_Data = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/Data/"
 	Skimmed_4tau_loc_MC = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/MC/"
 
 	#Make full arrays of single Muon data
-	SingleMu_2018A = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018A_15January26_0751_skim_Jan26Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 
-	SingleMu_2018B = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018B_15January26_0731_skim_Jan26Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 
-	SingleMu_2018C = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018C_15January26_0740_skim_Jan26Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 
-	SingleMu_2018D = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018D_15January26_0815_skim_Jan26Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 
-	
-	MET_2018A = glob.glob(Skimmed_4tau_loc_Data + "MET_Run2018A_14April26_1337_skim_4Tau_Selections/singleFileSkimForSubmission-NANO_NANO_*.root") 
-	MET_2018B = glob.glob(Skimmed_4tau_loc_Data + "MET_Run2018B_14April26_1334_skim_4Tau_Selections/singleFileSkimForSubmission-NANO_NANO_*.root") 
-	MET_2018C = glob.glob(Skimmed_4tau_loc_Data + "MET_Run2018C_14April26_1331_skim_4Tau_Selections/singleFileSkimForSubmission-NANO_NANO_*.root") 
-	MET_2018D = glob.glob(Skimmed_4tau_loc_Data + "MET_Run2018D_14April26_1343_skim_4Tau_Selections/singleFileSkimForSubmission-NANO_NANO_*.root") 
-	
-	JetHT_2018A = glob.glob(Skimmed_4tau_loc_Data + "JetHT_Run2018A_13January26_1203_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root") 
-	JetHT_2018B = glob.glob(Skimmed_4tau_loc_Data + "JetHT_Run2018B_13January26_1228_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root") 
-	JetHT_2018C = glob.glob(Skimmed_4tau_loc_Data + "JetHT_Run2018C_13January26_1240_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root") 
-	JetHT_2018D = glob.glob(Skimmed_4tau_loc_Data + "JetHT_Run2018D_13January26_1130_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root") 
-
-
-	#Single MuonA debugging production
-	SingleMu_2018A_Debug = glob.glob("/hdfs/store/user/twnelson/HH4Tau_EtAl/SkimDebugging/SingleMu_Run2018A_24March26_0456_skim_4TauFixed_NonEmpty/singleFileSkimForSubmission-NANO_NANO_*.root")
-	#SingleMu_2018A_Debug = np.random.choice(SingleMu_2018A_Debug, 10)
-
-	#print(SingleMu_2018A_Debug)
-
-
-	#Offline debugging to test code for bugs
-	SingleMu_2018A_Offline_SingleFile = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018A_15January26_0751_skim_Jan26Skim/singleFileSkimForSubmission-NANO_NANO_12.root")
-	ZZ4L_2018_Offline_SingleFile = glob.glob(Skimmed_4tau_loc_MC + "ZZTo4L_26August25_0757_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_12.root")
+	SingleMuA_2018A = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018A_15January26_0751_skim_Jan26Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 
+	SingleMuA_2018B = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018B_15January26_0731_skim_Jan26Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 
+	SingleMuA_2018C = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018C_15January26_0740_skim_Jan26Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 
+	SingleMuA_2018D = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018D_15January26_0815_skim_Jan26Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 
 
 	#Make full arrays of backgrounds
 	TTToSemiLeptonic_2018 = glob.glob(Skimmed_4tau_loc_MC + "TTToSemiLeptonic_35August25_0448_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
@@ -200,50 +129,12 @@ if __name__ == "__main__":
 		glob.glob(Skimmed_4tau_loc_MC + "WJetsToLNu_HT-1200To2500_OtherPart_26August25_1041_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root"))
 	WJetsToLNu_HT2500ToInf_2018 = np.append(glob.glob(Skimmed_4tau_loc_MC + "WJetsToLNu_HT-2500ToInf_26August25_1047_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root"),
 		glob.glob(Skimmed_4tau_loc_MC + "WJetsToLNu_HT-2500ToInf_OtherPart_26August25_1043_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root"))
-	QCD_HT50To100 = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT50to100_23April26_0525_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	QCD_HT100To200 = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT100to200_23April26_0519_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	QCD_HT200To300 = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT200to300_23April26_0542_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	QCD_HT300To500 = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT300to500_23April26_0555_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	QCD_HT500To700 = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT500to700_23April26_0512_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	QCD_HT700To1000 = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT700to1000_23April26_0528_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	QCD_HT1000To1500 = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT1000to1500_23April26_0536_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	QCD_HT1500To2000 = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT1500to2000_23April26_0539_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	QCD_HT2000ToInf = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT2000toInf_23April26_0541_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
-
-	#Debugging MC
-	SingleMu_2018A_Debug = SingleMu_2018A_Debug[:5] 
-	JetHT_2018A_Debug = JetHT_2018A[:5]
-	DYJets_Debug = DYJetsToLL_M50_HT1200to2500_2018[:5]
-
-	file_dict_data_mc_mix = {
-		"Data_Mu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in SingleMu_2018A_Debug],
-		"Data_HT": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in JetHT_2018A_Debug],
-		"DYJetsToLL_M-50_HT-1200to2500": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJets_Debug],
-        #"Data_Mu": SingleMu_2018A_Debug,
-        #"Data_HT": JetHT_2018A_Debug,
-        #"DYJetsToLL_M-50_HT-1200to2500": DYJets_Debug,
-	}
 
 
 	file_dict_data_test = {
-		#"Data_Mu" : [Skimmed_4tau_base_Data + "SingleMu_Run2018A_15January26_0751_skim_Jan26Skim/SingleMu_Run2018A.root"]
-		#"Data_Mu": [Skimmed_4tau_base_Data + "SingleMu_Run2018A_15January26_0751_skim_Jan26Skim/singleFileSkimForSubmission-NANO_NANO_*.root"]
-		#"Data_Mu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in SingleMu_2018A_Debug],
-		#"Data_Mu": [file for file in SingleMu_2018A_Debug] 
-        "Data_HT": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/Data/JetHT_Run2018D_13January26_1130_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_865.root"]
-		#"Data_Mu": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/SkimDebugging/SingleMu_Run2018A_24March26_0937_skim_NullSkimming/singleFileSkimForSubmission-NANO_NANO_402.root"] #Run a single file offline
+		"Data_Mu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in SingleMuA_2018A] 
 	}
-
-	file_dict_Test_Reweighting = {
-		#"TTTo2L2Nu": [file for file in np.random.choice(["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in TTTo2L2Nu_2018],3)],
-		#"DYJetsToLL_M-50_HT-70to100": [file for file in np.random.choice(["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJetsToLL_M50_HT70to100_2018],3)],
-		#"WJetsToLNu_HT-70To100": [file for file in np.random.choice(["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WJetsToLNu_HT70To100_2018],3)],
-		#"DYJetsToLL_M-50_HT-1200to2500": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/MC/DYJetsToLL_M-50_HT-1200to2500_12December25_1547_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_77.root"],
-		#"QCD_HT2000toInf": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/MC/QCD_HT2000toInf_23April26_0541_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_93.root"],
-        "Data_Mu": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/Data/SingleMu_Run2018D_15January26_0815_skim_Jan26Skim/singleFileSkimForSubmission-NANO_NANO_762.root"],
-
-	}
-
+	
 	file_dict_full = {
 			"TTToSemiLeptonic": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in TTToSemiLeptonic_2018],
 			"TTTo2L2Nu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in TTTo2L2Nu_2018],
@@ -251,6 +142,7 @@ if __name__ == "__main__":
 			"ZZ4l": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZ4L_2018],
 			"ZZTo2L2Nu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZTo2L2Nu_2018],
 			"ZZTo2Nu2Q": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZTo2Nu2Q_2018],
+			"ZZTo2L2Q": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZTo2L2Q_2018],
 			"VV2l2nu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in VV2l2nu_2018],
 			"ZZTo4Q" : ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZTo4Q_2018],
 			"WWTo1L1Nu2Q": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WWTo1L1Nu2Q_2018],
@@ -286,49 +178,85 @@ if __name__ == "__main__":
 			"WJetsToLNu_HT-800To1200": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WJetsToLNu_HT800To1200_2018],
 			"WJetsToLNu_HT-1200To2500": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WJetsToLNu_HT1200To2500_2018],
 			"WJetsToLNu_HT-2500ToInf": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WJetsToLNu_HT2500ToInf_2018],
-			"QCD_HT50to100": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT50To100],
-			"QCD_HT100to200": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT100To200],
-			"QCD_HT200to300": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT200To300],
-			"QCD_HT300to500": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT300To500],
-			"QCD_HT500to700": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT500To700],
-			"QCD_HT700to1000": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT700To1000],
-			"QCD_HT1000to1500": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT1000To1500],
-			"QCD_HT1500to2000": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT1500To2000],
-			"QCD_HT2000toInf": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT2000ToInf],
-			"Data_Mu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(SingleMu_2018A, np.append(SingleMu_2018B, np.append(SingleMu_2018C,SingleMu_2018D)))],
-            "Data_HT": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(JetHT_2018A, np.append(JetHT_2018B, np.append(JetHT_2018C,JetHT_2018D)))],
-			#"Data_MET": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(MET_2018A, np.append(MET_2018B, np.append(MET_2018C,MET_2018D)))]
+			"Data_Mu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(SingleMuA_2018A, np.append(SingleMuA_2018B, np.append(SingleMuA_2018C,SingleMuA_2018D)))]
 		}
 	
 	#Set file dictionary and list of backgrounds prior to running processor
-	#file_dict = file_dict_data_test
 	file_dict = file_dict_full
-	#file_dict = file_dict_data_mc_mix
-	#file_dict = file_dict_Test_Reweighting
-
-	#Pull in the weight and event count prior to skimming information
-	#with open("genWeightSum_JSON.json") as json_file:
-	with open("genWeightSum_2018_WithQCD_JSON.json") as json_file:
-		sumWEvents_Dict = json.load(json_file)
-
-#	with open("numEvents_JSON.json") as json_file:
-#		numEvents_Dict = json.load(json_file)
 	
+	#Condor related stuff
+	os.environ["CONDOR_CONFIG"] = "/etc/condor/condor_config"
+	
+	#Xrootd crap
+	_x509_path = move_X509()
+	print(f"x509 path: {_x509_path}")
+	htc_log_err_dir = "/scratch/twnelson/ControlPlot_HTC/Run_" + str(time.localtime()[0]) + "_" + str(time.localtime()[1]) + "_" + str(time.localtime()[2]) + "_" + str(time.localtime()[3]) + f".{time.localtime()[4]:02d}"
+	os.makedirs(htc_log_err_dir)
+
+	cluster = HTCondorCluster(
+			cores=1,
+			memory="8 GB",
+			disk="4 GB",
+			death_timeout = '60',
+			job_extra_directives={
+				"+JobFlavour": '"tomorrow"',
+				"log": "dask_job_output.$(PROCESS).$(CLUSTER).log",
+				"output": "dask_job_output.$(PROCESS).$(CLUSTER).out",
+				"error": "dask_job_output.$(PROCESS).$(CLUSTER).err",
+				"should_transfer_files": "yes",
+				"when_to_transfer_ouput": "ON_EXIT_OR_EVICT",
+				"transfer_executable": "false",
+				"+SingularityImage": '"/cvmfs/unpacked.cern.ch/registry.hub.docker.com/coffeateam/coffea-dask-cc7:latest-py3.10"',
+				"Requirements": "HasSingularityJobStart",
+				"InitialDir": f'/scratch/{os.environ["USER"]}',
+				'transfer_input_files': f"{_x509_path}",
+
+			},
+			job_script_prologue = [
+				"export XRD_RUNFORKHANDLER=1",
+				f"export X509_USER_PROXY={_x509_path}",
+			]
+	)
+	cluster.adapt(minimum=1, maximum=500)
+
+	run_on_condor = True 
+	
+	if (run_on_condor):
+		print("Run on Condor")
+		runner = processor.Runner(
+			executor = processor.DaskExecutor(client=Client(cluster),status=False),
+			schema=BaseSchema,
+			skipbadfiles=True,
+			xrootdtimeout=1000,
+            #chunksize=500000,
+            #maxchunks = 1
+		)
+	else: #Iterative runner
+		runner = processor.Runner(executor = processor.IterativeExecutor(), schema=BaseSchema)
+
+	print(f"https://cms01.hep.wisc.edu:8004/user/{os.environ['USER']}/{cluster.dashboard_link}")
 
 	start_time = time.time()
+	fourtau_out = runner(file_dict, treename="Runs", processor_instance=CountingProcessor()) 
+	end_time = time.time()
 	
-	for n_taus in range(4,5):
-		print("About to run processor")
-		start_time = time.time()
-		if (run_on_condor):
-			print(f"https://cms02.hep.wisc.edu:8009/user/{os.environ['USER']}/{cluster.dashboard_link}")
-		fourtau_out = runner(file_dict, treename="Events", processor_instance=AnalysisProcessor.Analysis4TauProcessor(sumWEvents_Dict = sumWEvents_Dict, nBoostedTaus = n_taus, ApplyTrigger = True)) #Modified for NanoAOD (changd treename)
-		end_time = time.time()
-		time_running = end_time-start_time
-		print("It takes about %.1f s to run the coffea processor with %d boosted tau selections"%(time_running,n_taus))
-		
-        #Save coffea file
-		#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_BothTriggers.coffea")
-		outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_NoMuonIsolation.coffea")
-		util.save(fourtau_out, outfile)
-		print(f"Saved output to {outfile}")	
+	time_running = end_time-start_time
+	print("It takes about %.1f s to run the coffea processor with %d boosted tau selections"%(time_running,4))
+	
+	numEvents_Dict = dict.fromkeys(file_dict_full) 
+	sumWEvents_Dict = dict.fromkeys(file_dict_full)
+	
+	for key in file_dict_full.keys():
+		if (key == "Data_Mu"):
+			sumWEvents_Dict[key] = 1 
+			numEvents_Dict[key] = 1 
+		else:
+			sumWEvents_Dict[key] = fourtau_out[key]["genWeightSum"]
+			numEvents_Dict[key] = int(fourtau_out[key]["n_events"])
+
+	#Save the sumW and counts as JSON files
+	with open("genWeightSum_JSON.json", "w") as fp:
+		json.dump(sumWEvents_Dict, fp)
+	
+	with open("numEvents_JSON.json", "w") as fp:
+		json.dump(numEvents_Dict, fp)
