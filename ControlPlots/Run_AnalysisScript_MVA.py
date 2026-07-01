@@ -20,7 +20,7 @@ from dask_jobqueue import HTCondorCluster
 import csv
 import glob
 import json
-from Processors import FourTauAnalysisProcessor as AnalysisProcessor
+from Processors import MVA_FourTauAnalysisProcessor as AnalysisProcessor
 import Corrections
 #import Data
 import cowtools.jobqueue
@@ -125,15 +125,10 @@ if __name__ == "__main__":
 	Skimmed_4tau_loc_MC = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/MC/"
 
 	#Make full arrays of single Muon data
-	SingleMu_2018A = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018A_15January26_0751_skim_Jan26Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 
-	SingleMu_2018B = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018B_15January26_0731_skim_Jan26Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 
-	SingleMu_2018C = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018C_15January26_0740_skim_Jan26Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 
-	SingleMu_2018D = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018D_15January26_0815_skim_Jan26Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 
-	
-	MET_2018A = glob.glob(Skimmed_4tau_loc_Data + "MET_Run2018A_14April26_1337_skim_4Tau_Selections/singleFileSkimForSubmission-NANO_NANO_*.root") 
-	MET_2018B = glob.glob(Skimmed_4tau_loc_Data + "MET_Run2018B_14April26_1334_skim_4Tau_Selections/singleFileSkimForSubmission-NANO_NANO_*.root") 
-	MET_2018C = glob.glob(Skimmed_4tau_loc_Data + "MET_Run2018C_14April26_1331_skim_4Tau_Selections/singleFileSkimForSubmission-NANO_NANO_*.root") 
-	MET_2018D = glob.glob(Skimmed_4tau_loc_Data + "MET_Run2018D_14April26_1343_skim_4Tau_Selections/singleFileSkimForSubmission-NANO_NANO_*.root") 
+	SingleMu_2018A = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018A_30June26_1154_skim_MVASkimming/singleFileSkimForSubmission-NANO_NANO_*.root") 
+	SingleMu_2018B = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018B_30June26_1139_skim_MVASkimming/singleFileSkimForSubmission-NANO_NANO_*.root") 
+	SingleMu_2018C = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018C_30June26_1146_skim_MVASkimming/singleFileSkimForSubmission-NANO_NANO_*.root") 
+	SingleMu_2018D = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018D_30June26_1219_skim_MVASkimming/singleFileSkimForSubmission-NANO_NANO_*.root") 
 	
 	JetHT_2018A = glob.glob(Skimmed_4tau_loc_Data + "JetHT_Run2018A_13January26_1203_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root") 
 	JetHT_2018B = glob.glob(Skimmed_4tau_loc_Data + "JetHT_Run2018B_13January26_1228_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root") 
@@ -299,12 +294,17 @@ if __name__ == "__main__":
             "Data_HT": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(JetHT_2018A, np.append(JetHT_2018B, np.append(JetHT_2018C,JetHT_2018D)))],
 			#"Data_MET": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(MET_2018A, np.append(MET_2018B, np.append(MET_2018C,MET_2018D)))]
 		}
+
+	file_dict_SingleMuOnly = {"Data_Mu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(SingleMu_2018A, np.append(SingleMu_2018B, np.append(SingleMu_2018C,SingleMu_2018D)))]}	
 	
 	#Set file dictionary and list of backgrounds prior to running processor
 	#file_dict = file_dict_data_test
 	#file_dict = file_dict_full
-	file_dict = file_dict_data_mc_mix
+	file_dict = file_dict_SingleMuOnly
+	#file_dict = file_dict_data_mc_mix
 	#file_dict = file_dict_Test_Reweighting
+
+	#print(file_dict)
 
 	#Pull in the weight and event count prior to skimming information
 	#with open("genWeightSum_JSON.json") as json_file:
@@ -329,6 +329,6 @@ if __name__ == "__main__":
 		
         #Save coffea file
 		#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_BothTriggers.coffea")
-		outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_Test.coffea")
+		outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_MVASkims.coffea")
 		util.save(fourtau_out, outfile)
 		print(f"Saved output to {outfile}")	
