@@ -29,6 +29,9 @@ from Corrections.corrections import *
 from Corrections.muons import *
 from Data.data_paths import GOLDEN_JSON
 
+#Dan's Code for debugging mysterious error
+os.environ['PATH']="/nfs_scratch/dan/testbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
 #import warnings
 #warnings.filterwarnings("error")
 
@@ -602,9 +605,9 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 
 					#Combined pT eta and ID selection
 					mu_selec_Mask = (
-							(muon.pt > 52) &
-							(abs(muon.eta) < 2.4) &
-							(muon.IDSelec) #&
+							(muon.pt > 52)# &
+						#	(abs(muon.eta) < 2.4) &
+						#	(muon.IDSelec) #&
 							#(muon.RelIso < 0.15)
 					)
 					mu_selec_cond = ak.any(mu_selec_Mask,axis=1)
@@ -673,9 +676,9 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					
 				#Combined pT eta and ID selection
 				mu_selec_Mask = (
-						(muon.pt > 52) &
-						(abs(muon.eta) < 2.4) &
-						(muon.IDSelec) #&
+						(muon.pt > 52) #&
+					#	(abs(muon.eta) < 2.4) &
+					#	(muon.IDSelec) #&
 						#(muon.RelIso < 0.15)
 					)
 				mu_selec_cond = ak.any(mu_selec_Mask,axis=1)
@@ -690,7 +693,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				
 				#print("Single Muon Trigger and Selections Applied To MC %s"%dataset)
 				#print("Event Count after Trigger+Selections: %d"%ak.num(event_level_mu.HT,axis=0))
-				mu_trigger_event_count = ak.num(event_level_mu.HT,axis=0)
+				mu_trigger_event_count = ak.num(event_level.HT,axis=0)
 
 				#Fail Single Muon trigger and pass Jet HT Trigger
 			#	boostedtau_HT = boostedtau[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
@@ -815,7 +818,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			pT_Cond = boostedtau.pt > 30
 			eta_Cond = np.abs(boostedtau.eta) < 2.3
 			decayMode_Cond = boostedtau.decay >= 0.5
-			DBT_Iso_Cond = boostedtau.DBT >= 0.8 #0.85
+			DBT_Iso_Cond = boostedtau.iso >= 0.0 #0.85
 			
 			boostedtau_selec_cond = pT_Cond & eta_Cond & decayMode_Cond & DBT_Iso_Cond
 			boostedtau = boostedtau[boostedtau_selec_cond] #Apply selections to all individual taus

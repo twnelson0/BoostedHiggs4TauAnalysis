@@ -183,14 +183,14 @@ if __name__ == "__main__":
 	#Import coffea files with histograms
 	coffea_input = util.load(coffea_file)
 
-	print("Number of events prior to selections: %d"%coffea_input["Data_Mu"]["n_Skim"])
-	print("Number of events after Trigger selection: %d"%(coffea_input["Data_Mu"]["n_Trigger"]))
-	print("Number of events after Leading Boosted Tau selection: %d"%(coffea_input["Data_Mu"]["n_LeadBoostedTau"]))
-	print("Number of events after Sub-Leading Boosted Tau selection: %d"%(coffea_input["Data_Mu"]["n_SubLeadBoostedTau"]))
-	print("Number of events after 3rd-Leading Boosted Tau selection: %d"%(coffea_input["Data_Mu"]["n_3rdLeadBoostedTau"]))
-	print("Number of events after 4th-Leading Boosted Tau selection: %d"%(coffea_input["Data_Mu"]["n_4thLeadBoostedTau"]))
-	print("Number of events after di-tau mass selections: %d"%(coffea_input["Data_Mu"]["n_VisMass"]))
-	print("Number of events after di-tau Delta R selection: %d"%(coffea_input["Data_Mu"]["n_Higgs_dR"]))
+	print("Number of events prior to selections: %d"%coffea_input["ZZ4l"]["n_Skim"])
+	print("Number of events after Trigger selection: %d"%(coffea_input["ZZ4l"]["n_Trigger"]))
+	print("Number of events after Leading Boosted Tau selection: %d"%(coffea_input["ZZ4l"]["n_LeadBoostedTau"]))
+	print("Number of events after Sub-Leading Boosted Tau selection: %d"%(coffea_input["ZZ4l"]["n_SubLeadBoostedTau"]))
+	print("Number of events after 3rd-Leading Boosted Tau selection: %d"%(coffea_input["ZZ4l"]["n_3rdLeadBoostedTau"]))
+	print("Number of events after 4th-Leading Boosted Tau selection: %d"%(coffea_input["ZZ4l"]["n_4thLeadBoostedTau"]))
+	print("Number of events after di-tau mass selections: %d"%(coffea_input["ZZ4l"]["n_VisMass"]))
+	print("Number of events after di-tau Delta R selection: %d"%(coffea_input["ZZ4l"]["n_Higgs_dR"]))
 
 	#Produce csv table
 	if (cutflow_csv_bool):
@@ -203,24 +203,24 @@ if __name__ == "__main__":
 		#table_dict["Sample"] = ["Muon Data Set","HT Data Set", "Both Sets of Data"]
 		
 		#for sample in ["Muon_DataSet","HT_DataSet","Both_DataSets"]:
-		for sample in ["Muon_DataSet"]:
+		for sample in ["ZZ4l_MC"]:
 			table_dict = dict.fromkeys(["Sample","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"])
 			table_dict["Sample"] = sample
 			for key in var_dict.keys():
-				if (sample == "Muon_DataSet"):
-					table_dict[key] = coffea_input["Data_Mu"][var_dict[key]]
+				if (sample == "ZZ4l_MC"):
+					table_dict[key] = coffea_input["ZZ4l"][var_dict[key]]
 			table_array.append(table_dict)
 
-		with open("NanoAOD_UL_MuonOnlyData_MVAp07_Cutflow.csv", "w", newline="") as f:
+		with open("NanoAOD_UL_ZZ4l_DeepTau_Cutflow.csv", "w", newline="") as f:
 			w = csv.DictWriter(f,table_keys)
 			w.writeheader()
 			w.writerows(table_array)
 
 
 	#Produce N-1 and cutflow plots for data
-	figcut, axcut = plt.subplots()
-	coffea_input["Data_Mu"]["Mini_Cutflow"].plot1d(ax = axcut)
-	plt.savefig("Data_Cutflow_Plot.png")
+	#figcut, axcut = plt.subplots()
+	#coffea_input["Data_Mu"]["Mini_Cutflow"].plot1d(ax = axcut)
+	#plt.savefig("Data_Cutflow_Plot.png")
     
 	#figcut, axcut = plt.subplots()
 	#coffea_input["Data_Mu"]["Mini_NMinus1"].plot1d(ax = axcut)

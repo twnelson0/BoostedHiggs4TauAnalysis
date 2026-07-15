@@ -1,0 +1,179 @@
+296c296,297
+< 				"iso": events.boostedTau_idDeepTau2018v2p7VSjet,
+---
+> 				#"iso": events.boostedTau_idDeepTau2018v2p7VSjet,
+> 				"iso": events.boostedTau_rawMVAoldDM2017v2,
+471c472
+< 		#Fill initial entries in skim and N-1 histograms (Old version raw counts not good for evaulatuing MC)
+---
+> 		#Fill initial entries in skim and N-1 histograms
+606,607c607,608
+< 							(muon.IDSelec) &
+< 							(muon.RelIso < 0.15)
+---
+> 							(muon.IDSelec) #&
+> 							#(muon.RelIso < 0.15)
+653c654
+< 				trigger_cond_mu = event_level.Mu_Trigger
+---
+> 				trigger_cond = event_level.Mu_Trigger
+655,661c656,662
+< 				boostedtau_mu =  boostedtau[trigger_cond_mu]
+< 				AK8Jet_mu =  AK8Jet[trigger_cond_mu]
+< 				Jet_mu =  Jet[trigger_cond_mu]
+< 				electron_mu =  electron[trigger_cond_mu]
+< 				muon_mu =  muon[trigger_cond_mu]
+< 				GenPart_mu = GenPart[trigger_cond_mu]
+< 				event_level_mu =  event_level[trigger_cond_mu]
+---
+> 				boostedtau =  boostedtau[trigger_cond]
+> 				AK8Jet =  AK8Jet[trigger_cond]
+> 				Jet =  Jet[trigger_cond]
+> 				electron =  electron[trigger_cond]
+> 				muon =  muon[trigger_cond]
+> 				GenPart = GenPart[trigger_cond]
+> 				event_level =  event_level[trigger_cond]
+664,671c665,672
+< 				nMuon_Cond = ak.any(muon_mu.nMu > 0, axis = 1) 
+< 				boostedtau_mu = boostedtau_mu[nMuon_Cond]
+< 				AK8Jet_mu = AK8Jet_mu[nMuon_Cond]
+< 				Jet_mu = Jet_mu[nMuon_Cond]
+< 				electron_mu = electron_mu[nMuon_Cond]
+< 				muon_mu = muon_mu[nMuon_Cond]
+< 				GenPart_mu = GenPart_mu[nMuon_Cond]
+< 				event_level_mu = event_level_mu[nMuon_Cond]				
+---
+> 				nMuon_Cond = ak.any(muon.nMu > 0, axis = 1) 
+> 				boostedtau = boostedtau[nMuon_Cond]
+> 				AK8Jet = AK8Jet[nMuon_Cond]
+> 				Jet = Jet[nMuon_Cond]
+> 				electron = electron[nMuon_Cond]
+> 				muon = muon[nMuon_Cond]
+> 				GenPart = GenPart[nMuon_Cond]
+> 				event_level = event_level[nMuon_Cond]				
+675,678c676,679
+< 						(muon_mu.pt > 52) &
+< 						(abs(muon_mu.eta) < 2.4) &
+< 						(muon_mu.IDSelec) &
+< 						(muon_mu.RelIso < 0.15)
+---
+> 						(muon.pt > 52) &
+> 						(abs(muon.eta) < 2.4) &
+> 						(muon.IDSelec) #&
+> 						#(muon.RelIso < 0.15)
+682,688c683,689
+< 				boostedtau_mu = boostedtau_mu[mu_selec_cond]
+< 				AK8Jet_mu = AK8Jet_mu[mu_selec_cond]
+< 				Jet_mu = Jet_mu[mu_selec_cond]
+< 				electron_mu = electron_mu[mu_selec_cond]
+< 				muon_mu = muon_mu[mu_selec_cond]
+< 				event_level_mu = event_level_mu[mu_selec_cond]	
+< 				GenPart_mu = GenPart_mu[mu_selec_cond]
+---
+> 				boostedtau = boostedtau[mu_selec_cond]
+> 				AK8Jet = AK8Jet[mu_selec_cond]
+> 				Jet = Jet[mu_selec_cond]
+> 				electron = electron[mu_selec_cond]
+> 				muon = muon[mu_selec_cond]
+> 				event_level = event_level[mu_selec_cond]	
+> 				GenPart = GenPart[mu_selec_cond]
+692c693
+< 				mu_trigger_event_count = ak.num(event_level_mu.HT,axis=0)
+---
+> 				mu_trigger_event_count = ak.num(event_level.HT,axis=0)
+695,701c696,702
+< 				boostedtau_HT = boostedtau[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+< 				AK8Jet_HT = AK8Jet[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+< 				Jet_HT = Jet[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+< 				electron_HT = electron[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+< 				muon_HT = muon[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+< 				GenPart_HT = GenPart[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+< 				event_level_HT = event_level[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+---
+> 			#	boostedtau_HT = boostedtau[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+> 			#	AK8Jet_HT = AK8Jet[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+> 			#	Jet_HT = Jet[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+> 			#	electron_HT = electron[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+> 			#	muon_HT = muon[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+> 			#	GenPart_HT = GenPart[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+> 			#	event_level_HT = event_level[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+704,742c705,743
+< 				HTMETMHT_Selec = ((event_level_HT.HT > 550) &
+< 									   (event_level_HT.MET_pt > 110) &
+< 									   (event_level_HT.MHT > 110)
+< 									)
+< 				boostedtau_HT = boostedtau_HT[HTMETMHT_Selec]
+< 				AK8Jet_HT = AK8Jet_HT[HTMETMHT_Selec]
+< 				Jet_HT = Jet_HT[HTMETMHT_Selec]
+< 				electron_HT = electron_HT[HTMETMHT_Selec]
+< 				muon_HT = muon_HT[HTMETMHT_Selec]
+< 				GenPart_HT = GenPart_HT[HTMETMHT_Selec]
+< 				event_level_HT = event_level_HT[HTMETMHT_Selec]
+< 
+< 				#Memory management
+< 				boostedtau = ak.concatenate((boostedtau_mu,boostedtau_HT))
+< 				AK8Jet = ak.concatenate((AK8Jet_mu,AK8Jet_HT))
+< 				Jet = ak.concatenate((Jet_mu,Jet_HT))
+< 				electron = ak.concatenate((electron_mu,electron_HT))
+< 				muon = ak.concatenate((muon_mu,muon_HT))
+< 				GenPart = ak.concatenate((GenPart_mu, GenPart_HT))
+< 				event_level = ak.concatenate((event_level_mu,event_level_HT))
+< 				
+< 			#	print("JetHT Trigger and Selections Applied To MC %s"%dataset)
+< 			#	print("Event Count after Trigger+Selections: %d"%ak.num(event_level_HT.HT,axis=0))
+< 				HT_trigger_event_count = ak.num(event_level_HT.HT,axis=0)
+< 
+< 				#Verify event counts make sense
+< 				if (init_event_count < HT_trigger_event_count + mu_trigger_event_count):
+< 					print("Counts don't make sense, have more events prior to trigger than after trigger")
+< 					print("Count before trigger: %d"%init_event_count)
+< 					print("Single Muon Selection count: %d"%mu_trigger_event_count)
+< 					print("Jet HT selection count: %d"%HT_trigger_event_count)
+< 
+< 				del boostedtau_mu, boostedtau_HT
+< 				del AK8Jet_mu, AK8Jet_HT
+< 				del Jet_mu, Jet_HT
+< 				del electron_mu, electron_HT
+< 				del muon_mu, muon_HT
+< 				del GenPart_mu, GenPart_HT
+< 				del event_level_mu, event_level_HT
+---
+> 			#	HTMETMHT_Selec = ((event_level_HT.HT > 550) &
+> 			#						   (event_level_HT.MET_pt > 110) &
+> 			#						   (event_level_HT.MHT > 110)
+> 			#						)
+> 			#	boostedtau_HT = boostedtau_HT[HTMETMHT_Selec]
+> 			#	AK8Jet_HT = AK8Jet_HT[HTMETMHT_Selec]
+> 			#	Jet_HT = Jet_HT[HTMETMHT_Selec]
+> 			#	electron_HT = electron_HT[HTMETMHT_Selec]
+> 			#	muon_HT = muon_HT[HTMETMHT_Selec]
+> 			#	GenPart_HT = GenPart_HT[HTMETMHT_Selec]
+> 			#	event_level_HT = event_level_HT[HTMETMHT_Selec]
+> 
+> 			#	#Memory management
+> 			#	boostedtau = ak.concatenate((boostedtau_mu,boostedtau_HT))
+> 			#	AK8Jet = ak.concatenate((AK8Jet_mu,AK8Jet_HT))
+> 			#	Jet = ak.concatenate((Jet_mu,Jet_HT))
+> 			#	electron = ak.concatenate((electron_mu,electron_HT))
+> 			#	muon = ak.concatenate((muon_mu,muon_HT))
+> 			#	GenPart = ak.concatenate((GenPart_mu, GenPart_HT))
+> 			#	event_level = ak.concatenate((event_level_mu,event_level_HT))
+> 			#	
+> 			##	print("JetHT Trigger and Selections Applied To MC %s"%dataset)
+> 			##	print("Event Count after Trigger+Selections: %d"%ak.num(event_level_HT.HT,axis=0))
+> 			#	HT_trigger_event_count = ak.num(event_level_HT.HT,axis=0)
+> 
+> 			#	#Verify event counts make sense
+> 			#	if (init_event_count < HT_trigger_event_count + mu_trigger_event_count):
+> 			#		print("Counts don't make sense, have more events prior to trigger than after trigger")
+> 			#		print("Count before trigger: %d"%init_event_count)
+> 			#		print("Single Muon Selection count: %d"%mu_trigger_event_count)
+> 			#		print("Jet HT selection count: %d"%HT_trigger_event_count)
+> 
+> 			#	del boostedtau_mu, boostedtau_HT
+> 			#	del AK8Jet_mu, AK8Jet_HT
+> 			#	del Jet_mu, Jet_HT
+> 			#	del electron_mu, electron_HT
+> 			#	del muon_mu, muon_HT
+> 			#	del GenPart_mu, GenPart_HT
+> 			#	del event_level_mu, event_level_HT

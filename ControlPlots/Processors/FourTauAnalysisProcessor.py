@@ -32,6 +32,9 @@ from Data.data_paths import GOLDEN_JSON
 #import warnings
 #warnings.filterwarnings("error")
 
+#Dan's Code for debugging mysterious error
+os.environ['PATH']="/nfs_scratch/dan/testbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
 #Global Variables
 WScaleFactor = 1.21
 DYScaleFactor = 1.23
@@ -468,7 +471,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			h_CutFlow = hist.Hist.new.StrCategory(["SkimOnly","LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]).Double()
 			#h_NMinus1 = hist.Hist.new.StrCategory(["SkimOnly","METCut","nFatJetReq","FlagReq","PVSelec","LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]).Double()
 
-		#Fill initial entries in skim and N-1 histograms
+		#Fill initial entries in skim and N-1 histograms (Old version raw counts not good for evaulatuing MC)
 		n_Skim = np.size(event_level.nFatJet)
 		h_CutFlow.fill("SkimOnly",weight=n_Skim)
 		#h_NMinus1.fill("SkimOnly",weight=0)
@@ -814,7 +817,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			pT_Cond = boostedtau.pt > 30
 			eta_Cond = np.abs(boostedtau.eta) < 2.3
 			decayMode_Cond = boostedtau.decay >= 0.5
-			DBT_Iso_Cond = boostedtau.DBT >= 0.8 #0.85
+			DBT_Iso_Cond = boostedtau.DBT >= 0.9 #0.85
 			
 			boostedtau_selec_cond = pT_Cond & eta_Cond & decayMode_Cond & DBT_Iso_Cond
 			boostedtau = boostedtau[boostedtau_selec_cond] #Apply selections to all individual taus

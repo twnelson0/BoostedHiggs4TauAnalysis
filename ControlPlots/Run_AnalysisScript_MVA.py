@@ -52,7 +52,7 @@ def move_X509():
 
 if __name__ == "__main__":
 	#Condor related stuff
-	run_on_condor = True
+	run_on_condor = True 
 	os.environ["CONDOR_CONFIG"] = "/etc/condor/condor_config"
 	
 	if (run_on_condor):
@@ -125,10 +125,19 @@ if __name__ == "__main__":
 	Skimmed_4tau_loc_MC = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/MC/"
 
 	#Make full arrays of single Muon data
-	SingleMu_2018A = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018A_02July26_0700_skim_MVASkimming/singleFileSkimForSubmission-NANO_NANO_*.root") 
-	SingleMu_2018B = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018B_02July26_0643_skim_MVASkimming/singleFileSkimForSubmission-NANO_NANO_*.root") 
-	SingleMu_2018C = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018C_02July26_0651_skim_MVASkimming/singleFileSkimForSubmission-NANO_NANO_*.root") 
-	SingleMu_2018D = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018D_02July26_0726_skim_MVASkimming/singleFileSkimForSubmission-NANO_NANO_*.root") 
+#	SingleMu_2018A = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018A_02July26_0700_skim_MVASkimming_05Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 
+#	SingleMu_2018B = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018B_02July26_0643_skim_MVASkimming_05Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 
+#	SingleMu_2018C = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018C_02July26_0651_skim_MVASkimming_05Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 
+#	SingleMu_2018D = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018D_02July26_0726_skim_MVASkimming_05Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 
+	#SingleMu_2018A = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018A_06July26_1154_skim_MVASkimming_Leading05Only/singleFileSkimForSubmission-NANO_NANO_*.root") 
+	#SingleMu_2018B = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018B_06July26_0923_skim_MVASkimming_Leading05Only/singleFileSkimForSubmission-NANO_NANO_*.root") 
+	#SingleMu_2018C = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018C_06July26_0931_skim_MVASkimming_Leading05Only/singleFileSkimForSubmission-NANO_NANO_*.root") 
+	#SingleMu_2018D = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018D_06July26_1004_skim_MVASkimming_Leading05Only/singleFileSkimForSubmission-NANO_NANO_*.root") 
+	
+	SingleMu_2018A = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018A_30June26_1154_skim_MVASkimming/singleFileSkimForSubmission-NANO_NANO_*.root") 
+	SingleMu_2018B = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018B_30June26_1139_skim_MVASkimming/singleFileSkimForSubmission-NANO_NANO_*.root") 
+	SingleMu_2018C = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018C_30June26_1146_skim_MVASkimming/singleFileSkimForSubmission-NANO_NANO_*.root") 
+	SingleMu_2018D = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018D_30June26_1219_skim_MVASkimming/singleFileSkimForSubmission-NANO_NANO_*.root") 
 	
 	JetHT_2018A = glob.glob(Skimmed_4tau_loc_Data + "JetHT_Run2018A_13January26_1203_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root") 
 	JetHT_2018B = glob.glob(Skimmed_4tau_loc_Data + "JetHT_Run2018B_13January26_1228_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root") 
@@ -223,9 +232,9 @@ if __name__ == "__main__":
 	file_dict_data_test = {
 		#"Data_Mu" : [Skimmed_4tau_base_Data + "SingleMu_Run2018A_15January26_0751_skim_Jan26Skim/SingleMu_Run2018A.root"]
 		#"Data_Mu": [Skimmed_4tau_base_Data + "SingleMu_Run2018A_15January26_0751_skim_Jan26Skim/singleFileSkimForSubmission-NANO_NANO_*.root"]
-		#"Data_Mu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in SingleMu_2018A_Debug],
+        "Data_Mu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in SingleMu_2018A[:10]],
 		#"Data_Mu": [file for file in SingleMu_2018A_Debug] 
-        "Data_HT": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/Data/JetHT_Run2018D_13January26_1130_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_865.root"]
+        #"Data_HT": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/Data/JetHT_Run2018D_13January26_1130_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_865.root"]
 		#"Data_Mu": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/SkimDebugging/SingleMu_Run2018A_24March26_0937_skim_NullSkimming/singleFileSkimForSubmission-NANO_NANO_402.root"] #Run a single file offline
 	}
 
@@ -295,16 +304,27 @@ if __name__ == "__main__":
 			#"Data_MET": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(MET_2018A, np.append(MET_2018B, np.append(MET_2018C,MET_2018D)))]
 		}
 
-	file_dict_SingleMuOnly = {"Data_Mu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(SingleMu_2018A, np.append(SingleMu_2018B, np.append(SingleMu_2018C,SingleMu_2018D)))]}	
+	file_dict_SingleMuOnly = {
+		"Data_Mu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(SingleMu_2018A[125:], np.append(SingleMu_2018B[125:], np.append(SingleMu_2018C[125:],SingleMu_2018D[125:])))]
+		#"Data_Mu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(SingleMu_2018A, np.append(SingleMu_2018B, np.append(SingleMu_2018C,SingleMu_2018D)))]
+	}	
+
+	ZZ4L_MVA = glob.glob("/hdfs/store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/ZZTo4L_13July26_0417_skim_MVASKim/singleFileSkimForSubmission-NANO_NANO_*.root") 
+	
+	file_dict_ZZ4L_Only = {
+		#"ZZ4l": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZ4L_2018]
+        "ZZ4l": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZ4L_MVA[500:]]
+	}
 	
 	#Set file dictionary and list of backgrounds prior to running processor
 	#file_dict = file_dict_data_test
 	#file_dict = file_dict_full
 	file_dict = file_dict_SingleMuOnly
+	#file_dict = file_dict_ZZ4L_Only
 	#file_dict = file_dict_data_mc_mix
 	#file_dict = file_dict_Test_Reweighting
 
-	#print(file_dict)
+	print(file_dict)
 
 	#Pull in the weight and event count prior to skimming information
 	#with open("genWeightSum_JSON.json") as json_file:
@@ -329,6 +349,10 @@ if __name__ == "__main__":
 		
         #Save coffea file
 		#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_BothTriggers.coffea")
-		outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_MVASkims.coffea")
+		#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_MVASkims_LeadingTauOnly_HackyZZ4LDTSkimInfo.coffea")
+		#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_MVASkims_p07_FixedOfflineSelec_FixedTauSelec.coffea")
+		#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_MVASkims_p07_FixedOfflineSelec_FixedTauSelec_ZZ4lOnly.coffea")
+		#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_MVASkims_p07_FixedOfflineSelec_FixedTauSelec_FuckingBullshitAgain.coffea")
+		outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_MVASkims_p07_FixedOfflineSelec_FixedTauSelec_FuckedUpFiles.coffea")
 		util.save(fourtau_out, outfile)
 		print(f"Saved output to {outfile}")	

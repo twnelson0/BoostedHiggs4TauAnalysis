@@ -19,6 +19,7 @@ import csv
 import sys
 import argparse
 import itertools
+import json
 
 #Plot style variables defined
 hep.style.use(hep.style.CMS)
@@ -183,157 +184,54 @@ if __name__ == "__main__":
 	#Import coffea files with histograms
 	coffea_input = util.load(coffea_file)
 
-	print("Number of events prior to selections: %d"%coffea_input["Data_Mu"]["n_Skim"])
-	print("Number of events after Trigger selection: %d"%(coffea_input["Data_Mu"]["n_Trigger"]))
-	print("Number of events after Leading Boosted Tau selection: %d"%(coffea_input["Data_Mu"]["n_LeadBoostedTau"]))
-	print("Number of events after Sub-Leading Boosted Tau selection: %d"%(coffea_input["Data_Mu"]["n_SubLeadBoostedTau"]))
-	print("Number of events after 3rd-Leading Boosted Tau selection: %d"%(coffea_input["Data_Mu"]["n_3rdLeadBoostedTau"]))
-	print("Number of events after 4th-Leading Boosted Tau selection: %d"%(coffea_input["Data_Mu"]["n_4thLeadBoostedTau"]))
-	print("Number of events after di-tau mass selections: %d"%(coffea_input["Data_Mu"]["n_VisMass"]))
-	print("Number of events after di-tau Delta R selection: %d"%(coffea_input["Data_Mu"]["n_Higgs_dR"]))
+#	print("Number of events prior to selections: %d"%coffea_input["ZZ4l"]["n_Skim"])
+#	print("Number of events after Trigger selection: %d"%(coffea_input["ZZ4l"]["n_Trigger"]))
+#	print("Number of events after Leading Boosted Tau selection: %d"%(coffea_input["ZZ4l"]["n_LeadBoostedTau"]))
+#	print("Number of events after Sub-Leading Boosted Tau selection: %d"%(coffea_input["ZZ4l"]["n_SubLeadBoostedTau"]))
+#	print("Number of events after 3rd-Leading Boosted Tau selection: %d"%(coffea_input["ZZ4l"]["n_3rdLeadBoostedTau"]))
+#	print("Number of events after 4th-Leading Boosted Tau selection: %d"%(coffea_input["ZZ4l"]["n_4thLeadBoostedTau"]))
+#	print("Number of events after di-tau mass selections: %d"%(coffea_input["ZZ4l"]["n_VisMass"]))
+#	print("Number of events after di-tau Delta R selection: %d"%(coffea_input["ZZ4l"]["n_Higgs_dR"]))
 
 	#Produce csv table
 	if (cutflow_csv_bool):
-		table_keys = ["Sample","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]
+		table_keys = ["Sample","PreSkim","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]
 		table_array = []
 		var_dict = {
 				"SkimOnly": "n_Skim" ,"Trigger" : "n_Trigger", "LeadingBoostedTau": "n_LeadBoostedTau","SubleadingBoostedTau": "n_SubLeadBoostedTau",
 				"3rdLeadingBoostedTau": "n_3rdLeadBoostedTau","4thLeadingBoostedTau": "n_4thLeadBoostedTau","VisMassSelec": "n_VisMass","Higgs_dR" : "n_Higgs_dR"
 			}
 		#table_dict["Sample"] = ["Muon Data Set","HT Data Set", "Both Sets of Data"]
+		samples = ["TTToSemiLeptonic","TTTo2L2Nu","TTToHadronic","DYJetsToLL_M-4to50_HT-70to100","DYJetsToLL_M-4to50_HT-100to200","DYJetsToLL_M-4to50_HT-200to400",
+				"DYJetsToLL_M-4to50_HT-400to600","DYJetsToLL_M-4to50_HT-600toInf","DYJetsToLL_M-50_HT-70to100","DYJetsToLL_M-50_HT-100to200","DYJetsToLL_M-50_HT-200to400",
+				"DYJetsToLL_M-50_HT-400to600","DYJetsToLL_M-50_HT-600to800","DYJetsToLL_M-50_HT-800to1200","DYJetsToLL_M-50_HT-1200to2500","DYJetsToLL_M-50_HT-2500toInf",
+				"ZZ4l","WZ2l2q","WZ1l1nu2q","ZZ2l2q", "WZ1l3nu", "VV2l2nu", "WWTo1L1Nu2Q", "WWTo4Q", "ZZTo4Q", "ZZTo2L2Nu", "ZZTo2Nu2Q","Tbar-tchan","T-tchan","Tbar-tW","T-tW",
+				"ST_s-channel_4f_leptonDecays", "ST_s-channel_4f_hadronicDecays","WJetsToLNu_HT-70To100","WJetsToLNu_HT-100To200","WJetsToLNu_HT-200To400","WJetsToLNu_HT-400To600",
+				"WJetsToLNu_HT-600To800","WJetsToLNu_HT-800To1200","WJetsToLNu_HT-1200To2500","WJetsToLNu_HT-2500ToInf"]
+       
+		with open("../numEvents_JSON.json") as json_file:
+			pre_skim_dict = json.load(json_file)
+		#pre_skim_dict = json.loads("../numEvents_JSON.json")
+		#print(pre_skim_dict)
 		
-		#for sample in ["Muon_DataSet","HT_DataSet","Both_DataSets"]:
-		for sample in ["Muon_DataSet"]:
-			table_dict = dict.fromkeys(["Sample","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"])
+		for sample in samples:
+			table_dict = dict.fromkeys(["Sample","PreSkim","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"])
 			table_dict["Sample"] = sample
-			for key in var_dict.keys():
-				if (sample == "Muon_DataSet"):
-					table_dict[key] = coffea_input["Data_Mu"][var_dict[key]]
+			print(pre_skim_dict[sample])
+			all_labels = list(var_dict.keys())
+			all_labels.append("PreSkim") 
+			for key in all_labels:
+				if (key == "PreSkim"):
+					table_dict[key] = pre_skim_dict[sample]
+				else:
+					table_dict[key] = coffea_input[sample][var_dict[key]]
 			table_array.append(table_dict)
 
-		with open("NanoAOD_UL_MuonOnlyData_MVAp07_Cutflow.csv", "w", newline="") as f:
+		with open("NanoAOD_UL_DeepTau_Cutflow_v2.csv", "w", newline="") as f:
 			w = csv.DictWriter(f,table_keys)
 			w.writeheader()
 			w.writerows(table_array)
 
 
-	#Produce N-1 and cutflow plots for data
-	figcut, axcut = plt.subplots()
-	coffea_input["Data_Mu"]["Mini_Cutflow"].plot1d(ax = axcut)
-	plt.savefig("Data_Cutflow_Plot.png")
-    
-	#figcut, axcut = plt.subplots()
-	#coffea_input["Data_Mu"]["Mini_NMinus1"].plot1d(ax = axcut)
-	#plt.savefig("Data_NMinus_Plot.png")
-	
-	#Dictionaries of histograms for background, signal and data
-#	hist_dict_background = dict.fromkeys(four_tau_hist_list)
-#	hist_dict_signal = dict.fromkeys(four_tau_hist_list)
-#	hist_dict_data = dict.fromkeys(four_tau_hist_list)
-
-	#Prdouce histograms from the coffea file
-#	for hist_name in four_tau_hist_list: #Loop over all histograms
-#		print("Producing histogram " + hist_name)
-#
-#		temp_hist_dict = dict.fromkeys(background_list) # create dictionary of histograms for each background type
-#				
-#		for background_type in background_list: #When combining samples into larger categories need to restore this logic
-#		#for dummy_indx in range(1): #Do this for plotting all samples (Not combined)
-#			#print("Background type %s"%background_type)
-#			background_array = []
-#			backgrounds = background_dict[background_type]
-#			#backgrounds = background_list #only for plotting all samples
-#
-#						
-#			#Loop over all backgrounds
-#			MC_Sum = 0
-#			for background in backgrounds:
-#				if (hist_name == "boostedtau_pt_Trigg"): #Show the number of events lefter after selections in all backgrounds once
-#					if (background == "TTToSemiLeptonic"):
-#						print("Number of events after Trigger selection in data: %f"%coffea_input["Data_Mu"]["Event_Count"])
-#					MC_Sum += coffea_input[background]["Event_Count"]
-#					print("Number of events after Trigger selection in %s: %f"%(background,coffea_input[background]["Event_Count"]))
-#
-#				#Plot the cutflow for each background
-#				if (hist_name == "cutflow_table"):
-#					if (background == backgrounds[0]):
-#						cutflow_hist = coffea_input[background]["cutflow_table"]
-#					else:
-#						cutflow_hist += coffea_input[background]["cutflow_table"]
-#						
-#					#Plot the weights for each background
-#					if (background == backgrounds[0]):
-#						weight_hist = coffea_input[background]["weight_Hist"]
-#					else:
-#						weight_hist += coffea_input[background]["weight_Hist"]
-#					if (background == backgrounds[-1]):
-#						figweight, axweight = plt.subplots()
-#						weight_hist.plot1d(ax=axweight)
-#						plt.title(background_type + " Weight Histogram")
-#						plt.savefig("SingleBackground" + background_plot_names[background_type] + "Weight")
-#						plt.close()
-#						
-#				if (hist_name != "Electron_tau_dR_Arr" and hist_name != "Muon_tau_dR_Arr"):
-#					if (background == backgrounds[0]):
-#						crnt_hist = coffea_input[background][hist_name][{"region": args.ControlRegion}]
-#					else:
-#						crnt_hist += coffea_input[background][hist_name][{"region": args.ControlRegion}]
-#					if (background == backgrounds[-1]):
-#						temp_hist_dict[background_type] = crnt_hist #Try to fix stacking bug
-#					
-#					#These are for plotting all samples only
-#					#crnt_hist = coffea_input[background][hist_name][{"region": args.ControlRegion}]
-#					#temp_hist_dict[background] = crnt_hist #Try to fix stacking bug
-#
-#				else: #lepton-tau delta R 
-#					coffea_input[background][hist_name].plot1d(ax=ax2)
-#
-#			if (hist_name == "boostedtau_pt_Trigg"): #Show the number of events lefter after selections in all backgrounds once
-#				print("Total number of MC events after Trigger Selection: %f"%MC_Sum)
-#		#Combine the backgrounds together
-#		hist_dict_background[hist_name] = hist.Stack.from_dict(temp_hist_dict) #This could be causing the problems 
-#		
-#		#Obtain data distributions
-#		#print("==================Hist %s================"%hist_name)
-#		#hist_dict_data[hist_name] = coffea_input["Data_Mu"][hist_name][{"region": args.ControlRegion}] #.fill("Data",coffea_input["Data_SingleMuon"][hist_name]) 
-#		#hist_dict_data[hist_name] += coffea_input["Data_HT"][hist_name][{"region": args.ControlRegion}]
-#		hist_dict_data[hist_name] = coffea_input["Data_Mu"][hist_name][{"region": args.ControlRegion}] + coffea_input["Data_HT"][hist_name][{"region": args.ControlRegion}]
-#		background_stack = hist_dict_background[hist_name] #hist_dict_background[hist_name].stack("background")
-#		#signal_stack = hist_dict_signal[hist_name].stack("signal")
-#		
-#		data_stack = hist_dict_data[hist_name] #.stack("data")    
-#		#signal_array = [signal_stack["Signal"]]
-#		data_array = [data_stack] #["Data"]]
-#				
-#		for background in background_list:
-#			background_array.append(background_stack[background]) #Is this line fucking up your scaling??
-#			#print("Background: " + background)
-#			#print("Sum of stacked histogram: %f"%background_stack[background].sum())
-#		
-#		#MPLHEP ratio plot
-#		if (hist_name == "Leadingmuon_eta_Trigg"):
-#			axis_label = r"Leading $\mu$ $\eta$"
-#		else:
-#			axis_label = coffea_input["Data_Mu"][hist_name][{"region": args.ControlRegion}].axes[0].label
-#		
-#		fig, ax_main, ax_comp = hep.comp.data_model(
-#			data_hist = coffea_input["Data_Mu"][hist_name][{"region": args.ControlRegion}],
-#			stacked_components = background_array,
-#			stacked_colors = TABLEAU_COLORS[:len(background_list)],
-#			#stacked_colors = TABLEAU_COLORS,
-#			stacked_labels = background_list,
-#			xlabel = axis_label,
-#			model_uncertainty=True,
-#			comparison = "ratio",
-#            markersize = 10,
-#			flow = "sum",
-#			#linewidth=2,
-#
-#		)
-#		ax_main.legend(fontsize = 14)
-#		hep.yscale_legend(ax_main)
-#		hep.cms.label(data=True, ax = ax_main, text = "2018 Data Preliminary")	
-#		plt.savefig(four_tau_names[hist_name] + "_" + str(args.NumberTau) + "TauSelec")
-#		plt.close()
 
 

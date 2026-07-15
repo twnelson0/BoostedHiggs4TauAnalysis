@@ -223,6 +223,13 @@ if __name__ == "__main__":
         #"Data_HT": JetHT_2018A_Debug,
         #"DYJetsToLL_M-50_HT-1200to2500": DYJets_Debug,
 	}
+	
+	ZZ4L_MVA = glob.glob("/hdfs/store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/ZZTo4L_13July26_0417_skim_MVASKim/singleFileSkimForSubmission-NANO_NANO_*.root") 
+
+	file_dict_ZZ4L_Only = {
+		#"ZZ4l": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZ4L_2018]
+        "ZZ4l": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZ4L_MVA[500:]]
+	}
 
 
 	file_dict_data_test = {
@@ -300,11 +307,69 @@ if __name__ == "__main__":
 			#"Data_MET": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(MET_2018A, np.append(MET_2018B, np.append(MET_2018C,MET_2018D)))]
 		}
 	
+	file_dict_test = {
+			"TTToSemiLeptonic": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in TTToSemiLeptonic_2018[:100]],
+			"TTTo2L2Nu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in TTTo2L2Nu_2018[:100]],
+			"TTToHadronic": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in TTToHadronic_2018[:100]],
+			"ZZ4l": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZ4L_2018[:100]],
+			"ZZTo2L2Nu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZTo2L2Nu_2018[:100]],
+			"ZZTo2Nu2Q": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZTo2Nu2Q_2018[:100]],
+			"VV2l2nu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in VV2l2nu_2018[:100]],
+			"ZZTo4Q" : ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZTo4Q_2018[:100]],
+			"WWTo1L1Nu2Q": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WWTo1L1Nu2Q_2018[:100]],
+			"WWTo4Q": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WWTo4Q_2018[:100]],
+			"WZ1l3nu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WZ1l3nu_2018[:100]],
+			"ZZ2l2q": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZ2l2q_2018[:100]],
+			"WZ2l2q": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WZ2l2q_2018[:100]],
+			"WZ1l1nu2q" : ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WZ1l1nu2q_2018[:100]],
+			"DYJetsToLL_M-4to50_HT-70to100": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJetsToLL_M4to50_HT70to100_2018[:100]],
+			"DYJetsToLL_M-4to50_HT-100to200": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJetsToLL_M4to50_HT100to200_2018[:100]],
+			"DYJetsToLL_M-4to50_HT-200to400": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJetsToLL_M4to50_HT200to400_2018[:100]],
+			"DYJetsToLL_M-4to50_HT-400to600": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJetsToLL_M4to50_HT400to600_2018[:100]],
+			"DYJetsToLL_M-4to50_HT-600toInf":["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJetsToLL_M4to50_HT600toInf_2018[:100]],
+			"DYJetsToLL_M-50_HT-70to100": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJetsToLL_M50_HT70to100_2018[:100]],
+			"DYJetsToLL_M-50_HT-100to200": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJetsToLL_M50_HT100to200_2018[:100]],
+			"DYJetsToLL_M-50_HT-200to400": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJetsToLL_M50_HT200to400_2018[:100]],
+			"DYJetsToLL_M-50_HT-400to600": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJetsToLL_M50_HT400to600_2018[:100]],
+			"DYJetsToLL_M-50_HT-600to800": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJetsToLL_M50_HT600to800_2018[:100]],
+			"DYJetsToLL_M-50_HT-800to1200": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJetsToLL_M50_HT800to1200_2018[:100]],
+			"DYJetsToLL_M-50_HT-1200to2500": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJetsToLL_M50_HT1200to2500_2018[:100]],
+			"DYJetsToLL_M-50_HT-2500toInf": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJetsToLL_M50_HT2500toInf_2018[:100]],
+			"T-tchan": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Ttchan_2018[:100]],
+			"Tbar-tchan": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Tbartchan_2018[:100]],
+			"T-tW": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in TtW_2018[:100]],
+			"Tbar-tW": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in TbartW_2018[:100]],
+			"ST_s-channel_4f_hadronicDecays": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ST_schannel_4f_hadronicDecays_2018[:100]],
+			"ST_s-channel_4f_leptonDecays": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ST_schannel_4f_leptonDecays_2018[:100]],
+			"WJetsToLNu_HT-70To100": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WJetsToLNu_HT70To100_2018[:100]],
+			"WJetsToLNu_HT-100To200": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WJetsToLNu_HT100To200_2018[:100]],
+			"WJetsToLNu_HT-200To400": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WJetsToLNu_HT200To400_2018[:100]],
+			"WJetsToLNu_HT-400To600": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WJetsToLNu_HT400To600_2018[:100]],
+			"WJetsToLNu_HT-600To800": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WJetsToLNu_HT600To800_2018[:100]],
+			"WJetsToLNu_HT-800To1200": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WJetsToLNu_HT800To1200_2018[:100]],
+			"WJetsToLNu_HT-1200To2500": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WJetsToLNu_HT1200To2500_2018[:100]],
+			"WJetsToLNu_HT-2500ToInf": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WJetsToLNu_HT2500ToInf_2018[:100]],
+			"QCD_HT50to100": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT50To100[:100]],
+			"QCD_HT100to200": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT100To200[:100]],
+			"QCD_HT200to300": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT200To300[:100]],
+			"QCD_HT300to500": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT300To500[:100]],
+			"QCD_HT500to700": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT500To700[:100]],
+			"QCD_HT700to1000": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT700To1000[:100]],
+			"QCD_HT1000to1500": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT1000To1500[:100]],
+			"QCD_HT1500to2000": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT1500To2000[:100]],
+			"QCD_HT2000toInf": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT2000ToInf[:100]],
+			"Data_Mu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(SingleMu_2018A, np.append(SingleMu_2018B, np.append(SingleMu_2018C,SingleMu_2018D)))[:100]],
+            "Data_HT": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(JetHT_2018A, np.append(JetHT_2018B, np.append(JetHT_2018C,JetHT_2018D)))[:100]],
+		}
+	
 	#Set file dictionary and list of backgrounds prior to running processor
 	#file_dict = file_dict_data_test
 	#file_dict = file_dict_full
-	file_dict = file_dict_data_mc_mix
+	file_dict = file_dict_test
+	#file_dict = file_dict_data_mc_mix
+	#file_dict = file_dict_ZZ4L_Only
 	#file_dict = file_dict_Test_Reweighting
+
 
 	#Pull in the weight and event count prior to skimming information
 	#with open("genWeightSum_JSON.json") as json_file:
@@ -328,7 +393,10 @@ if __name__ == "__main__":
 		print("It takes about %.1f s to run the coffea processor with %d boosted tau selections"%(time_running,n_taus))
 		
         #Save coffea file
-		#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_BothTriggers.coffea")
-		outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_Test.coffea")
+		#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_VlooseWP.coffea")
+		outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_VlooseWP_Test.coffea")
+		#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_Test.coffea")
+		#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_FullSetTest.coffea")
+		#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_oopsBrokenProcessor.coffea")
 		util.save(fourtau_out, outfile)
 		print(f"Saved output to {outfile}")	
