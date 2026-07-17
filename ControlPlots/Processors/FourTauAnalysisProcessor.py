@@ -1,33 +1,37 @@
-import awkward as ak
-import uproot
-import hist
-from hist import intervals
-import matplotlib.pyplot as plt
-import numpy as np
-from coffea import processor, nanoevents
-from coffea.nanoevents import NanoEventsFactory, NanoAODSchema, BaseSchema
-from coffea.nanoevents.methods import candidate, vector
-from coffea import util
-from coffea.lumi_tools import LumiMask
-from math import pi
-import numba 
-import pandas as pd
-from matplotlib.backends.backend_pdf import PdfPages
-import vector
-import os
-import time
-import datetime
-from distributed import Client
-from dask_jobqueue import HTCondorCluster
-import csv
-import glob
-import json
-from enum import Enum
-from Corrections import kFactor as kFactor
-#from Corrections import PU_Reweighting as PU_Reweight
-from Corrections.corrections import *
-from Corrections.muons import *
-from Data.data_paths import GOLDEN_JSON
+try:
+    import awkward as ak
+    import uproot
+    import hist
+    from hist import intervals
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from coffea import processor, nanoevents
+    from coffea.nanoevents import NanoEventsFactory, NanoAODSchema, BaseSchema
+    from coffea.nanoevents.methods import candidate, vector
+    from coffea import util
+    from coffea.lumi_tools import LumiMask
+    from math import pi
+    import numba 
+    import pandas as pd
+    from matplotlib.backends.backend_pdf import PdfPages
+    import vector
+    import os
+    import time
+    import datetime
+    from distributed import Client
+    from dask_jobqueue import HTCondorCluster
+    import csv
+    import glob
+    import json
+    from enum import Enum
+    from Corrections import kFactor as kFactor
+    #from Corrections import PU_Reweighting as PU_Reweight
+    from Corrections.corrections import *
+    from Corrections.muons import *
+    from Data.data_paths import GOLDEN_JSON
+except Exception as err:
+    raise ValueError("Import problem! {err}")
+
 
 #import warnings
 #warnings.filterwarnings("error")
@@ -240,1152 +244,1155 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 		}
 
 	def process(self, events):
-		vector.register_awkward()
-		#Begin by checking if running on data or sample
-		dataset = events.metadata['dataset']
-		if ("Data_" in dataset): #Check to see if running on data
-			print("Is Data")
-			self.isData = True	
-	
-		#Objects for analysis
-		event_level = ak.zip(
-			{
-				"METHTMHT_Trigger": events.HLT_PFHT500_PFMET100_PFMHT100_IDTight,
-				"Mu_Trigger": events.HLT_Mu50,
-				"MET_pt": events.MET_pt,
-				"MET_Phi": events.MET_phi,
-				"event_weight": ak.ones_like(events.MET_pt), #*0.9,
-				"n_electrons": ak.zeros_like(events.MET_pt),
-				"n_muons": ak.zeros_like(events.MET_pt),
-				"n_tau_electrons": ak.zeros_like(events.MET_pt),
-				"n_tau_muons": ak.zeros_like(events.MET_pt),
-				"n_tau_hadronic": ak.zeros_like(events.MET_pt),
-				"event_num": events.event,
-				"run": events.run,
-				"Lumi" : events.luminosityBlock,
-				"PV_ndof": events.PV_ndof,
-				"PV_z": events.PV_z,
-				"PV_x": events.PV_x,
-				"PV_y": events.PV_y,
-				"Num_PV": events.PV_npvs,
-				"nFatJet": events.nFatJet,
-				"Flag_goodVertices": events.Flag_goodVertices,
-				"Flag_globalSuperTightHalo2016Filter": events.Flag_globalSuperTightHalo2016Filter,
-				"Flag_HBHENoiseFilter": events.Flag_HBHENoiseFilter,
-				"Flag_HBHENoiseIsoFilter": events.Flag_HBHENoiseIsoFilter,
-				"Flag_EcalDeadCellTriggerPrimitiveFilter": events.Flag_EcalDeadCellTriggerPrimitiveFilter,
-				"Flag_BadPFMuonFilter": events.Flag_BadPFMuonFilter,
-				"Flag_BadPFMuonDzFilter": events.Flag_BadPFMuonDzFilter,
-				"Flag_hfNoisyHitsFilter": events.Flag_hfNoisyHitsFilter,
-				"Flag_eeBadScFilter": events.Flag_eeBadScFilter,
-				"Flag_ecalBadCalibFilter": events.Flag_ecalBadCalibFilter,
-				#"genWeight": events.genWeight
-			},
-			with_name="EventArray",
-			behavior=candidate.behavior,
-		)
-		boostedtau = ak.zip( 
-			{
-				"pt": events.boostedTau_pt,
-				"Px": events.boostedTau_pt*np.cos(events.boostedTau_phi),
-				"Py": events.boostedTau_pt*np.sin(events.boostedTau_phi),
-				"Pz": (events.boostedTau_pt/np.sin(2*np.arctan(np.exp(-events.boostedTau_eta))))*np.cos(2*np.arctan(np.exp(-events.boostedTau_eta))),
-				"E": np.sqrt((events.boostedTau_pt/np.sin(2*np.arctan(np.exp(-events.boostedTau_eta))))**2 + events.boostedTau_mass**2),
-				"mass": events.boostedTau_mass,
-				"eta": events.boostedTau_eta,
-				"phi": events.boostedTau_phi,
-				"nBoostedTau": events.nboostedTau,
-				"charge": events.boostedTau_charge,
-				"iso": events.boostedTau_idDeepTau2018v2p7VSjet,
-				"DBT": events.boostedTau_rawDeepTau2018v2p7VSjet,
-				"decay": events.boostedTau_idDecayModeOldDMs,
-			},
-			with_name="BoostedTauArray",
-			behavior=candidate.behavior,
-		)
-		electron = ak.zip(
-			{
-				"pt": events.Electron_pt,
-				"eta": events.Electron_eta,
-				"phi": events.Electron_phi,
-				"charge": events.Electron_charge,
-				"nElectron": events.nElectron,
-				"Px": events.Electron_pt*np.cos(events.Electron_phi),
-				"Py": events.Electron_pt*np.sin(events.Electron_phi),
-				"Pz": events.Electron_pt*np.tan(2*np.arctan(np.exp(-events.Electron_eta)))**-1,
-				"E": np.sqrt(events.Electron_pt**2 + (events.Electron_pt/np.tan(2*np.arctan(np.exp(-events.Electron_eta))))**2 + events.Electron_mass**2),
-				"mass": events.Electron_mass, 
-				"SCEta": events.Electron_deltaEtaSC,
-				"IDMVANoIso": events.Electron_mvaNoIso,
-				"RelIso": events.Electron_pfRelIso03_all,
-					
-			},
-			with_name="ElectronArray",
-			behavior=candidate.behavior,
-			
-		)
-		muon = ak.zip(
-			{
-				"pt": events.Muon_pt,
-				"eta": events.Muon_eta,
-				"phi": events.Muon_phi,
-				"charge": events.Muon_charge,
-				"nMuon": events.nMuon,
-				"Px": events.Muon_pt*np.cos(events.Muon_phi),
-				"Py": events.Muon_pt*np.sin(events.Muon_phi),
-				"Pz": events.Muon_pt*np.tan(2*np.arctan(np.exp(-events.Muon_eta)))**-1,
-				"E": np.sqrt(events.Muon_pt**2 + (events.Muon_pt/np.tan(2*np.arctan(np.exp(-events.Muon_eta))))**2 + events.Muon_mass**2),
-				"nMu": events.nMuon,
-				"mass": events.Muon_mass, 
-				"IDSelec": events.Muon_mediumId,
-				#"IDSelec": events.Muon_tightId,
-				"D0": events.Muon_dxy,
-				"Dz": events.Muon_dz,
-				"LooseId": events.Muon_looseId,
-				"RelIso": events.Muon_pfRelIso04_all,
-					
-			},
-			with_name="MuonArray",
-			behavior=candidate.behavior,
-			
-		)
-
-		AK8Jet = ak.zip(
-			{
-				"AK8JetDropMass": events.FatJet_msoftdrop,
-				"pt": events.FatJet_pt,
-				"eta": events.FatJet_eta,
-				"phi": events.FatJet_phi,
-				"nAK8Jet": events.nFatJet,
-				"softDropM": events.FatJet_msoftdrop,
-				"Id": events.FatJet_jetId,
-				"mass": events.FatJet_mass, 
-			},
-			with_name="AK8JetArray",
-			behavior=candidate.behavior,
-		)
+		try:
+			vector.register_awkward()
+			#Begin by checking if running on data or sample
+			dataset = events.metadata['dataset']
+			if ("Data_" in dataset): #Check to see if running on data
+				print("Is Data")
+				self.isData = True	
 		
-		Jet = ak.zip(
-			{
-				"pt": events.Jet_pt,
-				"JetId": events.Jet_jetId, #Not sure that this is correct
-				"eta": events.Jet_eta,
-				"phi": events.Jet_phi,
-				"mass": events.Jet_mass,
-				"nJet": events.nJet,
-				#"DeepCSVTags_b": events.Jet_btagCSVV2,
-				"DeepCSVTags_b": events.Jet_btagDeepB,
-			},
-			with_name="PFJetArray",
-			behavior=candidate.behavior,
-		)
-
-		#Gen level information
-		if (not(self.isData)):
-			GenPart = ak.zip(
-					{
-						"pt": events.GenPart_pt,
-						"id": events.GenPart_pdgId,
-						"status": events.GenPart_status,
-						"mother_id": events.GenPart_genPartIdxMother,
-					},
-					with_name="GenParticleArray",
-					behavior=candidate.behavior, 
+			#Objects for analysis
+			event_level = ak.zip(
+				{
+					"METHTMHT_Trigger": events.HLT_PFHT500_PFMET100_PFMHT100_IDTight,
+					"Mu_Trigger": events.HLT_Mu50,
+					"MET_pt": events.MET_pt,
+					"MET_Phi": events.MET_phi,
+					"event_weight": ak.ones_like(events.MET_pt), #*0.9,
+					"n_electrons": ak.zeros_like(events.MET_pt),
+					"n_muons": ak.zeros_like(events.MET_pt),
+					"n_tau_electrons": ak.zeros_like(events.MET_pt),
+					"n_tau_muons": ak.zeros_like(events.MET_pt),
+					"n_tau_hadronic": ak.zeros_like(events.MET_pt),
+					"event_num": events.event,
+					"run": events.run,
+					"Lumi" : events.luminosityBlock,
+					"PV_ndof": events.PV_ndof,
+					"PV_z": events.PV_z,
+					"PV_x": events.PV_x,
+					"PV_y": events.PV_y,
+					"Num_PV": events.PV_npvs,
+					"nFatJet": events.nFatJet,
+					"Flag_goodVertices": events.Flag_goodVertices,
+					"Flag_globalSuperTightHalo2016Filter": events.Flag_globalSuperTightHalo2016Filter,
+					"Flag_HBHENoiseFilter": events.Flag_HBHENoiseFilter,
+					"Flag_HBHENoiseIsoFilter": events.Flag_HBHENoiseIsoFilter,
+					"Flag_EcalDeadCellTriggerPrimitiveFilter": events.Flag_EcalDeadCellTriggerPrimitiveFilter,
+					"Flag_BadPFMuonFilter": events.Flag_BadPFMuonFilter,
+					"Flag_BadPFMuonDzFilter": events.Flag_BadPFMuonDzFilter,
+					"Flag_hfNoisyHitsFilter": events.Flag_hfNoisyHitsFilter,
+					"Flag_eeBadScFilter": events.Flag_eeBadScFilter,
+					"Flag_ecalBadCalibFilter": events.Flag_ecalBadCalibFilter,
+					#"genWeight": events.genWeight
+				},
+				with_name="EventArray",
+				behavior=candidate.behavior,
 			)
-		
-		print("!!!=====Dataset=====!!!!")	
-		print(type(dataset))
-		print(dataset)
+			boostedtau = ak.zip( 
+				{
+					"pt": events.boostedTau_pt,
+					"Px": events.boostedTau_pt*np.cos(events.boostedTau_phi),
+					"Py": events.boostedTau_pt*np.sin(events.boostedTau_phi),
+					"Pz": (events.boostedTau_pt/np.sin(2*np.arctan(np.exp(-events.boostedTau_eta))))*np.cos(2*np.arctan(np.exp(-events.boostedTau_eta))),
+					"E": np.sqrt((events.boostedTau_pt/np.sin(2*np.arctan(np.exp(-events.boostedTau_eta))))**2 + events.boostedTau_mass**2),
+					"mass": events.boostedTau_mass,
+					"eta": events.boostedTau_eta,
+					"phi": events.boostedTau_phi,
+					"nBoostedTau": events.nboostedTau,
+					"charge": events.boostedTau_charge,
+					"iso": events.boostedTau_idDeepTau2018v2p7VSjet,
+					"DBT": events.boostedTau_rawDeepTau2018v2p7VSjet,
+					"decay": events.boostedTau_idDecayModeOldDMs,
+				},
+				with_name="BoostedTauArray",
+				behavior=candidate.behavior,
+			)
+			electron = ak.zip(
+				{
+					"pt": events.Electron_pt,
+					"eta": events.Electron_eta,
+					"phi": events.Electron_phi,
+					"charge": events.Electron_charge,
+					"nElectron": events.nElectron,
+					"Px": events.Electron_pt*np.cos(events.Electron_phi),
+					"Py": events.Electron_pt*np.sin(events.Electron_phi),
+					"Pz": events.Electron_pt*np.tan(2*np.arctan(np.exp(-events.Electron_eta)))**-1,
+					"E": np.sqrt(events.Electron_pt**2 + (events.Electron_pt/np.tan(2*np.arctan(np.exp(-events.Electron_eta))))**2 + events.Electron_mass**2),
+					"mass": events.Electron_mass, 
+					"SCEta": events.Electron_deltaEtaSC,
+					"IDMVANoIso": events.Electron_mvaNoIso,
+					"RelIso": events.Electron_pfRelIso03_all,
+						
+				},
+				with_name="ElectronArray",
+				behavior=candidate.behavior,
+				
+			)
+			muon = ak.zip(
+				{
+					"pt": events.Muon_pt,
+					"eta": events.Muon_eta,
+					"phi": events.Muon_phi,
+					"charge": events.Muon_charge,
+					"nMuon": events.nMuon,
+					"Px": events.Muon_pt*np.cos(events.Muon_phi),
+					"Py": events.Muon_pt*np.sin(events.Muon_phi),
+					"Pz": events.Muon_pt*np.tan(2*np.arctan(np.exp(-events.Muon_eta)))**-1,
+					"E": np.sqrt(events.Muon_pt**2 + (events.Muon_pt/np.tan(2*np.arctan(np.exp(-events.Muon_eta))))**2 + events.Muon_mass**2),
+					"nMu": events.nMuon,
+					"mass": events.Muon_mass, 
+					"IDSelec": events.Muon_mediumId,
+					#"IDSelec": events.Muon_tightId,
+					"D0": events.Muon_dxy,
+					"Dz": events.Muon_dz,
+					"LooseId": events.Muon_looseId,
+					"RelIso": events.Muon_pfRelIso04_all,
+						
+				},
+				with_name="MuonArray",
+				behavior=candidate.behavior,
+				
+			)
 
-		if not(self.isData):
-			#print("Is MC events are equal to gen weights")
-			event_level["event_weight"] = events.genWeight #Set the event weight to the gen weight
-			event_level["Pileup_nTrueInt"] = events.Pileup_nTrueInt
-		
-
-		#############
-		#Set Up Histograms
-		#############	
-
-		#Control Regions Axis
-		region_array = ["All","ZCR","TCR","FakeCR"]
-		#region_array = ["All","TCR","NotTCR","ZCR","NotZCR"]
-		#region_array = ["All","TightTCR","NotTCR","LooseTCR","ZCR","NotZCR"] #"NotZCR"]
-		#region_array = ["All"] 
-		category_axis = hist.axis.StrCategory(region_array, growth=False, name = "category")
-
-		#Basic Kinematic histograms Boosted tau
-		h_boostedtau_pT_Trigger = hist.Hist.new.Regular(20,0,600,label = r"Boosted $\tau$ $p_T$ [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		h_Leadingboostedtau_pT_Trigger = hist.Hist.new.Regular(20,0,600,label = r"Boosted $\tau$ Leading $p_T$ [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		h_Subleadingboostedtau_pT_Trigger = hist.Hist.new.Regular(20,0,600,label = r"Boosted $\tau$ Subleading $p_T$ [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		h_Thirdleadingboostedtau_pT_Trigger = hist.Hist.new.Regular(20,0,600,label = r"Boosted $\tau$ 3rd-leading $p_T$ [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		h_Fourthleadingboostedtau_pT_Trigger = hist.Hist.new.Regular(20,0,600,label = r"Boosted $\tau$ 4th-leading $p_T$ [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		h_boostedtau_eta_Trigger = hist.Hist.new.Regular(20,-4,4,label = r"Boosted $\tau$ $\eta$",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		h_boostedtau_phi_Trigger = hist.Hist.new.Regular(20,-pi,pi,label = r"Boosted$\tau$ $\phi$",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		h_boostedtau_raw_iso_Trigger = hist.Hist.new.Regular(20,-1,1,label=r"Raw MVA Score",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		
-		#Basic Kinematic histograms leptons (muons and electrons)
-		h_electron_pT_Trigger = hist.Hist.new.Regular(15,0,300, label = r"e $p_T$ [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		h_Leadingelectron_pT_Trigger = hist.Hist.new.Regular(15,0,300, label = r"e Leading $p_T$ [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		h_electron_eta_Trigger = hist.Hist.new.Regular(20,-4,4, label = r"e $\eta$",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		h_electron_phi_Trigger = hist.Hist.new.Regular(20,-pi,pi, label = r"e Leading $\phi$",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		h_muon_pT_Trigger = hist.Hist.new.Regular(15,0,600, label = r"$\mu$ $p_T$ [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		h_Leadingmuon_pT_Trigger = hist.Hist.new.Regular(10,0,500, label = r"$\mu$ Leading $p_T$ [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		h_muon_eta_Trigger = hist.Hist.new.Regular(20,-4,4, label = r"$\mu$ $\eta$",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		h_Leadingmuon_eta_Trigger = hist.Hist.new.Regular(20,-4,4, label = r"$\mu$ $\eta$",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		h_muon_phi_Trigger = hist.Hist.new.Regular(20,-pi,pi, label = r"$\mu$ $\phi$",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		
-		#Basic Kinematic histograms Jets (check which Jets most useful based on 
-		h_Jet_pT_Trigger = hist.Hist.new.Regular(50,0,700, label = r"Jet $p_T$ [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		h_LeadingJet_pT_Trigger = hist.Hist.new.Regular(50,0,700, label = r"Jet Leading $p_T$ [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		h_Jet_eta_Trigger = hist.Hist.new.Regular(20,-4,4, label = r"Jet $\eta$",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		h_Jet_phi_Trigger = hist.Hist.new.Regular(20,-pi,pi, label = r"Jet $\phi$",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		h_AK8Jet_pT_Trigger = hist.Hist.new.Regular(50,0,700, label = r"AK8Jet $p_T$ [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		h_LeadingAK8Jet_pT_Trigger = hist.Hist.new.Regular(50,0,700, label = r"AK8Jet Leading $p_T$ [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		h_AK8Jet_eta_Trigger = hist.Hist.new.Regular(20,-4,4, label = r"AK8Jet $\eta$",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		h_AK8Jet_phi_Trigger = hist.Hist.new.Regular(20,-pi,pi, label = r"AK8Jet $\phi$",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		h_nAK8Jet_Trigger = hist.Hist.new.Regular(10,0,10, label=r"Number of AK8Jets",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		
-		#Add MET, HT and MHT histogram
-		h_MET_Trigger = hist.Hist.new.Regular(20,0,500, label=r"MET [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		h_HT_Trigger = hist.Hist.new.Regular(40,0,1200, label=r"HT [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		h_MHT_Trigger = hist.Hist.new.Regular(20,0,500, label=r"MHT [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-
-		#Add Z Multiplicity and BJet multiplicity
-		h_ZMult = hist.Hist.new.Regular(6,0,6, label=r"Z Boson Multiplicity",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		h_bJetMult = hist.Hist.new.Regular(6,0,6, label = r"b-Jet Multiplicity",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-
-
-		#di-boosted tau delta Rs
-		h_leading_boostedtau_deltaR = hist.Hist.new.Regular(10,0,5, label = r"Leading boosted $\tau$ pair $\Delta$R",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-		h_nextleading_boostedtau_deltaR = hist.Hist.new.Regular(10,0,5, label = r"Next leading boosted $\tau$ pair $\Delta$R",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-
-		#Reconstructed Mass
-		h_FourTau_Mass = hist.Hist.new.Regular(15,0,3000,label=r"Reconstructed Radion Mass [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
-
-		#Add cutflow and N-1 tables
-		if (self.ApplyTrigger):
-			h_CutFlow = hist.Hist.new.StrCategory(["SkimOnly","Trigger""LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]).Double()
-			#h_NMinus1 = hist.Hist.new.StrCategory(["SkimOnly","METCut","nFatJetReq","FlagReq","PVSelec","LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","Trigger","VisMassSelec","Higgs_dR"]).Double()
-		else:
-			h_CutFlow = hist.Hist.new.StrCategory(["SkimOnly","LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]).Double()
-			#h_NMinus1 = hist.Hist.new.StrCategory(["SkimOnly","METCut","nFatJetReq","FlagReq","PVSelec","LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]).Double()
-
-		#Fill initial entries in skim and N-1 histograms (Old version raw counts not good for evaulatuing MC)
-		n_Skim = np.size(event_level.nFatJet)
-		h_CutFlow.fill("SkimOnly",weight=n_Skim)
-		#h_NMinus1.fill("SkimOnly",weight=0)
-		
-		#Obtain the cross section scale factor	
-		if (self.isData):
-			CrossSec_Weight = 1 
-		else:
-			CrossSec_Weight = weight_calc(dataset,self.sumWEvents_Dict[dataset])
-
-		#Obtain MHT
-		Jet_MHT = Jet[Jet.pt > 30]
-		Jet_MHT = Jet_MHT[np.abs(Jet_MHT.eta) < 5]
-		Jet_MHT = Jet_MHT[Jet_MHT.JetId > 0.5]
-		event_level["MHT_x"] = ak.sum(Jet_MHT.pt*np.cos(Jet_MHT.phi),axis=1,keepdims=False) 
-		event_level["MHT_y"] = ak.sum(Jet_MHT.pt*np.sin(Jet_MHT.phi),axis=1,keepdims=False)
-		event_level["MHT"] = np.sqrt(event_level.MHT_x**2 + event_level.MHT_y**2)
-		del Jet_MHT
-		
-		#Obtain HT
-		Jet_HT = Jet[Jet.pt > 30]
-		Jet_HT = Jet_HT[np.abs(Jet_HT.eta) < 3]
-		Jet_HT = Jet_HT[Jet_HT.JetId > 0.5]
-		event_level["HT"] = ak.sum(Jet_HT.pt, axis=1, keepdims=False) 
-		del Jet_HT
-		
-		#############
-		#Corrections
-		#############
-		METPhiCorrections = METPhi_Corrections(uncorrMET_pt = event_level.MET_pt,uncorrMET_phi = event_level.MET_Phi, run_num = event_level.run, isData = self.isData, nPV = event_level.Num_PV, year=2018)
-		event_level["MET_pt"]= METPhiCorrections["MET_pt_corr"]
-		event_level["MET_Phi"]= METPhiCorrections["MET_phi_corr"]
-
-		#Corrections to be applied to inidiviual backgrounds
-		if (not(self.isData)): 
-			#Top pT reweighting
-			if ("TTTo" in dataset): # or "ST_" in dataset):
-				gen_top = GenPart[(GenPart.id == 6) & (GenPart.status == 22)] 
-				gen_antitop = GenPart[(GenPart.id == -6) & (GenPart.status == 22)]
-				SF_top = 0.103*np.exp(-0.0118*gen_top.pt) - 1.34e-4*gen_top.pt + 0.973
-				SF_antitop = 0.103*np.exp(-0.0118*gen_antitop.pt) - 1.34e-4*gen_antitop.pt + 0.973
-				topPtWeight = ak.firsts(np.sqrt(SF_top*SF_antitop))
-			elif ("ST_" in dataset):
-				gen_top = GenPart[(abs(GenPart.id) == 6) & (GenPart.status == 22)]
-				SF_top = 0.103*np.exp(-0.0118*gen_top.pt) - 1.34e-4*gen_top.pt + 0.973
-				topPtWeight = ak.firsts(SF_top)
-			else:
-				topPtWeight = ak.ones_like(event_level.run)
-
-			event_level["event_weight"] = event_level.event_weight*topPtWeight #Update event_weight
-		
-			#QCD EWK Corrections 
-			if ("DYJetsToLL_M-50" in dataset or "DYJetstoLL_M-4To50" in dataset):
-				gen_Z = GenPart[(GenPart.id == 23) & (GenPart.status == 22)]	
-				qcdZWeight = kFactor.getQCDZ(ak.firsts(gen_Z.pt))	 
-				genZ_pt_NoneHandling = ak.fill_none(ak.firsts(gen_Z.pt),-999)
-				ewkZWeight = kFactor.getEWKZ(genZ_pt_NoneHandling)
-				combinedWZgenpTWeight = ewkZWeight*qcdZWeight*0.934
-			elif ("WJets" in dataset):
-				gen_W = GenPart[(abs(GenPart.id) == 24) & (GenPart.status == 22)]	
-				qcdWWeight = kFactor.getQCDW(ak.firsts(gen_W.pt))	 
-				genW_pt_NoneHandling = ak.fill_none(ak.firsts(gen_W.pt),-999)
-				ewkWWeight = kFactor.getEWKW(genW_pt_NoneHandling)	 
-				combinedWZgenpTWeight = ewkWWeight*qcdWWeight*0.9135
-			else:
-				combinedWZgenpTWeight = ak.ones_like(event_level.run)
-		   
-			event_level["event_weight"] = event_level.event_weight*combinedWZgenpTWeight #Update event_weight
-			event_level["event_weight"] = ak.fill_none(event_level.event_weight,1) #Edge cases
-			#Pile Up Reweighting
-			#PU_reweight = PU_Reweight.getPUSF(event_level.Pileup_nTrueInt, era = str(2018), var = 'nominal')
-			PU_reweight = getPUSF(event_level.Pileup_nTrueInt, era = str(2018), var = 'nominal')
-			event_level["event_weight"] = event_level.event_weight*PU_reweight
-
-			#Muon SFs
-			#Muon ID Set
-			muon_SF_Map = (muon.pt > 50) & (abs(muon.eta) < 2.4)
-			n_Muon = ak.num(muon[muon_SF_Map])
-			MuonID_SF = self.MuonID["2018"]["NUM_probe_TightRelTkIso_DEN_MediumIDProbes"].evaluate(abs(ak.to_numpy(ak.flatten(muon[muon_SF_Map].eta))),ak.to_numpy(ak.flatten(muon[muon_SF_Map].pt)),"nominal")	
-
-			#Muon Trigger SF
-			MuonTrigger_SF = self.MuonTrigger["2018"]["NUM_HLT_DEN_MediumIDTightRelIsoProbes"].evaluate(abs(ak.to_numpy(ak.flatten(muon[muon_SF_Map].eta))),ak.to_numpy(ak.flatten(muon[muon_SF_Map].pt)),"nominal")
-
-			#Combine Muon and Trigger scale factors
-			MuonSF = MuonID_SF*MuonTrigger_SF
-			MuonSF = ak.unflatten(MuonSF,n_Muon)
-			Muon_Weight = ak.prod(MuonSF,axis=-1)
-			event_level["event_weight"] = event_level.event_weight*Muon_Weight
-		
-		#Data Corrections (may need to move around and futz with where this is)
-		if (self.isData):
-			#GOLDENJSON selection
-			lumi_mask_arr = self.lumi_mask[str(self.year)](events.run, events.luminosityBlock)
+			AK8Jet = ak.zip(
+				{
+					"AK8JetDropMass": events.FatJet_msoftdrop,
+					"pt": events.FatJet_pt,
+					"eta": events.FatJet_eta,
+					"phi": events.FatJet_phi,
+					"nAK8Jet": events.nFatJet,
+					"softDropM": events.FatJet_msoftdrop,
+					"Id": events.FatJet_jetId,
+					"mass": events.FatJet_mass, 
+				},
+				with_name="AK8JetArray",
+				behavior=candidate.behavior,
+			)
 			
-			#Apply lumi mask selection to objects
-			boostedtau = boostedtau[lumi_mask_arr]
-			AK8Jet = AK8Jet[lumi_mask_arr]
-			Jet = Jet[lumi_mask_arr]
-			electron = electron[lumi_mask_arr]
-			muon = muon[lumi_mask_arr]
-			event_level = event_level[lumi_mask_arr]	
-		
-		#############
-		#Trigger and Offline Cuts
-		#############
-		n_Trigger = 0
-		if (self.ApplyTrigger):
+			Jet = ak.zip(
+				{
+					"pt": events.Jet_pt,
+					"JetId": events.Jet_jetId, #Not sure that this is correct
+					"eta": events.Jet_eta,
+					"phi": events.Jet_phi,
+					"mass": events.Jet_mass,
+					"nJet": events.nJet,
+					#"DeepCSVTags_b": events.Jet_btagCSVV2,
+					"DeepCSVTags_b": events.Jet_btagDeepB,
+				},
+				with_name="PFJetArray",
+				behavior=candidate.behavior,
+			)
+
+			#Gen level information
+			if (not(self.isData)):
+				GenPart = ak.zip(
+						{
+							"pt": events.GenPart_pt,
+							"id": events.GenPart_pdgId,
+							"status": events.GenPart_status,
+							"mother_id": events.GenPart_genPartIdxMother,
+						},
+						with_name="GenParticleArray",
+						behavior=candidate.behavior, 
+				)
+			
+			print("!!!=====Dataset=====!!!!")	
+			print(type(dataset))
+			print(dataset)
+
+			if not(self.isData):
+				#print("Is MC events are equal to gen weights")
+				event_level["event_weight"] = events.genWeight #Set the event weight to the gen weight
+				event_level["Pileup_nTrueInt"] = events.Pileup_nTrueInt
+			
+
+			#############
+			#Set Up Histograms
+			#############	
+
+			#Control Regions Axis
+			region_array = ["All","ZCR","TCR","FakeCR"]
+			#region_array = ["All","TCR","NotTCR","ZCR","NotZCR"]
+			#region_array = ["All","TightTCR","NotTCR","LooseTCR","ZCR","NotZCR"] #"NotZCR"]
+			#region_array = ["All"] 
+			category_axis = hist.axis.StrCategory(region_array, growth=False, name = "category")
+
+			#Basic Kinematic histograms Boosted tau
+			h_boostedtau_pT_Trigger = hist.Hist.new.Regular(20,0,600,label = r"Boosted $\tau$ $p_T$ [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_Leadingboostedtau_pT_Trigger = hist.Hist.new.Regular(20,0,600,label = r"Boosted $\tau$ Leading $p_T$ [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_Subleadingboostedtau_pT_Trigger = hist.Hist.new.Regular(20,0,600,label = r"Boosted $\tau$ Subleading $p_T$ [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_Thirdleadingboostedtau_pT_Trigger = hist.Hist.new.Regular(20,0,600,label = r"Boosted $\tau$ 3rd-leading $p_T$ [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_Fourthleadingboostedtau_pT_Trigger = hist.Hist.new.Regular(20,0,600,label = r"Boosted $\tau$ 4th-leading $p_T$ [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_boostedtau_eta_Trigger = hist.Hist.new.Regular(20,-4,4,label = r"Boosted $\tau$ $\eta$",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_boostedtau_phi_Trigger = hist.Hist.new.Regular(20,-pi,pi,label = r"Boosted$\tau$ $\phi$",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_boostedtau_raw_iso_Trigger = hist.Hist.new.Regular(20,-1,1,label=r"Raw MVA Score",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			
+			#Basic Kinematic histograms leptons (muons and electrons)
+			h_electron_pT_Trigger = hist.Hist.new.Regular(15,0,300, label = r"e $p_T$ [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_Leadingelectron_pT_Trigger = hist.Hist.new.Regular(15,0,300, label = r"e Leading $p_T$ [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_electron_eta_Trigger = hist.Hist.new.Regular(20,-4,4, label = r"e $\eta$",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_electron_phi_Trigger = hist.Hist.new.Regular(20,-pi,pi, label = r"e Leading $\phi$",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_muon_pT_Trigger = hist.Hist.new.Regular(15,0,600, label = r"$\mu$ $p_T$ [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_Leadingmuon_pT_Trigger = hist.Hist.new.Regular(10,0,500, label = r"$\mu$ Leading $p_T$ [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_muon_eta_Trigger = hist.Hist.new.Regular(20,-4,4, label = r"$\mu$ $\eta$",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_Leadingmuon_eta_Trigger = hist.Hist.new.Regular(20,-4,4, label = r"$\mu$ $\eta$",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_muon_phi_Trigger = hist.Hist.new.Regular(20,-pi,pi, label = r"$\mu$ $\phi$",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			
+			#Basic Kinematic histograms Jets (check which Jets most useful based on 
+			h_Jet_pT_Trigger = hist.Hist.new.Regular(50,0,700, label = r"Jet $p_T$ [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_LeadingJet_pT_Trigger = hist.Hist.new.Regular(50,0,700, label = r"Jet Leading $p_T$ [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_Jet_eta_Trigger = hist.Hist.new.Regular(20,-4,4, label = r"Jet $\eta$",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_Jet_phi_Trigger = hist.Hist.new.Regular(20,-pi,pi, label = r"Jet $\phi$",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_AK8Jet_pT_Trigger = hist.Hist.new.Regular(50,0,700, label = r"AK8Jet $p_T$ [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_LeadingAK8Jet_pT_Trigger = hist.Hist.new.Regular(50,0,700, label = r"AK8Jet Leading $p_T$ [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_AK8Jet_eta_Trigger = hist.Hist.new.Regular(20,-4,4, label = r"AK8Jet $\eta$",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_AK8Jet_phi_Trigger = hist.Hist.new.Regular(20,-pi,pi, label = r"AK8Jet $\phi$",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_nAK8Jet_Trigger = hist.Hist.new.Regular(10,0,10, label=r"Number of AK8Jets",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			
+			#Add MET, HT and MHT histogram
+			h_MET_Trigger = hist.Hist.new.Regular(20,0,500, label=r"MET [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_HT_Trigger = hist.Hist.new.Regular(40,0,1200, label=r"HT [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_MHT_Trigger = hist.Hist.new.Regular(20,0,500, label=r"MHT [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+
+			#Add Z Multiplicity and BJet multiplicity
+			h_ZMult = hist.Hist.new.Regular(6,0,6, label=r"Z Boson Multiplicity",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_bJetMult = hist.Hist.new.Regular(6,0,6, label = r"b-Jet Multiplicity",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+
+
+			#di-boosted tau delta Rs
+			h_leading_boostedtau_deltaR = hist.Hist.new.Regular(10,0,5, label = r"Leading boosted $\tau$ pair $\Delta$R",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_nextleading_boostedtau_deltaR = hist.Hist.new.Regular(10,0,5, label = r"Next leading boosted $\tau$ pair $\Delta$R",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+
+			#Reconstructed Mass
+			h_FourTau_Mass = hist.Hist.new.Regular(15,0,3000,label=r"Reconstructed Radion Mass [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+
+			#Add cutflow and N-1 tables
+			if (self.ApplyTrigger):
+				h_CutFlow = hist.Hist.new.StrCategory(["SkimOnly","Trigger""LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]).Double()
+				#h_NMinus1 = hist.Hist.new.StrCategory(["SkimOnly","METCut","nFatJetReq","FlagReq","PVSelec","LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","Trigger","VisMassSelec","Higgs_dR"]).Double()
+			else:
+				h_CutFlow = hist.Hist.new.StrCategory(["SkimOnly","LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]).Double()
+				#h_NMinus1 = hist.Hist.new.StrCategory(["SkimOnly","METCut","nFatJetReq","FlagReq","PVSelec","LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]).Double()
+
+			#Fill initial entries in skim and N-1 histograms (Old version raw counts not good for evaulatuing MC)
+			n_Skim = np.size(event_level.nFatJet)
+			h_CutFlow.fill("SkimOnly",weight=n_Skim)
+			#h_NMinus1.fill("SkimOnly",weight=0)
+			
+			#Obtain the cross section scale factor	
 			if (self.isData):
-				if ("Data_Mu" == dataset):
-				#	print("Applying Single Muon Trigger (Muon Data)")
-				#	print("Event Count before Trigger+Selections: %d"%ak.num(event_level.HT,axis=0))
+				CrossSec_Weight = 1 
+			else:
+				CrossSec_Weight = weight_calc(dataset,self.sumWEvents_Dict[dataset])
+
+			#Obtain MHT
+			Jet_MHT = Jet[Jet.pt > 30]
+			Jet_MHT = Jet_MHT[np.abs(Jet_MHT.eta) < 5]
+			Jet_MHT = Jet_MHT[Jet_MHT.JetId > 0.5]
+			event_level["MHT_x"] = ak.sum(Jet_MHT.pt*np.cos(Jet_MHT.phi),axis=1,keepdims=False) 
+			event_level["MHT_y"] = ak.sum(Jet_MHT.pt*np.sin(Jet_MHT.phi),axis=1,keepdims=False)
+			event_level["MHT"] = np.sqrt(event_level.MHT_x**2 + event_level.MHT_y**2)
+			del Jet_MHT
+			
+			#Obtain HT
+			Jet_HT = Jet[Jet.pt > 30]
+			Jet_HT = Jet_HT[np.abs(Jet_HT.eta) < 3]
+			Jet_HT = Jet_HT[Jet_HT.JetId > 0.5]
+			event_level["HT"] = ak.sum(Jet_HT.pt, axis=1, keepdims=False) 
+			del Jet_HT
+			
+			#############
+			#Corrections
+			#############
+			METPhiCorrections = METPhi_Corrections(uncorrMET_pt = event_level.MET_pt,uncorrMET_phi = event_level.MET_Phi, run_num = event_level.run, isData = self.isData, nPV = event_level.Num_PV, year=2018)
+			event_level["MET_pt"]= METPhiCorrections["MET_pt_corr"]
+			event_level["MET_Phi"]= METPhiCorrections["MET_phi_corr"]
+
+			#Corrections to be applied to inidiviual backgrounds
+			if (not(self.isData)): 
+				#Top pT reweighting
+				if ("TTTo" in dataset): # or "ST_" in dataset):
+					gen_top = GenPart[(GenPart.id == 6) & (GenPart.status == 22)] 
+					gen_antitop = GenPart[(GenPart.id == -6) & (GenPart.status == 22)]
+					SF_top = 0.103*np.exp(-0.0118*gen_top.pt) - 1.34e-4*gen_top.pt + 0.973
+					SF_antitop = 0.103*np.exp(-0.0118*gen_antitop.pt) - 1.34e-4*gen_antitop.pt + 0.973
+					topPtWeight = ak.firsts(np.sqrt(SF_top*SF_antitop))
+				elif ("ST_" in dataset):
+					gen_top = GenPart[(abs(GenPart.id) == 6) & (GenPart.status == 22)]
+					SF_top = 0.103*np.exp(-0.0118*gen_top.pt) - 1.34e-4*gen_top.pt + 0.973
+					topPtWeight = ak.firsts(SF_top)
+				else:
+					topPtWeight = ak.ones_like(event_level.run)
+
+				event_level["event_weight"] = event_level.event_weight*topPtWeight #Update event_weight
+			
+				#QCD EWK Corrections 
+				if ("DYJetsToLL_M-50" in dataset or "DYJetstoLL_M-4To50" in dataset):
+					gen_Z = GenPart[(GenPart.id == 23) & (GenPart.status == 22)]	
+					qcdZWeight = kFactor.getQCDZ(ak.firsts(gen_Z.pt))	 
+					genZ_pt_NoneHandling = ak.fill_none(ak.firsts(gen_Z.pt),-999)
+					ewkZWeight = kFactor.getEWKZ(genZ_pt_NoneHandling)
+					combinedWZgenpTWeight = ewkZWeight*qcdZWeight*0.934
+				elif ("WJets" in dataset):
+					gen_W = GenPart[(abs(GenPart.id) == 24) & (GenPart.status == 22)]	
+					qcdWWeight = kFactor.getQCDW(ak.firsts(gen_W.pt))	 
+					genW_pt_NoneHandling = ak.fill_none(ak.firsts(gen_W.pt),-999)
+					ewkWWeight = kFactor.getEWKW(genW_pt_NoneHandling)	 
+					combinedWZgenpTWeight = ewkWWeight*qcdWWeight*0.9135
+				else:
+					combinedWZgenpTWeight = ak.ones_like(event_level.run)
+			   
+				event_level["event_weight"] = event_level.event_weight*combinedWZgenpTWeight #Update event_weight
+				event_level["event_weight"] = ak.fill_none(event_level.event_weight,1) #Edge cases
+				#Pile Up Reweighting
+				#PU_reweight = PU_Reweight.getPUSF(event_level.Pileup_nTrueInt, era = str(2018), var = 'nominal')
+				PU_reweight = getPUSF(event_level.Pileup_nTrueInt, era = str(2018), var = 'nominal')
+				event_level["event_weight"] = event_level.event_weight*PU_reweight
+
+				#Muon SFs
+				#Muon ID Set
+				muon_SF_Map = (muon.pt > 50) & (abs(muon.eta) < 2.4)
+				n_Muon = ak.num(muon[muon_SF_Map])
+				MuonID_SF = self.MuonID["2018"]["NUM_probe_TightRelTkIso_DEN_MediumIDProbes"].evaluate(abs(ak.to_numpy(ak.flatten(muon[muon_SF_Map].eta))),ak.to_numpy(ak.flatten(muon[muon_SF_Map].pt)),"nominal")	
+
+				#Muon Trigger SF
+				MuonTrigger_SF = self.MuonTrigger["2018"]["NUM_HLT_DEN_MediumIDTightRelIsoProbes"].evaluate(abs(ak.to_numpy(ak.flatten(muon[muon_SF_Map].eta))),ak.to_numpy(ak.flatten(muon[muon_SF_Map].pt)),"nominal")
+
+				#Combine Muon and Trigger scale factors
+				MuonSF = MuonID_SF*MuonTrigger_SF
+				MuonSF = ak.unflatten(MuonSF,n_Muon)
+				Muon_Weight = ak.prod(MuonSF,axis=-1)
+				event_level["event_weight"] = event_level.event_weight*Muon_Weight
+			
+			#Data Corrections (may need to move around and futz with where this is)
+			if (self.isData):
+				#GOLDENJSON selection
+				lumi_mask_arr = self.lumi_mask[str(self.year)](events.run, events.luminosityBlock)
+				
+				#Apply lumi mask selection to objects
+				boostedtau = boostedtau[lumi_mask_arr]
+				AK8Jet = AK8Jet[lumi_mask_arr]
+				Jet = Jet[lumi_mask_arr]
+				electron = electron[lumi_mask_arr]
+				muon = muon[lumi_mask_arr]
+				event_level = event_level[lumi_mask_arr]	
+			
+			#############
+			#Trigger and Offline Cuts
+			#############
+			n_Trigger = 0
+			if (self.ApplyTrigger):
+				if (self.isData):
+					if ("Data_Mu" == dataset):
+					#	print("Applying Single Muon Trigger (Muon Data)")
+					#	print("Event Count before Trigger+Selections: %d"%ak.num(event_level.HT,axis=0))
+						#HLT Trigger(s)
+						trigger_cond = event_level.Mu_Trigger
+			
+						boostedtau = boostedtau[trigger_cond]
+						AK8Jet = AK8Jet[trigger_cond]
+						Jet = Jet[trigger_cond]
+						electron = electron[trigger_cond]
+						muon = muon[trigger_cond]
+						event_level = event_level[trigger_cond]
+
+						#Muon Trigger offline selection
+						nMuon_Cond = ak.any(muon.nMu > 0, axis = 1) 
+						boostedtau = boostedtau[nMuon_Cond]
+						AK8Jet = AK8Jet[nMuon_Cond]
+						Jet = Jet[nMuon_Cond]
+						electron = electron[nMuon_Cond]
+						muon = muon[nMuon_Cond]
+						event_level = event_level[nMuon_Cond]				
+
+						#Combined pT eta and ID selection
+						mu_selec_Mask = (
+								(muon.pt > 52) &
+								(abs(muon.eta) < 2.4) &
+								(muon.IDSelec) &
+								(muon.RelIso < 0.15)
+						)
+						mu_selec_cond = ak.any(mu_selec_Mask,axis=1)
+						
+						boostedtau = boostedtau[mu_selec_cond]
+						AK8Jet = AK8Jet[mu_selec_cond]
+						Jet = Jet[mu_selec_cond]
+						electron = electron[mu_selec_cond]
+						muon = muon[mu_selec_cond]
+						event_level = event_level[mu_selec_cond]	
+						
+					#	print("Single Muon Trigger and Selections Applied To Dataset %s"%dataset)
+					#	print("Event Count after Trigger+Selections: %d"%ak.num(event_level.HT,axis=0))
+
+					#JetHT Data
+					if ("Data_HT" == dataset):
+					#	print("Applying JetHT Trigger (Data JetHT)")
+					#	print("Event Count before Trigger+Selections: %d"%ak.num(event_level.HT,axis=0))
+						#HLT Trigger(s)
+						boostedtau = boostedtau[event_level.METHTMHT_Trigger]
+						AK8Jet = AK8Jet[event_level.METHTMHT_Trigger]
+						Jet = Jet[event_level.METHTMHT_Trigger]
+						electron = electron[event_level.METHTMHT_Trigger]
+						muon = muon[event_level.METHTMHT_Trigger]
+						event_level = event_level[event_level.METHTMHT_Trigger]
+
+						#Offline Cuts
+						HT_Cond = event_level.HT > 550
+						MET_Cond = event_level.MET_pt > 110
+						MHT_Cond = event_level.MHT > 110
+						HTMETMHT_Selec = HT_Cond & MET_Cond & MHT_Cond
+					
+						boostedtau = boostedtau[HTMETMHT_Selec]
+						AK8Jet = AK8Jet[HTMETMHT_Selec]
+						Jet = Jet[HTMETMHT_Selec]
+						electron = electron[HTMETMHT_Selec]
+						muon = muon[HTMETMHT_Selec]
+						event_level = event_level[HTMETMHT_Selec]
+						
+					#	print("JetHT Trigger and Selections Applied To Dataset %s"%dataset)
+					#	print("Event Count after Trigger+Selections: %d"%ak.num(event_level.HT,axis=0))
+				else: #Apply Triggers to MC
 					#HLT Trigger(s)
-					trigger_cond = event_level.Mu_Trigger
-		
-					boostedtau = boostedtau[trigger_cond]
-					AK8Jet = AK8Jet[trigger_cond]
-					Jet = Jet[trigger_cond]
-					electron = electron[trigger_cond]
-					muon = muon[trigger_cond]
-					event_level = event_level[trigger_cond]
+					print("About to Apply both sets of triggers to MC")
+					print("Event Count before Trigger+Selections: %d"%ak.num(event_level.HT,axis=0))
+					init_event_count = ak.num(event_level.HT,axis=0) #Store initial number of events
+					trigger_cond_mu = event_level.Mu_Trigger
+			
+					boostedtau_mu =  boostedtau[trigger_cond_mu]
+					AK8Jet_mu =  AK8Jet[trigger_cond_mu]
+					Jet_mu =  Jet[trigger_cond_mu]
+					electron_mu =  electron[trigger_cond_mu]
+					muon_mu =  muon[trigger_cond_mu]
+					GenPart_mu = GenPart[trigger_cond_mu]
+					event_level_mu =  event_level[trigger_cond_mu]
 
 					#Muon Trigger offline selection
-					nMuon_Cond = ak.any(muon.nMu > 0, axis = 1) 
-					boostedtau = boostedtau[nMuon_Cond]
-					AK8Jet = AK8Jet[nMuon_Cond]
-					Jet = Jet[nMuon_Cond]
-					electron = electron[nMuon_Cond]
-					muon = muon[nMuon_Cond]
-					event_level = event_level[nMuon_Cond]				
-
+					nMuon_Cond = ak.any(muon_mu.nMu > 0, axis = 1) 
+					boostedtau_mu = boostedtau_mu[nMuon_Cond]
+					AK8Jet_mu = AK8Jet_mu[nMuon_Cond]
+					Jet_mu = Jet_mu[nMuon_Cond]
+					electron_mu = electron_mu[nMuon_Cond]
+					muon_mu = muon_mu[nMuon_Cond]
+					GenPart_mu = GenPart_mu[nMuon_Cond]
+					event_level_mu = event_level_mu[nMuon_Cond]				
+						
 					#Combined pT eta and ID selection
 					mu_selec_Mask = (
-							(muon.pt > 52) &
-							(abs(muon.eta) < 2.4) &
-							(muon.IDSelec) &
-							(muon.RelIso < 0.15)
-					)
+							(muon_mu.pt > 52) &
+							(abs(muon_mu.eta) < 2.4) &
+							(muon_mu.IDSelec) &
+							(muon_mu.RelIso < 0.15)
+						)
 					mu_selec_cond = ak.any(mu_selec_Mask,axis=1)
 					
-					boostedtau = boostedtau[mu_selec_cond]
-					AK8Jet = AK8Jet[mu_selec_cond]
-					Jet = Jet[mu_selec_cond]
-					electron = electron[mu_selec_cond]
-					muon = muon[mu_selec_cond]
-					event_level = event_level[mu_selec_cond]	
+					boostedtau_mu = boostedtau_mu[mu_selec_cond]
+					AK8Jet_mu = AK8Jet_mu[mu_selec_cond]
+					Jet_mu = Jet_mu[mu_selec_cond]
+					electron_mu = electron_mu[mu_selec_cond]
+					muon_mu = muon_mu[mu_selec_cond]
+					event_level_mu = event_level_mu[mu_selec_cond]	
+					GenPart_mu = GenPart_mu[mu_selec_cond]
 					
-				#	print("Single Muon Trigger and Selections Applied To Dataset %s"%dataset)
-				#	print("Event Count after Trigger+Selections: %d"%ak.num(event_level.HT,axis=0))
+					#print("Single Muon Trigger and Selections Applied To MC %s"%dataset)
+					#print("Event Count after Trigger+Selections: %d"%ak.num(event_level_mu.HT,axis=0))
+					mu_trigger_event_count = ak.num(event_level_mu.HT,axis=0)
 
-				#JetHT Data
-				if ("Data_HT" == dataset):
-				#	print("Applying JetHT Trigger (Data JetHT)")
-				#	print("Event Count before Trigger+Selections: %d"%ak.num(event_level.HT,axis=0))
-					#HLT Trigger(s)
-					boostedtau = boostedtau[event_level.METHTMHT_Trigger]
-					AK8Jet = AK8Jet[event_level.METHTMHT_Trigger]
-					Jet = Jet[event_level.METHTMHT_Trigger]
-					electron = electron[event_level.METHTMHT_Trigger]
-					muon = muon[event_level.METHTMHT_Trigger]
-					event_level = event_level[event_level.METHTMHT_Trigger]
-
+					#Fail Single Muon trigger and pass Jet HT Trigger
+					boostedtau_HT = boostedtau[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+					AK8Jet_HT = AK8Jet[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+					Jet_HT = Jet[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+					electron_HT = electron[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+					muon_HT = muon[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+					GenPart_HT = GenPart[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+					event_level_HT = event_level[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+					
 					#Offline Cuts
-					HT_Cond = event_level.HT > 550
-					MET_Cond = event_level.MET_pt > 110
-					MHT_Cond = event_level.MHT > 110
-					HTMETMHT_Selec = HT_Cond & MET_Cond & MHT_Cond
-			   	
-					boostedtau = boostedtau[HTMETMHT_Selec]
-					AK8Jet = AK8Jet[HTMETMHT_Selec]
-					Jet = Jet[HTMETMHT_Selec]
-					electron = electron[HTMETMHT_Selec]
-					muon = muon[HTMETMHT_Selec]
-					event_level = event_level[HTMETMHT_Selec]
-					
-				#	print("JetHT Trigger and Selections Applied To Dataset %s"%dataset)
-				#	print("Event Count after Trigger+Selections: %d"%ak.num(event_level.HT,axis=0))
-			else: #Apply Triggers to MC
-				#HLT Trigger(s)
-				print("About to Apply both sets of triggers to MC")
-				print("Event Count before Trigger+Selections: %d"%ak.num(event_level.HT,axis=0))
-				init_event_count = ak.num(event_level.HT,axis=0) #Store initial number of events
-				trigger_cond_mu = event_level.Mu_Trigger
-		
-				boostedtau_mu =  boostedtau[trigger_cond_mu]
-				AK8Jet_mu =  AK8Jet[trigger_cond_mu]
-				Jet_mu =  Jet[trigger_cond_mu]
-				electron_mu =  electron[trigger_cond_mu]
-				muon_mu =  muon[trigger_cond_mu]
-				GenPart_mu = GenPart[trigger_cond_mu]
-				event_level_mu =  event_level[trigger_cond_mu]
+					HTMETMHT_Selec = ((event_level_HT.HT > 550) &
+										   (event_level_HT.MET_pt > 110) &
+										   (event_level_HT.MHT > 110)
+										)
+					boostedtau_HT = boostedtau_HT[HTMETMHT_Selec]
+					AK8Jet_HT = AK8Jet_HT[HTMETMHT_Selec]
+					Jet_HT = Jet_HT[HTMETMHT_Selec]
+					electron_HT = electron_HT[HTMETMHT_Selec]
+					muon_HT = muon_HT[HTMETMHT_Selec]
+					GenPart_HT = GenPart_HT[HTMETMHT_Selec]
+					event_level_HT = event_level_HT[HTMETMHT_Selec]
 
-				#Muon Trigger offline selection
-				nMuon_Cond = ak.any(muon_mu.nMu > 0, axis = 1) 
-				boostedtau_mu = boostedtau_mu[nMuon_Cond]
-				AK8Jet_mu = AK8Jet_mu[nMuon_Cond]
-				Jet_mu = Jet_mu[nMuon_Cond]
-				electron_mu = electron_mu[nMuon_Cond]
-				muon_mu = muon_mu[nMuon_Cond]
-				GenPart_mu = GenPart_mu[nMuon_Cond]
-				event_level_mu = event_level_mu[nMuon_Cond]				
+					#Memory management
+					boostedtau = ak.concatenate((boostedtau_mu,boostedtau_HT))
+					AK8Jet = ak.concatenate((AK8Jet_mu,AK8Jet_HT))
+					Jet = ak.concatenate((Jet_mu,Jet_HT))
+					electron = ak.concatenate((electron_mu,electron_HT))
+					muon = ak.concatenate((muon_mu,muon_HT))
+					GenPart = ak.concatenate((GenPart_mu, GenPart_HT))
+					event_level = ak.concatenate((event_level_mu,event_level_HT))
 					
-				#Combined pT eta and ID selection
-				mu_selec_Mask = (
-						(muon_mu.pt > 52) &
-						(abs(muon_mu.eta) < 2.4) &
-						(muon_mu.IDSelec) &
-						(muon_mu.RelIso < 0.15)
-					)
-				mu_selec_cond = ak.any(mu_selec_Mask,axis=1)
-				
-				boostedtau_mu = boostedtau_mu[mu_selec_cond]
-				AK8Jet_mu = AK8Jet_mu[mu_selec_cond]
-				Jet_mu = Jet_mu[mu_selec_cond]
-				electron_mu = electron_mu[mu_selec_cond]
-				muon_mu = muon_mu[mu_selec_cond]
-				event_level_mu = event_level_mu[mu_selec_cond]	
-				GenPart_mu = GenPart_mu[mu_selec_cond]
-				
-				#print("Single Muon Trigger and Selections Applied To MC %s"%dataset)
-				#print("Event Count after Trigger+Selections: %d"%ak.num(event_level_mu.HT,axis=0))
-				mu_trigger_event_count = ak.num(event_level_mu.HT,axis=0)
+				#	print("JetHT Trigger and Selections Applied To MC %s"%dataset)
+				#	print("Event Count after Trigger+Selections: %d"%ak.num(event_level_HT.HT,axis=0))
+					HT_trigger_event_count = ak.num(event_level_HT.HT,axis=0)
 
-				#Fail Single Muon trigger and pass Jet HT Trigger
-				boostedtau_HT = boostedtau[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
-				AK8Jet_HT = AK8Jet[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
-				Jet_HT = Jet[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
-				electron_HT = electron[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
-				muon_HT = muon[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
-				GenPart_HT = GenPart[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
-				event_level_HT = event_level[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
-		   		
-				#Offline Cuts
-				HTMETMHT_Selec = ((event_level_HT.HT > 550) &
-									   (event_level_HT.MET_pt > 110) &
-									   (event_level_HT.MHT > 110)
-									)
-				boostedtau_HT = boostedtau_HT[HTMETMHT_Selec]
-				AK8Jet_HT = AK8Jet_HT[HTMETMHT_Selec]
-				Jet_HT = Jet_HT[HTMETMHT_Selec]
-				electron_HT = electron_HT[HTMETMHT_Selec]
-				muon_HT = muon_HT[HTMETMHT_Selec]
-				GenPart_HT = GenPart_HT[HTMETMHT_Selec]
-				event_level_HT = event_level_HT[HTMETMHT_Selec]
+					#Verify event counts make sense
+					if (init_event_count < HT_trigger_event_count + mu_trigger_event_count):
+						print("Counts don't make sense, have more events prior to trigger than after trigger")
+						print("Count before trigger: %d"%init_event_count)
+						print("Single Muon Selection count: %d"%mu_trigger_event_count)
+						print("Jet HT selection count: %d"%HT_trigger_event_count)
+
+					del boostedtau_mu, boostedtau_HT
+					del AK8Jet_mu, AK8Jet_HT
+					del Jet_mu, Jet_HT
+					del electron_mu, electron_HT
+					del muon_mu, muon_HT
+					del GenPart_mu, GenPart_HT
+					del event_level_mu, event_level_HT
+
+				#Fill post trigger entries in skim and N-1 histograms
+				n_Trigger = np.size(event_level.nFatJet)
+				h_CutFlow.fill("Trigger",weight=n_Trigger)
+				#h_NMinus1.fill("Trigger",weight=n_PreTrigger - n_Trigger)
+
+			#Force muon selection to check if that is the cause of the imbalance
+			if (not(self.ApplyTrigger)):
+				print("!!No Trigger + Selections!!")
+				print("Forcing Muon selections on all objects")
+				Muon_Events = ak.num(muon.pt,axis=1) > 0
+				boostedtau = boostedtau[Muon_Events]
+				AK8Jet = AK8Jet[Muon_Events]
+				Jet = Jet[Muon_Events]
+				electron = electron[Muon_Events]
+				muon = muon[Muon_Events]
+				event_level = event_level[Muon_Events]
+			
+				
+			#############
+			#Cut Selections
+			#############
+			#Noise Filters 
+			Flag_Array = ["Flag_goodVertices", "Flag_globalSuperTightHalo2016Filter", "Flag_HBHENoiseFilter", "Flag_HBHENoiseIsoFilter", "Flag_EcalDeadCellTriggerPrimitiveFilter", "Flag_BadPFMuonFilter", "Flag_BadPFMuonDzFilter", "Flag_hfNoisyHitsFilter", "Flag_eeBadScFilter", "Flag_ecalBadCalibFilter"]
+			flag_cond = event_level[Flag_Array[0]] #Initialize the condition as the first flag since logical and it with itself will act like an identiy operator
+			
+			for flag in Flag_Array:
+				flag_cond = flag_cond & event_level[flag]
+			
+			boostedtau = boostedtau[flag_cond]
+			AK8Jet = AK8Jet[flag_cond]
+			Jet = Jet[flag_cond]
+			electron = electron[flag_cond]
+			muon = muon[flag_cond]
+			event_level = event_level[flag_cond]	
+
+		#	#Fill post flag selections entries in skim and N-1 histograms
+		#	n_FlagSelec = np.size(event_level.nFatJet)
+		#	h_CutFlow.fill("FlagReq",weight=n_FlagSelec)
+		#	h_NMinus1.fill("FlagReq",weight=n_FatJet - n_FlagSelec)
+
+			#PV selections
+			ndof_cond = event_level.PV_ndof > 4
+			PVz_cond = np.abs(event_level.PV_z) < 24
+			PVr_cond = np.sqrt(event_level.PV_x**2 + event_level.PV_y**2) < 2
+			#PV_Cond = np.bitwise_and(ndof_cond,np.bitwise_and(PVz_cond,PVr_cond))
+			PV_Cond = ndof_cond & PVz_cond & PVr_cond
+			
+			boostedtau = boostedtau[PV_Cond]
+			AK8Jet = AK8Jet[PV_Cond]
+			Jet = Jet[PV_Cond]
+			electron = electron[PV_Cond]
+			muon = muon[PV_Cond]
+			event_level = event_level[PV_Cond]	
+
+		#	#Fill post PV selection entries in skim and N-1 histograms
+		#	n_PVSelec = np.size(event_level.nFatJet)
+		#	h_CutFlow.fill("PVSelec",weight=n_PVSelec)
+		#	h_NMinus1.fill("PVSelec",weight=n_FlagSelec - n_PVSelec)
+
+			#n_PreTrigger = n_PVSelec #Set number of events left before trigger seleciton to PV selection	
+			n_PreTrigger = n_Skim #Set number of events left before trigger seleciton to PV selection	
+			#Temp values of the Tau selections
+			n_LeadBoostedTau = -1
+			n_SubLeadBoostedTau = -1
+			n_3rdLeadBoostedTau = -1
+			n_4thLeadBoostedTau = -1
+				
+			#Boosted tau selections
+			if (self.nBoostedTau_Selec > 0):
+				#Impose selections boosted taus
+				pT_Cond = boostedtau.pt > 30
+				eta_Cond = np.abs(boostedtau.eta) < 2.3
+				decayMode_Cond = boostedtau.decay >= 0.5
+				DBT_Iso_Cond = boostedtau.DBT >= 0.9 #0.85
+				
+				boostedtau_selec_cond = pT_Cond & eta_Cond & decayMode_Cond & DBT_Iso_Cond
+				boostedtau = boostedtau[boostedtau_selec_cond] #Apply selections to all individual taus
+			
+				#Require events have at least 1 boosted tau
+				lead_boostedtau_cond = ak.num(boostedtau,axis=1) >= 1
+					
+				boostedtau = boostedtau[lead_boostedtau_cond]
+				AK8Jet = AK8Jet[lead_boostedtau_cond]
+				Jet = Jet[lead_boostedtau_cond]
+				electron = electron[lead_boostedtau_cond]
+				muon = muon[lead_boostedtau_cond]
+				event_level = event_level[lead_boostedtau_cond]
+
+				#Fill post leading tau selection entries in skim and N-1 histograms
+				n_LeadBoostedTau = np.size(event_level.nFatJet)
+				h_CutFlow.fill("LeadingBoostedTau",weight=n_LeadBoostedTau)
+				#h_NMinus1.fill("LeadingBoostedTau",weight=n_PreTrigger - n_LeadBoostedTau)
+
+				#n_PreTrigger = n_LeadBoostedTau				
+				
+				#Impose selections on Subleading boosted tau
+				if (self.nBoostedTau_Selec > 1):
+					#Require events have at least 2 boosted tau
+					sublead_boostedtau_cond = ak.num(boostedtau,axis=1) >= 2
+						
+					boostedtau = boostedtau[sublead_boostedtau_cond]
+					AK8Jet = AK8Jet[sublead_boostedtau_cond]
+					Jet = Jet[sublead_boostedtau_cond]
+					electron = electron[sublead_boostedtau_cond]
+					muon = muon[sublead_boostedtau_cond]
+					event_level = event_level[sublead_boostedtau_cond]
+
+					#Fill post subl-leading tau selection entries in skim and N-1 histograms
+					n_SubLeadBoostedTau = np.size(event_level.nFatJet)
+					h_CutFlow.fill("SubleadingBoostedTau",weight=n_SubLeadBoostedTau)
+					#h_NMinus1.fill("SubleadingBoostedTau",weight=n_LeadBoostedTau - n_SubLeadBoostedTau)
+
+					#n_PreTrigger = n_SubLeadBoostedTau				
+				
+				#Impose selections on third-leading boosted tau
+				if (self.nBoostedTau_Selec > 2):
+					#Require events have at least 2 boosted tau
+					thirdlead_boostedtau_cond = ak.num(boostedtau,axis=1) >= 3
+						
+					boostedtau = boostedtau[thirdlead_boostedtau_cond]
+					AK8Jet = AK8Jet[thirdlead_boostedtau_cond]
+					Jet = Jet[thirdlead_boostedtau_cond]
+					electron = electron[thirdlead_boostedtau_cond]
+					muon = muon[thirdlead_boostedtau_cond]
+					event_level = event_level[thirdlead_boostedtau_cond]
+
+					#Fill post 3rd leading tau selection entries in skim and N-1 histograms
+					n_3rdLeadBoostedTau = np.size(event_level.nFatJet)
+					h_CutFlow.fill("3rdLeadingBoostedTau",weight=n_3rdLeadBoostedTau)
+					#h_NMinus1.fill("3rdLeadingBoostedTau",weight=n_SubLeadBoostedTau - n_3rdLeadBoostedTau)
+
+					#n_PreTrigger = n_3rdLeadBoostedTau				
+				
+				#Impose selections on fourth-leading boosted tau
+				if (self.nBoostedTau_Selec > 3):
+					#Require events have at least 2 boosted tau
+					fourthlead_boostedtau_cond = ak.num(boostedtau,axis=1) >= 4
+						
+					boostedtau = boostedtau[fourthlead_boostedtau_cond]
+					AK8Jet = AK8Jet[fourthlead_boostedtau_cond]
+					Jet = Jet[fourthlead_boostedtau_cond]
+					electron = electron[fourthlead_boostedtau_cond]
+					muon = muon[fourthlead_boostedtau_cond]
+					event_level = event_level[fourthlead_boostedtau_cond]
+
+					#Fill post 4th leading tau selection entries in skim and N-1 histograms
+					n_4thLeadBoostedTau = np.size(event_level.nFatJet)
+					h_CutFlow.fill("4thLeadingBoostedTau",weight=n_4thLeadBoostedTau)
+					#h_NMinus1.fill("4thLeadingBoostedTau",weight=n_3rdLeadBoostedTau - n_4thLeadBoostedTau)
+
+					#n_PreTrigger = n_4thLeadBoostedTau				
+			
+			#############
+			#Find 2 valid tau pairings
+			#############
+			if (ak.num(event_level.MET_pt,axis=0) > 0): #Iff any events left
+				btau_4vec = ak.zip({"t": boostedtau.E, "x": boostedtau.Px, "y": boostedtau.Py, "z": boostedtau.Pz},with_name="Momentum4D")
+				lead_btau, btau_others = ak.unzip(ak.cartesian([btau_4vec[:,0], btau_4vec], axis = 1, nested = False))
+				deltaR_Arr = ak.values_astype(lead_btau,np.float64).deltaR(ak.values_astype(btau_4vec,np.float64))
+				
+				#Remove leading tau from consideration
+				lead_btau = boostedtau[deltaR_Arr == 0]
+				lead_pair_btau = boostedtau[deltaR_Arr != 0]
+				deltaR_Arr = deltaR_Arr[deltaR_Arr != 0]
+
+				#Select tau that minimizes delta R	
+				lead_pair_btau = lead_pair_btau[deltaR_Arr == ak.min(deltaR_Arr,axis=1)] 
+
+				#Remove any events with no paired taus (NOT Convinced you need this!!)
+				boostedtau = boostedtau[ak.num(lead_pair_btau) > 0]
+				btau_4vec = btau_4vec[ak.num(lead_pair_btau) > 0]
+				Jet = Jet[ak.num(lead_pair_btau) > 0]
+				AK8Jet = AK8Jet[ak.num(lead_pair_btau) > 0]
+				muon = muon[ak.num(lead_pair_btau) > 0]
+				electron = electron[ak.num(lead_pair_btau) > 0]
+				event_level = event_level[ak.num(lead_pair_btau) > 0]
+				lead_pair_btau = lead_pair_btau[ak.num(lead_pair_btau) > 0]
+
+				#Store leading boosted tau and paired boosted tau
+				lead_btau_4vec = ak.firsts(ak.zip({"t": lead_btau.E, "x": lead_btau.Px, "y": lead_btau.Py, "z": lead_btau.Pz},with_name="Momentum4D"))
+				lead_pair_btau_4vec = ak.firsts(ak.zip({"t": lead_pair_btau.E, "x": lead_pair_btau.Px, "y": lead_pair_btau.Py, "z": lead_pair_btau.Pz},with_name="Momentum4D"))
+
+				#Drop first pair of boosted taus form consideration
+				rem_btau_req = (ak.values_astype(lead_btau_4vec, np.float64).deltaR(ak.values_astype(btau_4vec, np.float64)) != 0) & (ak.values_astype(lead_pair_btau_4vec, np.float64).deltaR(ak.values_astype(btau_4vec, np.float64)) != 0)
+				btau_rem = boostedtau[rem_btau_req]
+				
+				#Find Second pair
+				rem_btau_4vec = ak.zip({"t": btau_rem.E, "x": btau_rem.Px, "y": btau_rem.Py, "z": btau_rem.Pz},with_name="Momentum4D")
+				next_lead_btau, rem_btau_others = ak.unzip(ak.cartesian([rem_btau_4vec[:,0], rem_btau_4vec], axis = 1, nested = False))
+				deltaR_Arr = ak.values_astype(next_lead_btau,np.float64).deltaR(ak.values_astype(rem_btau_4vec, np.float64))
+
+				next_lead_btau = btau_rem[deltaR_Arr == 0]
+				next_lead_pair_btau = btau_rem[deltaR_Arr != 0]
+				deltaR_Arr = deltaR_Arr[deltaR_Arr != 0]	
+				next_lead_pair_btau = next_lead_pair_btau[deltaR_Arr == ak.min(deltaR_Arr,axis=1)] 
+
+				#Keep only the 2 identified pairs of taus
+				boostedtau = ak.concatenate((lead_btau, lead_pair_btau),axis=1)
+				boostedtau = ak.concatenate((boostedtau, next_lead_btau),axis=1)
+				boostedtau = ak.concatenate((boostedtau, next_lead_pair_btau),axis=1)
 
 				#Memory management
-				boostedtau = ak.concatenate((boostedtau_mu,boostedtau_HT))
-				AK8Jet = ak.concatenate((AK8Jet_mu,AK8Jet_HT))
-				Jet = ak.concatenate((Jet_mu,Jet_HT))
-				electron = ak.concatenate((electron_mu,electron_HT))
-				muon = ak.concatenate((muon_mu,muon_HT))
-				GenPart = ak.concatenate((GenPart_mu, GenPart_HT))
-				event_level = ak.concatenate((event_level_mu,event_level_HT))
-				
-			#	print("JetHT Trigger and Selections Applied To MC %s"%dataset)
-			#	print("Event Count after Trigger+Selections: %d"%ak.num(event_level_HT.HT,axis=0))
-				HT_trigger_event_count = ak.num(event_level_HT.HT,axis=0)
+				del deltaR_Arr, rem_btau_req
+				del btau_4vec, lead_btau_4vec, lead_pair_btau_4vec, rem_btau_4vec
+				del btau_rem, lead_btau, lead_pair_btau, next_lead_btau, next_lead_pair_btau
 
-				#Verify event counts make sense
-				if (init_event_count < HT_trigger_event_count + mu_trigger_event_count):
-					print("Counts don't make sense, have more events prior to trigger than after trigger")
-					print("Count before trigger: %d"%init_event_count)
-					print("Single Muon Selection count: %d"%mu_trigger_event_count)
-					print("Jet HT selection count: %d"%HT_trigger_event_count)
-
-				del boostedtau_mu, boostedtau_HT
-				del AK8Jet_mu, AK8Jet_HT
-				del Jet_mu, Jet_HT
-				del electron_mu, electron_HT
-				del muon_mu, muon_HT
-				del GenPart_mu, GenPart_HT
-				del event_level_mu, event_level_HT
-
-			#Fill post trigger entries in skim and N-1 histograms
-			n_Trigger = np.size(event_level.nFatJet)
-			h_CutFlow.fill("Trigger",weight=n_Trigger)
-			#h_NMinus1.fill("Trigger",weight=n_PreTrigger - n_Trigger)
-
-		#Force muon selection to check if that is the cause of the imbalance
-		if (not(self.ApplyTrigger)):
-			print("!!No Trigger + Selections!!")
-			print("Forcing Muon selections on all objects")
-			Muon_Events = ak.num(muon.pt,axis=1) > 0
-			boostedtau = boostedtau[Muon_Events]
-			AK8Jet = AK8Jet[Muon_Events]
-			Jet = Jet[Muon_Events]
-			electron = electron[Muon_Events]
-			muon = muon[Muon_Events]
-			event_level = event_level[Muon_Events]
-		
-			
-		#############
-		#Cut Selections
-		#############
-		#Noise Filters 
-		Flag_Array = ["Flag_goodVertices", "Flag_globalSuperTightHalo2016Filter", "Flag_HBHENoiseFilter", "Flag_HBHENoiseIsoFilter", "Flag_EcalDeadCellTriggerPrimitiveFilter", "Flag_BadPFMuonFilter", "Flag_BadPFMuonDzFilter", "Flag_hfNoisyHitsFilter", "Flag_eeBadScFilter", "Flag_ecalBadCalibFilter"]
-		flag_cond = event_level[Flag_Array[0]] #Initialize the condition as the first flag since logical and it with itself will act like an identiy operator
-		
-		for flag in Flag_Array:
-			flag_cond = flag_cond & event_level[flag]
-		
-		boostedtau = boostedtau[flag_cond]
-		AK8Jet = AK8Jet[flag_cond]
-		Jet = Jet[flag_cond]
-		electron = electron[flag_cond]
-		muon = muon[flag_cond]
-		event_level = event_level[flag_cond]	
-
-	#	#Fill post flag selections entries in skim and N-1 histograms
-	#	n_FlagSelec = np.size(event_level.nFatJet)
-	#	h_CutFlow.fill("FlagReq",weight=n_FlagSelec)
-	#	h_NMinus1.fill("FlagReq",weight=n_FatJet - n_FlagSelec)
-
-		#PV selections
-		ndof_cond = event_level.PV_ndof > 4
-		PVz_cond = np.abs(event_level.PV_z) < 24
-		PVr_cond = np.sqrt(event_level.PV_x**2 + event_level.PV_y**2) < 2
-		#PV_Cond = np.bitwise_and(ndof_cond,np.bitwise_and(PVz_cond,PVr_cond))
-		PV_Cond = ndof_cond & PVz_cond & PVr_cond
-		
-		boostedtau = boostedtau[PV_Cond]
-		AK8Jet = AK8Jet[PV_Cond]
-		Jet = Jet[PV_Cond]
-		electron = electron[PV_Cond]
-		muon = muon[PV_Cond]
-		event_level = event_level[PV_Cond]	
-
-	#	#Fill post PV selection entries in skim and N-1 histograms
-	#	n_PVSelec = np.size(event_level.nFatJet)
-	#	h_CutFlow.fill("PVSelec",weight=n_PVSelec)
-	#	h_NMinus1.fill("PVSelec",weight=n_FlagSelec - n_PVSelec)
-
-		#n_PreTrigger = n_PVSelec #Set number of events left before trigger seleciton to PV selection	
-		n_PreTrigger = n_Skim #Set number of events left before trigger seleciton to PV selection	
-		#Temp values of the Tau selections
-		n_LeadBoostedTau = -1
-		n_SubLeadBoostedTau = -1
-		n_3rdLeadBoostedTau = -1
-		n_4thLeadBoostedTau = -1
-			
-        #Boosted tau selections
-		if (self.nBoostedTau_Selec > 0):
-			#Impose selections boosted taus
-			pT_Cond = boostedtau.pt > 30
-			eta_Cond = np.abs(boostedtau.eta) < 2.3
-			decayMode_Cond = boostedtau.decay >= 0.5
-			DBT_Iso_Cond = boostedtau.DBT >= 0.9 #0.85
-			
-			boostedtau_selec_cond = pT_Cond & eta_Cond & decayMode_Cond & DBT_Iso_Cond
-			boostedtau = boostedtau[boostedtau_selec_cond] #Apply selections to all individual taus
-		
-			#Require events have at least 1 boosted tau
-			lead_boostedtau_cond = ak.num(boostedtau,axis=1) >= 1
-				
-			boostedtau = boostedtau[lead_boostedtau_cond]
-			AK8Jet = AK8Jet[lead_boostedtau_cond]
-			Jet = Jet[lead_boostedtau_cond]
-			electron = electron[lead_boostedtau_cond]
-			muon = muon[lead_boostedtau_cond]
-			event_level = event_level[lead_boostedtau_cond]
-
-			#Fill post leading tau selection entries in skim and N-1 histograms
-			n_LeadBoostedTau = np.size(event_level.nFatJet)
-			h_CutFlow.fill("LeadingBoostedTau",weight=n_LeadBoostedTau)
-			#h_NMinus1.fill("LeadingBoostedTau",weight=n_PreTrigger - n_LeadBoostedTau)
-
-			#n_PreTrigger = n_LeadBoostedTau				
-			
-			#Impose selections on Subleading boosted tau
-			if (self.nBoostedTau_Selec > 1):
-				#Require events have at least 2 boosted tau
-				sublead_boostedtau_cond = ak.num(boostedtau,axis=1) >= 2
+			#############
+			#Selections fromp paired objects
+			#############
+			n_VisMass = 0
+			n_DeltaR = 0
+			if (ak.num(event_level.MET_pt,axis=0) > 0): #Only do this if there are any events left
+				#Leading and next leading pair 4-vectors
+				leading_higgs = ak.zip({
+						"x": boostedtau[:,0].Px + boostedtau[:,1].Px,
+						"y": boostedtau[:,0].Py + boostedtau[:,1].Py,
+						"z": boostedtau[:,0].Pz + boostedtau[:,1].Pz,
+						"t": boostedtau[:,0].E + boostedtau[:,1].E
+					},with_name="Momentum4D"
+				)
 					
-				boostedtau = boostedtau[sublead_boostedtau_cond]
-				AK8Jet = AK8Jet[sublead_boostedtau_cond]
-				Jet = Jet[sublead_boostedtau_cond]
-				electron = electron[sublead_boostedtau_cond]
-				muon = muon[sublead_boostedtau_cond]
-				event_level = event_level[sublead_boostedtau_cond]
+				nextleading_higgs = ak.zip({
+						"x": boostedtau[:,2].Px + boostedtau[:,3].Px,
+						"y": boostedtau[:,2].Py + boostedtau[:,3].Py,
+						"z": boostedtau[:,2].Pz + boostedtau[:,3].Pz,
+						"t": boostedtau[:,2].E + boostedtau[:,3].E
+					},with_name="Momentum4D"
+				)
 
-				#Fill post subl-leading tau selection entries in skim and N-1 histograms
-				n_SubLeadBoostedTau = np.size(event_level.nFatJet)
-				h_CutFlow.fill("SubleadingBoostedTau",weight=n_SubLeadBoostedTau)
-				#h_NMinus1.fill("SubleadingBoostedTau",weight=n_LeadBoostedTau - n_SubLeadBoostedTau)
+				#Visable mass selection
+				vis_mass1 = leading_higgs.mass
+				vis_mass2 = nextleading_higgs.mass
+				vis_mass_cond = (vis_mass1 >= 10) & (vis_mass2 >= 10)
+				
+				boostedtau = boostedtau[vis_mass_cond]
+				AK8Jet = AK8Jet[vis_mass_cond]
+				Jet = Jet[vis_mass_cond]
+				electron = electron[vis_mass_cond]
+				muon = muon[vis_mass_cond]
+				event_level = event_level[vis_mass_cond]
 
-				#n_PreTrigger = n_SubLeadBoostedTau				
-			
-			#Impose selections on third-leading boosted tau
-			if (self.nBoostedTau_Selec > 2):
-				#Require events have at least 2 boosted tau
-				thirdlead_boostedtau_cond = ak.num(boostedtau,axis=1) >= 3
+				#Apply selections ot higgs objects
+				leading_higgs = leading_higgs[vis_mass_cond]
+				nextleading_higgs = nextleading_higgs[vis_mass_cond]
+
+				#Fill post visable mass entries in skim and N-1 histograms
+				n_VisMass = np.size(event_level.nFatJet)
+				h_CutFlow.fill("VisMassSelec",weight=n_VisMass)
+			#h_NMinus1.fill("VisMassSelec",weight=n_Trigger - n_VisMass)
+		   
+
+			if (ak.num(event_level.MET_pt,axis=0) > 0): #Only do this if there are any events left
+				#Topology selection
+				topo_cond = leading_higgs.deltaR(nextleading_higgs) >= 2
+				
+				boostedtau = boostedtau[topo_cond]
+				AK8Jet = AK8Jet[topo_cond]
+				Jet = Jet[topo_cond]
+				electron = electron[topo_cond]
+				muon = muon[topo_cond]
+				event_level = event_level[topo_cond]
+				
+				#Apply selections ot higgs objects
+				leading_higgs = leading_higgs[topo_cond]
+				nextleading_higgs = nextleading_higgs[topo_cond]
+
+				#Fill post visable mass entries in skim and N-1 histograms
+				n_DeltaR = np.size(event_level.nFatJet)
+				h_CutFlow.fill("Higgs_dR",weight=n_DeltaR)
+				#h_NMinus1.fill("Higgs_dR",weight=n_VisMass - n_DeltaR)
+
+
+			#############
+			#Z-Multiplicity and b-Jet Multiplicity
+			#############
+			if (ak.num(event_level.MET_pt,axis=0) > 0): #If there are events left
+				#Z Multiplicity function
+				def Z_Mult_Function(lepton,lep_flavor): 
+					#Make Good muon selection
+					if (lep_flavor == "mu"):
+						id_cond = muon.IDSelec 
+						d0_cond = np.abs(lepton.D0) < 0.045
+						dz_cond = np.abs(lepton.Dz) < 0.2
+						good_lepton_cond = id_cond & d0_cond & dz_cond
+						good_lepton = lepton[good_lepton_cond]
 					
-				boostedtau = boostedtau[thirdlead_boostedtau_cond]
-				AK8Jet = AK8Jet[thirdlead_boostedtau_cond]
-				Jet = Jet[thirdlead_boostedtau_cond]
-				electron = electron[thirdlead_boostedtau_cond]
-				muon = muon[thirdlead_boostedtau_cond]
-				event_level = event_level[thirdlead_boostedtau_cond]
-
-				#Fill post 3rd leading tau selection entries in skim and N-1 histograms
-				n_3rdLeadBoostedTau = np.size(event_level.nFatJet)
-				h_CutFlow.fill("3rdLeadingBoostedTau",weight=n_3rdLeadBoostedTau)
-				#h_NMinus1.fill("3rdLeadingBoostedTau",weight=n_SubLeadBoostedTau - n_3rdLeadBoostedTau)
-
-				#n_PreTrigger = n_3rdLeadBoostedTau				
-			
-			#Impose selections on fourth-leading boosted tau
-			if (self.nBoostedTau_Selec > 3):
-				#Require events have at least 2 boosted tau
-				fourthlead_boostedtau_cond = ak.num(boostedtau,axis=1) >= 4
+					#Make good electron selection
+					if (lep_flavor == "ele"):
+						cond1 = (np.abs(lepton.SCEta) <= 0.8) & (lepton.IDMVANoIso > 0.837)
+						cond2 = ((np.abs(lepton.SCEta) > 0.8) & (np.abs(lepton.SCEta) <= 1.5)) & (electron.IDMVANoIso > 0.715)
+						cond3 = (np.abs(lepton.SCEta) >= 1.5) & (electron.IDMVANoIso > 0.357)
+						good_lepton_cond = cond1 | cond2 | cond3
+						good_lepton = lepton[good_lepton_cond]
 					
-				boostedtau = boostedtau[fourthlead_boostedtau_cond]
-				AK8Jet = AK8Jet[fourthlead_boostedtau_cond]
-				Jet = Jet[fourthlead_boostedtau_cond]
-				electron = electron[fourthlead_boostedtau_cond]
-				muon = muon[fourthlead_boostedtau_cond]
-				event_level = event_level[fourthlead_boostedtau_cond]
+					#print("Number of lepton filled events before Z-multiplicty building: %d"%ak.num(good_lepton,axis=0))
+					Z_Mult = find_Z_Candidates(good_lepton,ak.ArrayBuilder()).snapshot() #Need to add this function to get the mulitplicity function working
 
-				#Fill post 4th leading tau selection entries in skim and N-1 histograms
-				n_4thLeadBoostedTau = np.size(event_level.nFatJet)
-				h_CutFlow.fill("4thLeadingBoostedTau",weight=n_4thLeadBoostedTau)
-				#h_NMinus1.fill("4thLeadingBoostedTau",weight=n_3rdLeadBoostedTau - n_4thLeadBoostedTau)
+					return Z_Mult
 
-				#n_PreTrigger = n_4thLeadBoostedTau				
-		
-		#############
-		#Find 2 valid tau pairings
-		#############
-		if (ak.num(event_level.MET_pt,axis=0) > 0): #Iff any events left
-			btau_4vec = ak.zip({"t": boostedtau.E, "x": boostedtau.Px, "y": boostedtau.Py, "z": boostedtau.Pz},with_name="Momentum4D")
-			lead_btau, btau_others = ak.unzip(ak.cartesian([btau_4vec[:,0], btau_4vec], axis = 1, nested = False))
-			deltaR_Arr = ak.values_astype(lead_btau,np.float64).deltaR(ak.values_astype(btau_4vec,np.float64))
-			
-			#Remove leading tau from consideration
-			lead_btau = boostedtau[deltaR_Arr == 0]
-			lead_pair_btau = boostedtau[deltaR_Arr != 0]
-			deltaR_Arr = deltaR_Arr[deltaR_Arr != 0]
-
-			#Select tau that minimizes delta R	
-			lead_pair_btau = lead_pair_btau[deltaR_Arr == ak.min(deltaR_Arr,axis=1)] 
-
-			#Remove any events with no paired taus (NOT Convinced you need this!!)
-			boostedtau = boostedtau[ak.num(lead_pair_btau) > 0]
-			btau_4vec = btau_4vec[ak.num(lead_pair_btau) > 0]
-			Jet = Jet[ak.num(lead_pair_btau) > 0]
-			AK8Jet = AK8Jet[ak.num(lead_pair_btau) > 0]
-			muon = muon[ak.num(lead_pair_btau) > 0]
-			electron = electron[ak.num(lead_pair_btau) > 0]
-			event_level = event_level[ak.num(lead_pair_btau) > 0]
-			lead_pair_btau = lead_pair_btau[ak.num(lead_pair_btau) > 0]
-
-			#Store leading boosted tau and paired boosted tau
-			lead_btau_4vec = ak.firsts(ak.zip({"t": lead_btau.E, "x": lead_btau.Px, "y": lead_btau.Py, "z": lead_btau.Pz},with_name="Momentum4D"))
-			lead_pair_btau_4vec = ak.firsts(ak.zip({"t": lead_pair_btau.E, "x": lead_pair_btau.Px, "y": lead_pair_btau.Py, "z": lead_pair_btau.Pz},with_name="Momentum4D"))
-
-			#Drop first pair of boosted taus form consideration
-			rem_btau_req = (ak.values_astype(lead_btau_4vec, np.float64).deltaR(ak.values_astype(btau_4vec, np.float64)) != 0) & (ak.values_astype(lead_pair_btau_4vec, np.float64).deltaR(ak.values_astype(btau_4vec, np.float64)) != 0)
-			btau_rem = boostedtau[rem_btau_req]
-			
-			#Find Second pair
-			rem_btau_4vec = ak.zip({"t": btau_rem.E, "x": btau_rem.Px, "y": btau_rem.Py, "z": btau_rem.Pz},with_name="Momentum4D")
-			next_lead_btau, rem_btau_others = ak.unzip(ak.cartesian([rem_btau_4vec[:,0], rem_btau_4vec], axis = 1, nested = False))
-			deltaR_Arr = ak.values_astype(next_lead_btau,np.float64).deltaR(ak.values_astype(rem_btau_4vec, np.float64))
-
-			next_lead_btau = btau_rem[deltaR_Arr == 0]
-			next_lead_pair_btau = btau_rem[deltaR_Arr != 0]
-			deltaR_Arr = deltaR_Arr[deltaR_Arr != 0]	
-			next_lead_pair_btau = next_lead_pair_btau[deltaR_Arr == ak.min(deltaR_Arr,axis=1)] 
-
-			#Keep only the 2 identified pairs of taus
-			boostedtau = ak.concatenate((lead_btau, lead_pair_btau),axis=1)
-			boostedtau = ak.concatenate((boostedtau, next_lead_btau),axis=1)
-			boostedtau = ak.concatenate((boostedtau, next_lead_pair_btau),axis=1)
-
-			#Memory management
-			del deltaR_Arr, rem_btau_req
-			del btau_4vec, lead_btau_4vec, lead_pair_btau_4vec, rem_btau_4vec
-			del btau_rem, lead_btau, lead_pair_btau, next_lead_btau, next_lead_pair_btau
-
-		#############
-		#Selections fromp paired objects
-		#############
-		n_VisMass = 0
-		n_DeltaR = 0
-		if (ak.num(event_level.MET_pt,axis=0) > 0): #Only do this if there are any events left
-			#Leading and next leading pair 4-vectors
-			leading_higgs = ak.zip({
-					"x": boostedtau[:,0].Px + boostedtau[:,1].Px,
-					"y": boostedtau[:,0].Py + boostedtau[:,1].Py,
-					"z": boostedtau[:,0].Pz + boostedtau[:,1].Pz,
-					"t": boostedtau[:,0].E + boostedtau[:,1].E
-				},with_name="Momentum4D"
-			)
+				#Apply BJet multiplicity selection
+				#Apply pt, eta, loose ID, and deep csv tag cut
+				Jet_B = Jet[Jet.pt > 30]
+				Jet_B = Jet_B[np.abs(Jet_B.eta) < 2.4]
+				#Jet_B = Jet[Jet.DeepCSVTags_b > 0.7527] #Old selectuion using btagCSVV2
+				#Jet_B = Jet[Jet.DeepCSVTags_b > 0.4168] 
+				#Jet_B = Jet[Jet.DeepCSVTags_b > 0.7665] 
+				NumBJets = ak.num(Jet_B[Jet_B.DeepCSVTags_b > 0.7665],axis=1)
+				event_level["nBJets"] = NumBJets
+				NLooseJets = ak.num(Jet_B[np.bitwise_and(Jet_B.DeepCSVTags_b > 0.1208, Jet_B.DeepCSVTags_b < 0.7665)],axis=1)
+				event_level["nBJetsLoose"] = NLooseJets
 				
-			nextleading_higgs = ak.zip({
-					"x": boostedtau[:,2].Px + boostedtau[:,3].Px,
-					"y": boostedtau[:,2].Py + boostedtau[:,3].Py,
-					"z": boostedtau[:,2].Pz + boostedtau[:,3].Pz,
-					"t": boostedtau[:,2].E + boostedtau[:,3].E
-				},with_name="Momentum4D"
-			)
+				#Get Z_multiplicity	
+				electron_ZMult = Z_Mult_Function(electron,"ele")
+				muon_ZMult = Z_Mult_Function(muon,"mu")
+				event_level["ZMult"] = muon_ZMult + electron_ZMult
+				event_level["ZMult_e"] = electron_ZMult
+				event_level["ZMult_mu"] = muon_ZMult
+			else:
+				print("No BJets")
+				event_level["nBJets"] = 0
+				event_level["nBJetsLoose"] = 0
+				event_level["ZMult"] = 0
 
-			#Visable mass selection
-			vis_mass1 = leading_higgs.mass
-			vis_mass2 = nextleading_higgs.mass
-			vis_mass_cond = (vis_mass1 >= 10) & (vis_mass2 >= 10)
-			
-			boostedtau = boostedtau[vis_mass_cond]
-			AK8Jet = AK8Jet[vis_mass_cond]
-			Jet = Jet[vis_mass_cond]
-			electron = electron[vis_mass_cond]
-			muon = muon[vis_mass_cond]
-			event_level = event_level[vis_mass_cond]
-
-			#Apply selections ot higgs objects
-			leading_higgs = leading_higgs[vis_mass_cond]
-			nextleading_higgs = nextleading_higgs[vis_mass_cond]
-
-			#Fill post visable mass entries in skim and N-1 histograms
-			n_VisMass = np.size(event_level.nFatJet)
-			h_CutFlow.fill("VisMassSelec",weight=n_VisMass)
-	   	#h_NMinus1.fill("VisMassSelec",weight=n_Trigger - n_VisMass)
-	   
-
-		if (ak.num(event_level.MET_pt,axis=0) > 0): #Only do this if there are any events left
-			#Topology selection
-			topo_cond = leading_higgs.deltaR(nextleading_higgs) >= 2
-			
-			boostedtau = boostedtau[topo_cond]
-			AK8Jet = AK8Jet[topo_cond]
-			Jet = Jet[topo_cond]
-			electron = electron[topo_cond]
-			muon = muon[topo_cond]
-			event_level = event_level[topo_cond]
-			
-			#Apply selections ot higgs objects
-			leading_higgs = leading_higgs[topo_cond]
-			nextleading_higgs = nextleading_higgs[topo_cond]
-
-			#Fill post visable mass entries in skim and N-1 histograms
-			n_DeltaR = np.size(event_level.nFatJet)
-			h_CutFlow.fill("Higgs_dR",weight=n_DeltaR)
-			#h_NMinus1.fill("Higgs_dR",weight=n_VisMass - n_DeltaR)
-
-
-		#############
-		#Z-Multiplicity and b-Jet Multiplicity
-		#############
-		if (ak.num(event_level.MET_pt,axis=0) > 0): #If there are events left
-			#Z Multiplicity function
-			def Z_Mult_Function(lepton,lep_flavor): 
-				#Make Good muon selection
-				if (lep_flavor == "mu"):
-					id_cond = muon.IDSelec 
-					d0_cond = np.abs(lepton.D0) < 0.045
-					dz_cond = np.abs(lepton.Dz) < 0.2
-					good_lepton_cond = id_cond & d0_cond & dz_cond
-					good_lepton = lepton[good_lepton_cond]
+			#############
+			#Get boosted tau pair objects and 4 boosted tau object
+			#############
+			if (ak.num(event_level.MET_pt,axis=0) > 0):
+				#Get pair delta R and delta phi Distributions
+				leading_dR_Arr = ak.ravel(deltaR(boostedtau[:,0],boostedtau[:,1]))
+				leading_dPhi_Arr = ak.ravel(delta_phi(boostedtau[:,0],boostedtau[:,1]))
+				nextleading_dR_Arr = ak.ravel(deltaR(boostedtau[:,2],boostedtau[:,3]))
+				nextleading_dPhi_Arr = ak.ravel(delta_phi(boostedtau[:,2],boostedtau[:,3]))
 				
-				#Make good electron selection
-				if (lep_flavor == "ele"):
-					cond1 = (np.abs(lepton.SCEta) <= 0.8) & (lepton.IDMVANoIso > 0.837)
-					cond2 = ((np.abs(lepton.SCEta) > 0.8) & (np.abs(lepton.SCEta) <= 1.5)) & (electron.IDMVANoIso > 0.715)
-					cond3 = (np.abs(lepton.SCEta) >= 1.5) & (electron.IDMVANoIso > 0.357)
-					good_lepton_cond = cond1 | cond2 | cond3
-					good_lepton = lepton[good_lepton_cond]
+				#Get the leading Higgs 4-momenta
+				PxLeading = boostedtau[:,0].Px + boostedtau[:,1].Px
+				PyLeading = boostedtau[:,0].Py + boostedtau[:,1].Py
+				PzLeading = boostedtau[:,0].Pz + boostedtau[:,1].Pz
+				ELeading = boostedtau[:,0].E + boostedtau[:,1].E
 				
-				#print("Number of lepton filled events before Z-multiplicty building: %d"%ak.num(good_lepton,axis=0))
-				Z_Mult = find_Z_Candidates(good_lepton,ak.ArrayBuilder()).snapshot() #Need to add this function to get the mulitplicity function working
+				#Get the subleading Higgs 4-momenta
+				PxSubLeading = boostedtau[:,2].Px + boostedtau[:,3].Px
+				PySubLeading = boostedtau[:,2].Py + boostedtau[:,3].Py
+				PzSubLeading = boostedtau[:,2].Pz + boostedtau[:,3].Pz
+				ESubLeading = boostedtau[:,2].E + boostedtau[:,3].E
 
-				return Z_Mult
-
-			#Apply BJet multiplicity selection
-			#Apply pt, eta, loose ID, and deep csv tag cut
-			Jet_B = Jet[Jet.pt > 30]
-			Jet_B = Jet_B[np.abs(Jet_B.eta) < 2.4]
-			#Jet_B = Jet[Jet.DeepCSVTags_b > 0.7527] #Old selectuion using btagCSVV2
-			#Jet_B = Jet[Jet.DeepCSVTags_b > 0.4168] 
-			#Jet_B = Jet[Jet.DeepCSVTags_b > 0.7665] 
-			NumBJets = ak.num(Jet_B[Jet_B.DeepCSVTags_b > 0.7665],axis=1)
-			event_level["nBJets"] = NumBJets
-			NLooseJets = ak.num(Jet_B[np.bitwise_and(Jet_B.DeepCSVTags_b > 0.1208, Jet_B.DeepCSVTags_b < 0.7665)],axis=1)
-			event_level["nBJetsLoose"] = NLooseJets
-			
-			#Get Z_multiplicity	
-			electron_ZMult = Z_Mult_Function(electron,"ele")
-			muon_ZMult = Z_Mult_Function(muon,"mu")
-			event_level["ZMult"] = muon_ZMult + electron_ZMult
-			event_level["ZMult_e"] = electron_ZMult
-			event_level["ZMult_mu"] = muon_ZMult
-		else:
-			print("No BJets")
-			event_level["nBJets"] = 0
-			event_level["nBJetsLoose"] = 0
-			event_level["ZMult"] = 0
-
-		#############
-		#Get boosted tau pair objects and 4 boosted tau object
-		#############
-		if (ak.num(event_level.MET_pt,axis=0) > 0):
-			#Get pair delta R and delta phi Distributions
-			leading_dR_Arr = ak.ravel(deltaR(boostedtau[:,0],boostedtau[:,1]))
-			leading_dPhi_Arr = ak.ravel(delta_phi(boostedtau[:,0],boostedtau[:,1]))
-			nextleading_dR_Arr = ak.ravel(deltaR(boostedtau[:,2],boostedtau[:,3]))
-			nextleading_dPhi_Arr = ak.ravel(delta_phi(boostedtau[:,2],boostedtau[:,3]))
-			
-			#Get the leading Higgs 4-momenta
-			PxLeading = boostedtau[:,0].Px + boostedtau[:,1].Px
-			PyLeading = boostedtau[:,0].Py + boostedtau[:,1].Py
-			PzLeading = boostedtau[:,0].Pz + boostedtau[:,1].Pz
-			ELeading = boostedtau[:,0].E + boostedtau[:,1].E
-			
-			#Get the subleading Higgs 4-momenta
-			PxSubLeading = boostedtau[:,2].Px + boostedtau[:,3].Px
-			PySubLeading = boostedtau[:,2].Py + boostedtau[:,3].Py
-			PzSubLeading = boostedtau[:,2].Pz + boostedtau[:,3].Pz
-			ESubLeading = boostedtau[:,2].E + boostedtau[:,3].E
-
-			#Reconstructed Higgs Objects
-			Higgs_Leading = ak.zip(
-				{
-					"Px" : ak.from_iter(PxLeading),
-					"Py" : ak.from_iter(PyLeading),
-					"Pz" : ak.from_iter(PzLeading),
-					"E" : ak.from_iter(ELeading)
-				}
-			)
-			Higgs_Leading["phi"] = ak.from_iter(np.arctan2(Higgs_Leading.Py,Higgs_Leading.Px))
-			Higgs_Leading["eta"] = ak.from_iter(np.arcsinh(Higgs_Leading.Pz)/np.sqrt(Higgs_Leading.Px**2 + Higgs_Leading.Py**2 + Higgs_Leading.Pz**2))
-			Higgs_NextLeading = ak.zip(
-				{
-					"Px" : ak.from_iter(PxSubLeading),
-					"Py" : ak.from_iter(PySubLeading),
-					"Pz" : ak.from_iter(PzSubLeading),
-					"E" : ak.from_iter(ESubLeading)
-				}
-			)
-			Higgs_NextLeading["phi"] = ak.from_iter(np.arctan2(Higgs_NextLeading.Py,Higgs_NextLeading.Px))
-			Higgs_NextLeading["eta"] = ak.from_iter(np.arcsinh(Higgs_NextLeading.Pz)/np.sqrt(Higgs_NextLeading.Px**2 + Higgs_NextLeading.Py**2 + Higgs_NextLeading.Pz**2))
-
-
-			#Reconstructed Radion
-			Radion_Reco = ak.zip(
+				#Reconstructed Higgs Objects
+				Higgs_Leading = ak.zip(
 					{
-						"Px": Higgs_Leading.Px + Higgs_NextLeading.Px,
-						"Py": Higgs_Leading.Py + Higgs_NextLeading.Py,
-						"Pz": Higgs_Leading.Pz + Higgs_NextLeading.Pz,
-						"E": Higgs_Leading.E + Higgs_NextLeading.E,
+						"Px" : ak.from_iter(PxLeading),
+						"Py" : ak.from_iter(PyLeading),
+						"Pz" : ak.from_iter(PzLeading),
+						"E" : ak.from_iter(ELeading)
 					}
-			)
-			#Radion_4Vec = vector.LorentzVectov(ak.zip({"t": Radion_Reco.E,"x": Radion_Reco.Px,"y": Radion_Reco.Py,"z": Radion_Reco.Pz},with_name="LorentzVector"))
-			Radion_4Vec = ak.zip({"t": Radion_Reco.E,"x": Radion_Reco.Px,"y": Radion_Reco.Py,"z": Radion_Reco.Pz},with_name="Momentum4D")
-			Radion_Reco["phi"] = ak.from_iter(np.arctan2(Radion_Reco.Py,Radion_Reco.Px))
-			Radion_Reco["eta"] = Radion_4Vec.eta #ak.from_iter(np.arcsinh(Radion_Reco.Pz)/np.sqrt(Radion_Reco.Px**2 + Radion_Reco.Py**2 + Radion_Reco.Pz**2))
-			event_level["Radion_Charge"] = boostedtau[:,0].charge + boostedtau[:,1].charge + boostedtau[:,2].charge + boostedtau[:,3].charge
-			event_level["LeadingPair_Charge"] = boostedtau[:,0].charge + boostedtau[:,1].charge
-			event_level["SubleadingPair_Charge"] = boostedtau[:,2].charge + boostedtau[:,3].charge
+				)
+				Higgs_Leading["phi"] = ak.from_iter(np.arctan2(Higgs_Leading.Py,Higgs_Leading.Px))
+				Higgs_Leading["eta"] = ak.from_iter(np.arcsinh(Higgs_Leading.Pz)/np.sqrt(Higgs_Leading.Px**2 + Higgs_Leading.Py**2 + Higgs_Leading.Pz**2))
+				Higgs_NextLeading = ak.zip(
+					{
+						"Px" : ak.from_iter(PxSubLeading),
+						"Py" : ak.from_iter(PySubLeading),
+						"Pz" : ak.from_iter(PzSubLeading),
+						"E" : ak.from_iter(ESubLeading)
+					}
+				)
+				Higgs_NextLeading["phi"] = ak.from_iter(np.arctan2(Higgs_NextLeading.Py,Higgs_NextLeading.Px))
+				Higgs_NextLeading["eta"] = ak.from_iter(np.arcsinh(Higgs_NextLeading.Pz)/np.sqrt(Higgs_NextLeading.Px**2 + Higgs_NextLeading.Py**2 + Higgs_NextLeading.Pz**2))
 
-			if (len(Higgs_Leading.eta) != 0):
-				#print("Mass Reconstructed")
-				diHiggs_dR_Arr = ak.ravel(deltaR(Higgs_Leading,Higgs_NextLeading))
-				LeadingHiggs_mass_Arr = ak.ravel(single_mass(Higgs_Leading))	
-				SubLeadingHiggs_mass_Arr = ak.ravel(single_mass(Higgs_NextLeading))
-			
-				#Obtain delta R between each Higgs and the radion
-				leadingHiggs_Rad_dR = ak.ravel(deltaR(Higgs_Leading,Radion_Reco))
-				subleadingHiggs_Rad_dR = ak.ravel(deltaR(Higgs_NextLeading,Radion_Reco))
-			
-				#Obtain Delta phi between MET and Each Higgs
-				leadingHiggs_MET_dPhi_Arr = ak.ravel(MET_delta_phi(Higgs_Leading,event_level))
-				subleadingHiggs_MET_dPhi_Arr = ak.ravel(MET_delta_phi(Higgs_NextLeading,event_level))
-			else:
-				#print("Mass Not Reconstructed")
-				diHiggs_dR_Arr = np.array([])
-				LeadingHiggs_mass_Arr = np.array([])
-				SubLeadingHiggs_mass_Arr = np.array([])
-				leadingHiggs_Rad_dR = np.array([])
-				subleadingHiggs_Rad_dR = np.array([])
-				leadingHiggs_MET_dPhi_Arr = np.array([])
-				subleadingHiggs_MET_dPhi_Arr = np.array([])
 
-			#Fill Higgs Delta Phi
-			phi_leading = np.arctan2(PyLeading,PxLeading)
-			phi_subleading = np.arctan2(PySubLeading,PxSubLeading)
-			Higgs_DeltaPhi_Arr = ak.ravel((phi_leading - phi_subleading + np.pi) % (2 * np.pi) - np.pi)
-			radionPT_HiggsReco = np.sqrt((PxLeading + PxSubLeading)**2 + (PyLeading + PySubLeading)**2)
-			radionPT_Arr = ak.ravel(radionPT_HiggsReco)
+				#Reconstructed Radion
+				Radion_Reco = ak.zip(
+						{
+							"Px": Higgs_Leading.Px + Higgs_NextLeading.Px,
+							"Py": Higgs_Leading.Py + Higgs_NextLeading.Py,
+							"Pz": Higgs_Leading.Pz + Higgs_NextLeading.Pz,
+							"E": Higgs_Leading.E + Higgs_NextLeading.E,
+						}
+				)
+				#Radion_4Vec = vector.LorentzVectov(ak.zip({"t": Radion_Reco.E,"x": Radion_Reco.Px,"y": Radion_Reco.Py,"z": Radion_Reco.Pz},with_name="LorentzVector"))
+				Radion_4Vec = ak.zip({"t": Radion_Reco.E,"x": Radion_Reco.Px,"y": Radion_Reco.Py,"z": Radion_Reco.Pz},with_name="Momentum4D")
+				Radion_Reco["phi"] = ak.from_iter(np.arctan2(Radion_Reco.Py,Radion_Reco.Px))
+				Radion_Reco["eta"] = Radion_4Vec.eta #ak.from_iter(np.arcsinh(Radion_Reco.Pz)/np.sqrt(Radion_Reco.Px**2 + Radion_Reco.Py**2 + Radion_Reco.Pz**2))
+				event_level["Radion_Charge"] = boostedtau[:,0].charge + boostedtau[:,1].charge + boostedtau[:,2].charge + boostedtau[:,3].charge
+				event_level["LeadingPair_Charge"] = boostedtau[:,0].charge + boostedtau[:,1].charge
+				event_level["SubleadingPair_Charge"] = boostedtau[:,2].charge + boostedtau[:,3].charge
 
-			#Obtain delat Phi between MET and Radion
-			radionMET_dPhi = ak.ravel(MET_delta_phi(Radion_Reco,event_level))
-
-			FourTau_Mass_Arr = four_mass([boostedtau[:,0],boostedtau[:,1],boostedtau[:,2],boostedtau[:,3]])
-
-		#############
-		#Store Parquet Files
-		############
-		if (ak.num(event_level.HT,axis=0) > 0):
-			var_nn = ak.zip( #Variables to be exported to .parquet file
-				{
-					"radion_pt": radionPT_Arr,
-					"vis_mass": LeadingHiggs_mass_Arr,
-					"vis_mass2": SubLeadingHiggs_mass_Arr,
-					"radion_eta": Radion_Reco.eta,
-					"higgs1_dr": leading_dR_Arr,
-					"higgs2_dr": nextleading_dR_Arr,
-					"dphi_H1": phi_leading,
-					"dphi_H2": phi_subleading,
-					"dphi_H1_MET": leadingHiggs_MET_dPhi_Arr,
-					"dphi_H2_MET": subleadingHiggs_MET_dPhi_Arr,
-					"dr_HH": diHiggs_dR_Arr, 
-					"dphi_HH": Higgs_DeltaPhi_Arr,
-					"dr_H1_Rad": leadingHiggs_Rad_dR,
-					"dr_H2_Rad": subleadingHiggs_Rad_dR,
-					"dphi_rad_MET": radionMET_dPhi,
-					"H1OS": event_level.LeadingPair_Charge,
-					"H2OS": event_level.SubleadingPair_Charge,
-					"ZMult": ak.ravel(event_level.ZMult), 
-					"numBJet": event_level.nBJets,
-					"RecoRadion_Mass": FourTau_Mass_Arr,
-					"LeadingTau_pT": boostedtau[:,0].pt,
-					"weight": event_level.event_weight*CrossSec_Weight,
-				}
-			)
-			#Save parquet files
-			file_path = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/"
-			if not(self.isData):
-				print("Not Data")
-				file_name = dataset + "_BoostedTau.parquet"
-				if (dataset != "Signal"):
-					file_name = dataset + ".parquet"
-					if (os.path.isfile(file_path + file_name)): #Append to the parquet file
-						print("Appending file")
-						file_data = ak.from_parquet(file_path + file_name)
-						var_nn = ak.concatenate([file_data,var_nn])
-						ak.to_parquet(var_nn,file_path + file_name)
-					else: #Create the parquet file
-						print("Creating file")
-						if (ak.num(FourTau_Mass_Arr,axis=0) > 0):
-							ak.to_parquet(var_nn,file_path + file_name)
-			else:
-				print("Is Data")
-				file_name = dataset + "_BoostedTau.parquet"
-				if (os.path.isfile(file_path + file_name)): #Append to the parquet file
-					print("Appending file")
-					file_data = ak.from_parquet(file_path + file_name)
-					var_nn = ak.concatenate([file_data,var_nn])
-					ak.to_parquet(var_nn,file_path + file_name)
-				else: #Create the parquet file
-					print("Creating file")
-					if (ak.num(FourTau_Mass_Arr,axis=0) > 0):
-						ak.to_parquet(var_nn,file_path + file_name)
-
-		
-		#############
-		#Fill histograms
-		#############
-		if (ak.num(event_level.HT,axis=0) > 0):
-			for region in region_array:
-				print("!!==================Region==================!!")
-				print(region)
-				if (region == "ZCR"):
-					region_cond = (event_level.ZMult >= 1) & (event_level.nBJets < 1) # & (event_level.nBJetsLoose < 1)
-				elif (region == "TCR"):
-					#print("Top Region")
-					region_cond = (event_level.ZMult) < 1 & (event_level.nBJets >= 1)
-					#region_cond = event_level.nBJets >= 1
-					#print("Sum of true entries: " + str(ak.sum(region_cond)))
-				elif (region == "NotTCR"):
-					#print("Not Top Region")
-					region_cond = (event_level.nBJets < 1) & (event_level.nBJetsLoose < 1)
-					#print("Sum of true entries: " + str(ak.sum(region_cond)))
-				elif (region == "FakeCR"):
-					region_cond = ((event_level.ZMult < 1) & (event_level.nBJets < 1)) & ((event_level.LeadingPair_Charge != 0) | (event_level.SubleadingPair_Charge != 0))
-				elif (region == "NotZCR"):
-					region_cond = (event_level.ZMult < 1) & (event_level.nBJets < 1) & (event_level.nBJetsLoose < 1)
-				elif (region == "TightTCR"):
-					region_cond = event_level.nBJets >= 1
-				elif (region == "LooseTCR"):
-					region_cond = (event_level.nBJets < 1) & (event_level.nBJetsLoose >= 1)
+				if (len(Higgs_Leading.eta) != 0):
+					#print("Mass Reconstructed")
+					diHiggs_dR_Arr = ak.ravel(deltaR(Higgs_Leading,Higgs_NextLeading))
+					LeadingHiggs_mass_Arr = ak.ravel(single_mass(Higgs_Leading))	
+					SubLeadingHiggs_mass_Arr = ak.ravel(single_mass(Higgs_NextLeading))
+				
+					#Obtain delta R between each Higgs and the radion
+					leadingHiggs_Rad_dR = ak.ravel(deltaR(Higgs_Leading,Radion_Reco))
+					subleadingHiggs_Rad_dR = ak.ravel(deltaR(Higgs_NextLeading,Radion_Reco))
+				
+					#Obtain Delta phi between MET and Each Higgs
+					leadingHiggs_MET_dPhi_Arr = ak.ravel(MET_delta_phi(Higgs_Leading,event_level))
+					subleadingHiggs_MET_dPhi_Arr = ak.ravel(MET_delta_phi(Higgs_NextLeading,event_level))
 				else:
-					region_cond = ak.ones_like(event_level.event_num) == 1
+					#print("Mass Not Reconstructed")
+					diHiggs_dR_Arr = np.array([])
+					LeadingHiggs_mass_Arr = np.array([])
+					SubLeadingHiggs_mass_Arr = np.array([])
+					leadingHiggs_Rad_dR = np.array([])
+					subleadingHiggs_Rad_dR = np.array([])
+					leadingHiggs_MET_dPhi_Arr = np.array([])
+					subleadingHiggs_MET_dPhi_Arr = np.array([])
+
+				#Fill Higgs Delta Phi
+				phi_leading = np.arctan2(PyLeading,PxLeading)
+				phi_subleading = np.arctan2(PySubLeading,PxSubLeading)
+				Higgs_DeltaPhi_Arr = ak.ravel((phi_leading - phi_subleading + np.pi) % (2 * np.pi) - np.pi)
+				radionPT_HiggsReco = np.sqrt((PxLeading + PxSubLeading)**2 + (PyLeading + PySubLeading)**2)
+				radionPT_Arr = ak.ravel(radionPT_HiggsReco)
+
+				#Obtain delat Phi between MET and Radion
+				radionMET_dPhi = ak.ravel(MET_delta_phi(Radion_Reco,event_level))
+
+				FourTau_Mass_Arr = four_mass([boostedtau[:,0],boostedtau[:,1],boostedtau[:,2],boostedtau[:,3]])
+
+			#############
+			#Store Parquet Files
+			############
+		#	if (ak.num(event_level.HT,axis=0) > 0):
+		#		var_nn = ak.zip( #Variables to be exported to .parquet file
+		#			{
+		#				"radion_pt": radionPT_Arr,
+		#				"vis_mass": LeadingHiggs_mass_Arr,
+		#				"vis_mass2": SubLeadingHiggs_mass_Arr,
+		#				"radion_eta": Radion_Reco.eta,
+		#				"higgs1_dr": leading_dR_Arr,
+		#				"higgs2_dr": nextleading_dR_Arr,
+		#				"dphi_H1": phi_leading,
+		#				"dphi_H2": phi_subleading,
+		#				"dphi_H1_MET": leadingHiggs_MET_dPhi_Arr,
+		#				"dphi_H2_MET": subleadingHiggs_MET_dPhi_Arr,
+		#				"dr_HH": diHiggs_dR_Arr, 
+		#				"dphi_HH": Higgs_DeltaPhi_Arr,
+		#				"dr_H1_Rad": leadingHiggs_Rad_dR,
+		#				"dr_H2_Rad": subleadingHiggs_Rad_dR,
+		#				"dphi_rad_MET": radionMET_dPhi,
+		#				"H1OS": event_level.LeadingPair_Charge,
+		#				"H2OS": event_level.SubleadingPair_Charge,
+		#				"ZMult": ak.ravel(event_level.ZMult), 
+		#				"numBJet": event_level.nBJets,
+		#				"RecoRadion_Mass": FourTau_Mass_Arr,
+		#				"LeadingTau_pT": boostedtau[:,0].pt,
+		#				"weight": event_level.event_weight*CrossSec_Weight,
+		#			}
+		#		)
+		#		#Save parquet files
+		#		file_path = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/"
+		#		if not(self.isData):
+		#			print("Not Data")
+		#			file_name = dataset + "_BoostedTau.parquet"
+		#			if (dataset != "Signal"):
+		#				file_name = dataset + ".parquet"
+		#				if (os.path.isfile(file_path + file_name)): #Append to the parquet file
+		#					print("Appending file")
+		#					file_data = ak.from_parquet(file_path + file_name)
+		#					var_nn = ak.concatenate([file_data,var_nn])
+		#					ak.to_parquet(var_nn,file_path + file_name)
+		#				else: #Create the parquet file
+		#					print("Creating file")
+		#					if (ak.num(FourTau_Mass_Arr,axis=0) > 0):
+		#						ak.to_parquet(var_nn,file_path + file_name)
+		#		else:
+		#			print("Is Data")
+		#			file_name = dataset + "_BoostedTau.parquet"
+		#			if (os.path.isfile(file_path + file_name)): #Append to the parquet file
+		#				print("Appending file")
+		#				file_data = ak.from_parquet(file_path + file_name)
+		#				var_nn = ak.concatenate([file_data,var_nn])
+		#				ak.to_parquet(var_nn,file_path + file_name)
+		#			else: #Create the parquet file
+		#				print("Creating file")
+		#				if (ak.num(FourTau_Mass_Arr,axis=0) > 0):
+		#					ak.to_parquet(var_nn,file_path + file_name)
+
 			
-				#Boosted Taus
-				#h_boostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(boostedtau[ak.ravel(region_cond)].pt))[0]), region = region)
-				if (self.nBoostedTau_Selec >= 1):
-					h_Leadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)][:,0].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(boostedtau[ak.ravel(region_cond)],axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
+			#############
+			#Fill histograms
+			#############
+			if (ak.num(event_level.HT,axis=0) > 0):
+				for region in region_array:
+					print("!!==================Region==================!!")
+					print(region)
+					if (region == "ZCR"):
+						region_cond = (event_level.ZMult >= 1) & (event_level.nBJets < 1) # & (event_level.nBJetsLoose < 1)
+					elif (region == "TCR"):
+						#print("Top Region")
+						region_cond = (event_level.ZMult) < 1 & (event_level.nBJets >= 1)
+						#region_cond = event_level.nBJets >= 1
+						#print("Sum of true entries: " + str(ak.sum(region_cond)))
+					elif (region == "NotTCR"):
+						#print("Not Top Region")
+						region_cond = (event_level.nBJets < 1) & (event_level.nBJetsLoose < 1)
+						#print("Sum of true entries: " + str(ak.sum(region_cond)))
+					elif (region == "FakeCR"):
+						region_cond = ((event_level.ZMult < 1) & (event_level.nBJets < 1)) & ((event_level.LeadingPair_Charge != 0) | (event_level.SubleadingPair_Charge != 0))
+					elif (region == "NotZCR"):
+						region_cond = (event_level.ZMult < 1) & (event_level.nBJets < 1) & (event_level.nBJetsLoose < 1)
+					elif (region == "TightTCR"):
+						region_cond = event_level.nBJets >= 1
+					elif (region == "LooseTCR"):
+						region_cond = (event_level.nBJets < 1) & (event_level.nBJetsLoose >= 1)
+					else:
+						region_cond = ak.ones_like(event_level.event_num) == 1
+				
+					#Boosted Taus
+					#h_boostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(boostedtau[ak.ravel(region_cond)].pt))[0]), region = region)
+					if (self.nBoostedTau_Selec >= 1):
+						h_Leadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)][:,0].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(boostedtau[ak.ravel(region_cond)],axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
 
-				if (self.nBoostedTau_Selec >= 2):
-					h_Subleadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)][:,1].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(boostedtau[ak.ravel(region_cond)],axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
-				
-				if (self.nBoostedTau_Selec >= 3):
-					h_Thirdleadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)][:,2].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(boostedtau[ak.ravel(region_cond)],axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
-				
-				if (self.nBoostedTau_Selec >= 4):
-					h_Fourthleadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)][:,3].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(boostedtau[ak.ravel(region_cond)],axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
-				
-				h_boostedtau_eta_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(boostedtau[ak.ravel(region_cond)].eta))[0]), region = region)
-				h_boostedtau_phi_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(boostedtau[ak.ravel(region_cond)].phi))[0]), region = region)
-				h_boostedtau_raw_iso_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)].iso),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(boostedtau[ak.ravel(region_cond)].iso))[0]), region = region)
+					if (self.nBoostedTau_Selec >= 2):
+						h_Subleadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)][:,1].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(boostedtau[ak.ravel(region_cond)],axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
+					
+					if (self.nBoostedTau_Selec >= 3):
+						h_Thirdleadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)][:,2].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(boostedtau[ak.ravel(region_cond)],axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
+					
+					if (self.nBoostedTau_Selec >= 4):
+						h_Fourthleadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)][:,3].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(boostedtau[ak.ravel(region_cond)],axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
+					
+					h_boostedtau_eta_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(boostedtau[ak.ravel(region_cond)].eta))[0]), region = region)
+					h_boostedtau_phi_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(boostedtau[ak.ravel(region_cond)].phi))[0]), region = region)
+					h_boostedtau_raw_iso_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)].iso),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(boostedtau[ak.ravel(region_cond)].iso))[0]), region = region)
 
-				#Electrons
-				h_electron_pT_Trigger.fill(ak.ravel(electron[ak.ravel(region_cond)].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(electron[ak.ravel(region_cond)].pt))[0]), region = region)
-				#h_Leadingelectron_pT_Trigger.fill(ak.ravel(ak.firsts(electron[ak.ravel(region_cond)].pt)),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
-				h_electron_eta_Trigger.fill(ak.ravel(electron[ak.ravel(region_cond)].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(electron[ak.ravel(region_cond)].eta))[0]), region = region)
-				h_electron_phi_Trigger.fill(ak.ravel(electron[ak.ravel(region_cond)].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(electron[ak.ravel(region_cond)].phi))[0]), region = region)
-				
-				#Muons
-				h_muon_pT_Trigger.fill(ak.ravel(muon[ak.ravel(region_cond)].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(muon[ak.ravel(region_cond)].pt))[0]), region = region)
-				h_muon_eta_Trigger.fill(ak.ravel(muon[ak.ravel(region_cond)].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(muon[ak.ravel(region_cond)].eta))[0]), region = region)
-				#h_Leadingmuon_eta_Trigger.fill(ak.ravel(ak.firsts(muon[region_cond].eta)),weight=ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight), region = region)
-				h_muon_phi_Trigger.fill(ak.ravel(muon[ak.ravel(region_cond)].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(muon[ak.ravel(region_cond)].phi))[0]), region = region)
+					#Electrons
+					h_electron_pT_Trigger.fill(ak.ravel(electron[ak.ravel(region_cond)].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(electron[ak.ravel(region_cond)].pt))[0]), region = region)
+					#h_Leadingelectron_pT_Trigger.fill(ak.ravel(ak.firsts(electron[ak.ravel(region_cond)].pt)),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
+					h_electron_eta_Trigger.fill(ak.ravel(electron[ak.ravel(region_cond)].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(electron[ak.ravel(region_cond)].eta))[0]), region = region)
+					h_electron_phi_Trigger.fill(ak.ravel(electron[ak.ravel(region_cond)].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(electron[ak.ravel(region_cond)].phi))[0]), region = region)
+					
+					#Muons
+					h_muon_pT_Trigger.fill(ak.ravel(muon[ak.ravel(region_cond)].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(muon[ak.ravel(region_cond)].pt))[0]), region = region)
+					h_muon_eta_Trigger.fill(ak.ravel(muon[ak.ravel(region_cond)].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(muon[ak.ravel(region_cond)].eta))[0]), region = region)
+					#h_Leadingmuon_eta_Trigger.fill(ak.ravel(ak.firsts(muon[region_cond].eta)),weight=ak.ravel(event_level[region_cond].event_weight*CrossSec_Weight), region = region)
+					h_muon_phi_Trigger.fill(ak.ravel(muon[ak.ravel(region_cond)].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(muon[ak.ravel(region_cond)].phi))[0]), region = region)
 
-				#Jets 
-				h_Jet_pT_Trigger.fill(ak.ravel(Jet[ak.ravel(region_cond)].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(Jet[ak.ravel(region_cond)].pt))[0]), region = region)
-				#h_LeadingJet_pT_Trigger.fill(ak.ravel(Jet[ak.ravel(region_cond)][ak.num(Jet[ak.ravel(region_cond)],axis=1) > 0][:,0].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(Jet[ak.ravel(region_cond)],axis=1) > 0].event_weight[ak.ravel(region_cond)]*CrossSec_Weight), region = region)
-				h_Jet_eta_Trigger.fill(ak.ravel(Jet[ak.ravel(region_cond)].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(Jet[ak.ravel(region_cond)].eta))[0]), region = region)
-				h_Jet_phi_Trigger.fill(ak.ravel(Jet[ak.ravel(region_cond)].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(Jet[ak.ravel(region_cond)].phi))[0]), region = region)
-				
-				#AK8/Fat Jets
-				h_AK8Jet_pT_Trigger.fill(ak.ravel(AK8Jet[ak.ravel(region_cond)].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(AK8Jet[ak.ravel(region_cond)].pt))[0]), region = region)
-				#h_LeadingAK8Jet_pT_Trigger.fill(ak.ravel(ak.firsts(AK8Jet[ak.ravel(region_cond)].pt)),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
-				h_AK8Jet_eta_Trigger.fill(ak.ravel(AK8Jet[ak.ravel(region_cond)].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(AK8Jet[ak.ravel(region_cond)].eta))[0]), region = region)
-				h_AK8Jet_phi_Trigger.fill(ak.ravel(AK8Jet[ak.ravel(region_cond)].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(AK8Jet[ak.ravel(region_cond)].phi))[0]), region = region)
-				h_nAK8Jet_Trigger.fill(ak.ravel(event_level[ak.ravel(region_cond)].nFatJet),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
+					#Jets 
+					h_Jet_pT_Trigger.fill(ak.ravel(Jet[ak.ravel(region_cond)].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(Jet[ak.ravel(region_cond)].pt))[0]), region = region)
+					#h_LeadingJet_pT_Trigger.fill(ak.ravel(Jet[ak.ravel(region_cond)][ak.num(Jet[ak.ravel(region_cond)],axis=1) > 0][:,0].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(Jet[ak.ravel(region_cond)],axis=1) > 0].event_weight[ak.ravel(region_cond)]*CrossSec_Weight), region = region)
+					h_Jet_eta_Trigger.fill(ak.ravel(Jet[ak.ravel(region_cond)].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(Jet[ak.ravel(region_cond)].eta))[0]), region = region)
+					h_Jet_phi_Trigger.fill(ak.ravel(Jet[ak.ravel(region_cond)].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(Jet[ak.ravel(region_cond)].phi))[0]), region = region)
+					
+					#AK8/Fat Jets
+					h_AK8Jet_pT_Trigger.fill(ak.ravel(AK8Jet[ak.ravel(region_cond)].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(AK8Jet[ak.ravel(region_cond)].pt))[0]), region = region)
+					#h_LeadingAK8Jet_pT_Trigger.fill(ak.ravel(ak.firsts(AK8Jet[ak.ravel(region_cond)].pt)),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
+					h_AK8Jet_eta_Trigger.fill(ak.ravel(AK8Jet[ak.ravel(region_cond)].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(AK8Jet[ak.ravel(region_cond)].eta))[0]), region = region)
+					h_AK8Jet_phi_Trigger.fill(ak.ravel(AK8Jet[ak.ravel(region_cond)].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(AK8Jet[ak.ravel(region_cond)].phi))[0]), region = region)
+					h_nAK8Jet_Trigger.fill(ak.ravel(event_level[ak.ravel(region_cond)].nFatJet),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
 
-				#Store MET, HT and MHT
-				h_MET_Trigger.fill(ak.ravel(event_level[ak.ravel(region_cond)].MET_pt),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
-				h_HT_Trigger.fill(ak.ravel(event_level[ak.ravel(region_cond)].HT),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
-				h_MHT_Trigger.fill(ak.ravel(event_level[ak.ravel(region_cond)].MHT),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
+					#Store MET, HT and MHT
+					h_MET_Trigger.fill(ak.ravel(event_level[ak.ravel(region_cond)].MET_pt),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
+					h_HT_Trigger.fill(ak.ravel(event_level[ak.ravel(region_cond)].HT),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
+					h_MHT_Trigger.fill(ak.ravel(event_level[ak.ravel(region_cond)].MHT),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
 
-				#Store Z and BJet Mupltiplcity
-				h_ZMult.fill(ak.ravel(event_level[ak.ravel(region_cond)].ZMult),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
-				h_bJetMult.fill(ak.ravel(event_level[ak.ravel(region_cond)].nBJets),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
-				
-				if (ak.num(event_level.HT, axis=0) > 0):
-					#Store Di-boosted tau delta R
-					h_leading_boostedtau_deltaR.fill(leading_dR_Arr[ak.ravel(region_cond)], weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
-					h_nextleading_boostedtau_deltaR.fill(nextleading_dR_Arr[ak.ravel(region_cond)], weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
+					#Store Z and BJet Mupltiplcity
+					h_ZMult.fill(ak.ravel(event_level[ak.ravel(region_cond)].ZMult),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
+					h_bJetMult.fill(ak.ravel(event_level[ak.ravel(region_cond)].nBJets),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
+					
+					if (ak.num(event_level.HT, axis=0) > 0):
+						#Store Di-boosted tau delta R
+						h_leading_boostedtau_deltaR.fill(leading_dR_Arr[ak.ravel(region_cond)], weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
+						h_nextleading_boostedtau_deltaR.fill(nextleading_dR_Arr[ak.ravel(region_cond)], weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
 
-					#Four Mass
-					h_FourTau_Mass.fill(FourTau_Mass_Arr[ak.ravel(region_cond)], weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
-		
-		return{
-			dataset: {
-				#"Weight": CrossSec_Weight,
-				"Weight_Val": CrossSec_Weight,
-				"Weight": ak.to_list(event_level.event_weight*CrossSec_Weight), 
-				"Event_Count": np.sum(ak.to_list(event_level.event_weight*CrossSec_Weight)),
-				"n_Skim": n_Skim,
-				"n_LeadBoostedTau": n_LeadBoostedTau,
-				"n_SubLeadBoostedTau": n_SubLeadBoostedTau,
-				"n_3rdLeadBoostedTau": n_3rdLeadBoostedTau,
-				"n_4thLeadBoostedTau": n_4thLeadBoostedTau,
-				"n_Trigger": n_Trigger,
-				"n_VisMass": n_VisMass,
-				"n_Higgs_dR": n_DeltaR,
-				
-				#Boosted Tau kineamtic distirubtions
-				"boostedtau_pt_Trigg": h_boostedtau_pT_Trigger,
-				"Leadingboostedtau_pt_Trigg": h_Leadingboostedtau_pT_Trigger,
-				"Subleadingboostedtau_pt_Trigg": h_Subleadingboostedtau_pT_Trigger,
-				"Thirdleadingboostedtau_pt_Trigg": h_Thirdleadingboostedtau_pT_Trigger,
-				"Fourthleadingboostedtau_pt_Trigg": h_Fourthleadingboostedtau_pT_Trigger,
-				"boostedtau_eta_Trigg": h_boostedtau_eta_Trigger,
-				"boostedtau_phi_Trigg": h_boostedtau_phi_Trigger,
-				"boostedtau_iso_Trigg": h_boostedtau_raw_iso_Trigger,
+						#Four Mass
+						h_FourTau_Mass.fill(FourTau_Mass_Arr[ak.ravel(region_cond)], weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
+			
+			return{
+				dataset: {
+					#"Weight": CrossSec_Weight,
+					"Weight_Val": CrossSec_Weight,
+					"Weight": ak.to_list(event_level.event_weight*CrossSec_Weight), 
+					"Event_Count": np.sum(ak.to_list(event_level.event_weight*CrossSec_Weight)),
+					"n_Skim": n_Skim,
+					"n_LeadBoostedTau": n_LeadBoostedTau,
+					"n_SubLeadBoostedTau": n_SubLeadBoostedTau,
+					"n_3rdLeadBoostedTau": n_3rdLeadBoostedTau,
+					"n_4thLeadBoostedTau": n_4thLeadBoostedTau,
+					"n_Trigger": n_Trigger,
+					"n_VisMass": n_VisMass,
+					"n_Higgs_dR": n_DeltaR,
+					
+					#Boosted Tau kineamtic distirubtions
+					"boostedtau_pt_Trigg": h_boostedtau_pT_Trigger,
+					"Leadingboostedtau_pt_Trigg": h_Leadingboostedtau_pT_Trigger,
+					"Subleadingboostedtau_pt_Trigg": h_Subleadingboostedtau_pT_Trigger,
+					"Thirdleadingboostedtau_pt_Trigg": h_Thirdleadingboostedtau_pT_Trigger,
+					"Fourthleadingboostedtau_pt_Trigg": h_Fourthleadingboostedtau_pT_Trigger,
+					"boostedtau_eta_Trigg": h_boostedtau_eta_Trigger,
+					"boostedtau_phi_Trigg": h_boostedtau_phi_Trigger,
+					"boostedtau_iso_Trigg": h_boostedtau_raw_iso_Trigger,
 
-				#Store Leading Boosted tau pt For the purposes of quanitative statistical comparisions
-				#"LeadingBoostedTau_pt_Array": ak.ravel(boostedtau.pt),
-				
-				#Electron kineamtic distirubtions
-				"electron_pt_Trigg": h_electron_pT_Trigger,
-				"Leadingelectron_pt_Trigg": h_Leadingelectron_pT_Trigger,
-				"electron_eta_Trigg": h_electron_eta_Trigger,
-				"electron_phi_Trigg": h_electron_phi_Trigger,
-				
-				#Muon kineamtic distirubtions
-				"muon_pt_Trigg": h_muon_pT_Trigger,
-				"Leadingmuon_pt_Trigg": h_Leadingmuon_pT_Trigger,
-				"muon_eta_Trigg": h_muon_eta_Trigger,
-                "Leadingmuon_eta_Trigg": h_Leadingmuon_eta_Trigger,
-				"muon_phi_Trigg": h_muon_phi_Trigger,
-				
-				#Jet kineamtic distirubtions
-				"Jet_pt_Trigg": h_Jet_pT_Trigger,
-				#"LeadingJet_pt_Trigg": h_LeadingJet_pT_Trigger,
-				"Jet_eta_Trigg": h_Jet_eta_Trigger,
-				"Jet_phi_Trigg": h_Jet_phi_Trigger,
-				
-				#AK8Jet kineamtic distirubtions
-				"AK8Jet_pt_Trigg": h_AK8Jet_pT_Trigger,
-				"LeadingAK8Jet_pt_Trigg": h_LeadingAK8Jet_pT_Trigger,
-				"AK8Jet_eta_Trigg": h_AK8Jet_eta_Trigger,
-				"AK8Jet_phi_Trigg": h_AK8Jet_phi_Trigger,
-				"nAK8Jet_Trigg": h_nAK8Jet_Trigger, 
-				
-				#Print MET
-				"MET": h_MET_Trigger,
-				"HT": h_HT_Trigger,
-				"MHT": h_MHT_Trigger,
+					#Store Leading Boosted tau pt For the purposes of quanitative statistical comparisions
+					#"LeadingBoostedTau_pt_Array": ak.ravel(boostedtau.pt),
+					
+					#Electron kineamtic distirubtions
+					"electron_pt_Trigg": h_electron_pT_Trigger,
+					"Leadingelectron_pt_Trigg": h_Leadingelectron_pT_Trigger,
+					"electron_eta_Trigg": h_electron_eta_Trigger,
+					"electron_phi_Trigg": h_electron_phi_Trigger,
+					
+					#Muon kineamtic distirubtions
+					"muon_pt_Trigg": h_muon_pT_Trigger,
+					"Leadingmuon_pt_Trigg": h_Leadingmuon_pT_Trigger,
+					"muon_eta_Trigg": h_muon_eta_Trigger,
+					"Leadingmuon_eta_Trigg": h_Leadingmuon_eta_Trigger,
+					"muon_phi_Trigg": h_muon_phi_Trigger,
+					
+					#Jet kineamtic distirubtions
+					"Jet_pt_Trigg": h_Jet_pT_Trigger,
+					#"LeadingJet_pt_Trigg": h_LeadingJet_pT_Trigger,
+					"Jet_eta_Trigg": h_Jet_eta_Trigger,
+					"Jet_phi_Trigg": h_Jet_phi_Trigger,
+					
+					#AK8Jet kineamtic distirubtions
+					"AK8Jet_pt_Trigg": h_AK8Jet_pT_Trigger,
+					"LeadingAK8Jet_pt_Trigg": h_LeadingAK8Jet_pT_Trigger,
+					"AK8Jet_eta_Trigg": h_AK8Jet_eta_Trigger,
+					"AK8Jet_phi_Trigg": h_AK8Jet_phi_Trigger,
+					"nAK8Jet_Trigg": h_nAK8Jet_Trigger, 
+					
+					#Print MET
+					"MET": h_MET_Trigger,
+					"HT": h_HT_Trigger,
+					"MHT": h_MHT_Trigger,
 
-				#Store the Mini Cutflow and N-1 Table 
-				"Mini_Cutflow": h_CutFlow,
-				#"Mini_NMinus1": h_NMinus1,
+					#Store the Mini Cutflow and N-1 Table 
+					"Mini_Cutflow": h_CutFlow,
+					#"Mini_NMinus1": h_NMinus1,
 
-				#Multiplicites
-				"ZMult": h_ZMult,
-				"bJetMult": h_bJetMult,
+					#Multiplicites
+					"ZMult": h_ZMult,
+					"bJetMult": h_bJetMult,
 
-				#Pair Delta Rs
-				"LeadingPair_dR": h_leading_boostedtau_deltaR,
-				"NextLeadingPair_dR": h_nextleading_boostedtau_deltaR,
-				"FourTauMass": h_FourTau_Mass
+					#Pair Delta Rs
+					"LeadingPair_dR": h_leading_boostedtau_deltaR,
+					"NextLeadingPair_dR": h_nextleading_boostedtau_deltaR,
+					"FourTauMass": h_FourTau_Mass
+				}
 			}
-		}
+		except Exception as err:
+			raise ValueError(f"Here is (hopefully) a more useful error message: {err}")
 
 	def postprocess(self, accumulator):
 		pass
