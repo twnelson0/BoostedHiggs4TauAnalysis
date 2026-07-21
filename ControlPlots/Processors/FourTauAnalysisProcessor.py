@@ -611,8 +611,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						mu_selec_Mask = (
 								(muon.pt > 52) &
 								(abs(muon.eta) < 2.4) &
-								(muon.IDSelec) &
-								(muon.RelIso < 0.15)
+								(muon.IDSelec) 
 						)
 						mu_selec_cond = ak.any(mu_selec_Mask,axis=1)
 						
@@ -682,8 +681,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					mu_selec_Mask = (
 							(muon_mu.pt > 52) &
 							(abs(muon_mu.eta) < 2.4) &
-							(muon_mu.IDSelec) &
-							(muon_mu.RelIso < 0.15)
+							(muon_mu.IDSelec)
 						)
 					mu_selec_cond = ak.any(mu_selec_Mask,axis=1)
 					
