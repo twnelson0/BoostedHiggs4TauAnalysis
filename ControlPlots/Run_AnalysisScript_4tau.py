@@ -57,7 +57,7 @@ def move_X509():
 
 if __name__ == "__main__":
 	#Condor related stuff
-	run_on_condor = True
+	run_on_condor = True 
 	os.environ["CONDOR_CONFIG"] = "/etc/condor/condor_config"
 	
 	if (run_on_condor):
@@ -108,8 +108,8 @@ if __name__ == "__main__":
 			schema=BaseSchema,
 			skipbadfiles=True,
 			xrootdtimeout=1000,
-            #chunksize=500000,
-            #maxchunks = 1
+			#chunksize=500000,
+			#maxchunks = 1
 		)
 
 		#Pass modules to HTC
@@ -118,7 +118,7 @@ if __name__ == "__main__":
 		#cloudpickle.register_pickle_by_value(Data)
 		#cloudpickle.register_pickle_by_value(Corrections.kFactor)
 		#cloudpickle.register_pickle_by_value(Corrections.PU_Reweighting)
-    
+	
 	else: #Iterative runner
 		print("Run Iteratively")
 		runner = processor.Runner(executor = processor.IterativeExecutor(), schema=BaseSchema)
@@ -214,6 +214,7 @@ if __name__ == "__main__":
 	QCD_HT1000To1500 = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT1000to1500_23April26_0536_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	QCD_HT1500To2000 = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT1500to2000_23April26_0539_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	QCD_HT2000ToInf = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT2000toInf_23April26_0541_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	Signal_HH_2TeV = glob.glob("/hdfs/store/user/twnelson/HH4Tau_EtAl/Full_Production_CMSSW_13_0_13_Feb_25/2018/MC/XHH4Tau_X2TeV/*.root")
 
 	#Arrays of Signal
 	#Signal_Base = "/hdfs/store/user/abdollah/RadionHH4tau_UL_Nov2025/"
@@ -228,16 +229,16 @@ if __name__ == "__main__":
 		"Data_Mu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in SingleMu_2018A_Debug],
 		"Data_HT": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in JetHT_2018A_Debug],
 		"DYJetsToLL_M-50_HT-1200to2500": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJets_Debug],
-        #"Data_Mu": SingleMu_2018A_Debug,
-        #"Data_HT": JetHT_2018A_Debug,
-        #"DYJetsToLL_M-50_HT-1200to2500": DYJets_Debug,
+		#"Data_Mu": SingleMu_2018A_Debug,
+		#"Data_HT": JetHT_2018A_Debug,
+		#"DYJetsToLL_M-50_HT-1200to2500": DYJets_Debug,
 	}
 	
 	ZZ4L_MVA = glob.glob("/hdfs/store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/ZZTo4L_13July26_0417_skim_MVASKim/singleFileSkimForSubmission-NANO_NANO_*.root") 
 
 	file_dict_ZZ4L_Only = {
 		#"ZZ4l": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZ4L_2018]
-        "ZZ4l": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZ4L_MVA[500:]]
+		"ZZ4l": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZ4L_MVA[500:]]
 	}
 
 
@@ -246,7 +247,7 @@ if __name__ == "__main__":
 		#"Data_Mu": [Skimmed_4tau_base_Data + "SingleMu_Run2018A_15January26_0751_skim_Jan26Skim/singleFileSkimForSubmission-NANO_NANO_*.root"]
 		#"Data_Mu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in SingleMu_2018A_Debug],
 		#"Data_Mu": [file for file in SingleMu_2018A_Debug] 
-        "Data_HT": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/Data/JetHT_Run2018D_13January26_1130_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_865.root"]
+		"Data_HT": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/Data/JetHT_Run2018D_13January26_1130_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_865.root"]
 		#"Data_Mu": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/SkimDebugging/SingleMu_Run2018A_24March26_0937_skim_NullSkimming/singleFileSkimForSubmission-NANO_NANO_402.root"] #Run a single file offline
 	}
 
@@ -256,7 +257,7 @@ if __name__ == "__main__":
 		#"WJetsToLNu_HT-70To100": [file for file in np.random.choice(["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WJetsToLNu_HT70To100_2018],3)],
 		#"DYJetsToLL_M-50_HT-1200to2500": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/MC/DYJetsToLL_M-50_HT-1200to2500_12December25_1547_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_77.root"],
 		#"QCD_HT2000toInf": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/MC/QCD_HT2000toInf_23April26_0541_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_93.root"],
-        "Data_Mu": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/Data/SingleMu_Run2018D_15January26_0815_skim_Jan26Skim/singleFileSkimForSubmission-NANO_NANO_762.root"],
+		"Data_Mu": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/Data/SingleMu_Run2018D_15January26_0815_skim_Jan26Skim/singleFileSkimForSubmission-NANO_NANO_762.root"],
 
 	}
 
@@ -312,8 +313,9 @@ if __name__ == "__main__":
 			"QCD_HT1500to2000": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT1500To2000],
 			"QCD_HT2000toInf": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT2000ToInf],
 			"Data_Mu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(SingleMu_2018A, np.append(SingleMu_2018B, np.append(SingleMu_2018C,SingleMu_2018D)))],
-            "Data_HT": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(JetHT_2018A, np.append(JetHT_2018B, np.append(JetHT_2018C,JetHT_2018D)))],
+			"Data_HT": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(JetHT_2018A, np.append(JetHT_2018B, np.append(JetHT_2018C,JetHT_2018D)))],
 			#"Data_MET": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(MET_2018A, np.append(MET_2018B, np.append(MET_2018C,MET_2018D)))]
+			"Signal_2TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_2TeV]
 		}
 	
 	file_dict_test = {
@@ -368,7 +370,7 @@ if __name__ == "__main__":
 			"QCD_HT1500to2000": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT1500To2000[30:50]],
 			"QCD_HT2000toInf": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT2000ToInf[30:50]],
 			"Data_Mu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(SingleMu_2018A, np.append(SingleMu_2018B, np.append(SingleMu_2018C,SingleMu_2018D)))[30:50]],
-            "Data_HT": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(JetHT_2018A, np.append(JetHT_2018B, np.append(JetHT_2018C,JetHT_2018D)))[30:50]],
+			"Data_HT": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(JetHT_2018A, np.append(JetHT_2018B, np.append(JetHT_2018C,JetHT_2018D)))[30:50]],
 		}
 	
 	file_dict_MC_only = {
@@ -426,12 +428,17 @@ if __name__ == "__main__":
 	
 	file_dict_data_only = {
 		"Data_Mu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(SingleMu_2018A, np.append(SingleMu_2018B, np.append(SingleMu_2018C,SingleMu_2018D)))],
-        "Data_HT": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(JetHT_2018A, np.append(JetHT_2018B, np.append(JetHT_2018C,JetHT_2018D)))],
+		"Data_HT": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(JetHT_2018A, np.append(JetHT_2018B, np.append(JetHT_2018C,JetHT_2018D)))],
+	}
+	
+	file_dict_signal_only = {
+		"Signal_2TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_2TeV]
 	}
 	
 	#Set file dictionary and list of backgrounds prior to running processor
 	#file_dict = file_dict_data_test
 	file_dict = file_dict_full
+	#file_dict = file_dict_signal_only
 	#file_dict = file_dict_data_only
 	#file_dict = file_dict_MC_only
 	#file_dict = file_dict_test
@@ -448,26 +455,29 @@ if __name__ == "__main__":
 #	with open("numEvents_JSON.json") as json_file:
 #		numEvents_Dict = json.load(json_file)
 	
+	trigger_bit_dict = {0:"NoTrigger",1:"SingleMuonTrigger",2:"HTMETMHTTrigger",3:"BothTriggers"}
 
-	start_time = time.time()
 	
 	for n_taus in range(4,5):
-		print("About to run processor")
-		start_time = time.time()
-		if (run_on_condor):
-			print(f"https://cms01.hep.wisc.edu:8009/user/{os.environ['USER']}/{cluster.dashboard_link}")
-		fourtau_out = runner(file_dict, treename="Events", processor_instance=AnalysisProcessor.Analysis4TauProcessor(sumWEvents_Dict = sumWEvents_Dict, nBoostedTaus = n_taus, ApplyTrigger = True)) #Modified for NanoAOD (changd treename)
-		end_time = time.time()
-		time_running = end_time-start_time
-		print("It takes about %.1f s to run the coffea processor with %d boosted tau selections"%(time_running,n_taus))
-		
-        #Save coffea file
-		outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_VlooseWP_NoISO.coffea")
-		#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_VlooseWP_MCOnly.coffea")
-		#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_VlooseWP_Test.coffea")
-		#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_SubVVlooseWP_Test.coffea")
-		#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_Test.coffea")
-		#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_FullSetTest.coffea")
-		#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_oopsBrokenProcessor.coffea")
-		util.save(fourtau_out, outfile)
-		print(f"Saved output to {outfile}")	
+		for trigger_bit in range(1,4):
+			print("About to run processor")
+			start_time = time.time()
+			if (run_on_condor):
+				print(f"https://cms02.hep.wisc.edu:8009/user/{os.environ['USER']}/{cluster.dashboard_link}")
+			fourtau_out = runner(file_dict, treename="Events", processor_instance=AnalysisProcessor.Analysis4TauProcessor(sumWEvents_Dict = sumWEvents_Dict, nBoostedTaus = n_taus, Trigger_Code = trigger_bit)) #Modified for NanoAOD (changd treename)
+			end_time = time.time()
+			time_running = end_time-start_time
+			print("It takes about %.1f s to run the coffea processor with %d boosted tau selections"%(time_running,n_taus))
+			
+			#Save coffea file
+			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_VlooseWP_NoISO.coffea")
+			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_tightWP_p95_SignalNoSkim_FixedSignalWeight.coffea")
+			outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_tightWP_p95_SignalNoSkim_" + trigger_bit_dict[trigger_bit]	+ ".coffea")
+			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_VlooseWP_MCOnly.coffea")
+			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_VlooseWP_Test.coffea")
+			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_SubVVlooseWP_Test.coffea")
+			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_Test.coffea")
+			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_FullSetTest.coffea")
+			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_oopsBrokenProcessor.coffea")
+			util.save(fourtau_out, outfile)
+			print(f"Saved output to {outfile}")	

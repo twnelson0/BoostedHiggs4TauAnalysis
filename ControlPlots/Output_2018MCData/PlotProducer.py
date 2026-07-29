@@ -94,7 +94,8 @@ if __name__ == "__main__":
 
 	four_tau_hist_list = add_var + four_tau_hist_list
 	
-	background_list_full = [r"$t\bar{t}$", r"Drell-Yan+Jets", "Di-Bosons", "Single Top", "W+Jets", r"$ZZ \rightarrow 4l$"]
+	#background_list_full = [r"$t\bar{t}$", r"Drell-Yan+Jets", "Di-Bosons", "Single Top", "W+Jets", r"$ZZ \rightarrow 4l$"]
+	background_list_full = [r"$t\bar{t}$", r"Drell-Yan+Jets", "Di-Bosons", "Single Top", "W+Jets", r"$ZZ \rightarrow 4l$","Signal 2 TeV"]
 	background_list_fullQCD = [r"$t\bar{t}$", r"Drell-Yan+Jets", "Di-Bosons", "Single Top", "W+Jets", r"$ZZ \rightarrow 4l$","QCD"]
 	background_list_test = [r"$ZZ \rightarrow 4l$"]
 	background_list_none = []
@@ -120,6 +121,7 @@ if __name__ == "__main__":
 			"W+Jets HT 1200-2500 GeV": ["WJetsToLNu_HT-1200To2500"], "W+Jets HT 2500-Inf GeV": ["WJetsToLNu_HT-2500ToInf"],
 			r"$ZZ \rightarrow 4l$" : ["ZZ4l"],
 			"QCD": ["QCD_HT50to100","QCD_HT100to200","QCD_HT200to300","QCD_HT300to500","QCD_HT500to700","QCD_HT700to1000","QCD_HT1000to1500","QCD_HT1500to2000","QCD_HT2000toInf"],
+			"Signal 2 TeV": ["Signal_2TeV"],
 	}
 
 	all_sample_array = []
@@ -284,6 +286,7 @@ if __name__ == "__main__":
 		#for dummy_indx in range(1): #Do this for plotting all samples (Not combined)
 			#print("Background type %s"%background_type)
 			background_array = []
+			background_signal_array = []
 			backgrounds = background_dict[background_type]
 			#backgrounds = background_list #only for plotting all samples
 
@@ -342,16 +345,20 @@ if __name__ == "__main__":
 		#hist_dict_data[hist_name] += coffea_input["Data_HT"][hist_name][{"region": args.ControlRegion}]
 		hist_dict_data[hist_name] = coffea_input["Data_Mu"][hist_name][{"region": args.ControlRegion}] + coffea_input["Data_HT"][hist_name][{"region": args.ControlRegion}]
 		background_stack = hist_dict_background[hist_name] #hist_dict_background[hist_name].stack("background")
-		#signal_stack = hist_dict_signal[hist_name].stack("signal")
+		#signal_stack = coffea_input["Signal_2TeV"][hist_name]
 		
 		data_stack = hist_dict_data[hist_name] #.stack("data")    
-		#signal_array = [signal_stack["Signal"]]
+		#signal_array = [signal_stack]
 		data_array = [data_stack] #["Data"]]
-				
+		
+
 		for background in background_list:
 			background_array.append(background_stack[background]) #Is this line fucking up your scaling??
+			#background_signal_array.append(background_stack[background])
 			#print("Background: " + background)
 			#print("Sum of stacked histogram: %f"%background_stack[background].sum())
+		#print(type(coffea_input["Signal_2TeV"][hist_name]))
+		#background_signal_array.append(coffea_input["Signal_2TeV"][hist_name])
 		
 		#MPLHEP ratio plot
 		if (hist_name == "Leadingmuon_eta_Trigg"):
@@ -359,20 +366,32 @@ if __name__ == "__main__":
 		else:
 			axis_label = coffea_input["Data_Mu"][hist_name][{"region": args.ControlRegion}].axes[0].label
 		
+		#background_signal_list = background_list
+		#print(len(background_signal_list))
+		#print(len(TABLEAU_COLORS))
+		#background_signal_list.append("Signal 2 TeV")
+		
 		fig, ax_main, ax_comp = hep.comp.data_model(
-			data_hist = coffea_input["Data_Mu"][hist_name][{"region": args.ControlRegion}],
-			stacked_components = background_array,
-			stacked_colors = TABLEAU_COLORS[:len(background_list)],
+			data_hist = coffea_input["Data_Mu"][hist_name][{"region": args.ControlRegion}] + coffea_input["Data_HT"][hist_name][{"region": args.ControlRegion}], #Oh shit this is a bug you've never included JetHT 
+			#stacked_components = background_array,
+            stacked_components = background_array[:len(background_array)-1],
+            stacked_labels = background_list[:len(background_list)-1],
+			stacked_colors = TABLEAU_COLORS[:len(background_list)-1],
+            #unstacked_components = background_array[len(background_array)-1],
+            #unstacked_colors = TABLEAU_COLORS[len(background_list)-1],
 			#stacked_colors = TABLEAU_COLORS,
-			stacked_labels = background_list,
+           # unstacked_labels = background_list[len(background_list)-1], 
 			xlabel = axis_label,
 			model_uncertainty=True,
+			#model_sum_kwargs={"show": True, "label": "Model", "color": "navy"},
 			comparison = "ratio",
             markersize = 10,
 			flow = "sum",
 			#linewidth=2,
 
 		)
+		#Add signal
+		hep.histplot(background_array[len(background_array)-1], ax=ax_main, color = TABLEAU_COLORS[len(background_list)], label = background_list[len(background_list)-1], histtype = "step")
 		ax_main.legend(fontsize = 14)
 		hep.yscale_legend(ax_main)
 		hep.cms.label(data=True, ax = ax_main, text = "2018 Data Preliminary")	

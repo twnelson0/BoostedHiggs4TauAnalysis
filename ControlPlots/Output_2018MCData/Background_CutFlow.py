@@ -53,13 +53,10 @@ region_dict = {"All": "NoControlRegion",
 parse = argparse.ArgumentParser()
 parse.add_argument("-f", "--File", help = "Input coffea file")
 parse.add_argument("-n", "--NumberTau", help = "Number of boosted taus in selection")
-parse.add_argument("-r", "--ControlRegion", help = "Specify the Control Region")
 args = parse.parse_args()
 
 if __name__ == "__main__":
 	print("Running on file " + args.File)
-	print("With " + args.NumberTau + " Boosted taus required")
-	print("Control Region " + args.ControlRegion)
 
 	cutflow_csv_bool = True
 
@@ -95,7 +92,7 @@ if __name__ == "__main__":
 
 	four_tau_hist_list = add_var + four_tau_hist_list
 	
-	background_list_full = [r"$t\bar{t}$", r"Drell-Yan+Jets", "Di-Bosons", "Single Top", "W+Jets", r"$ZZ \rightarrow 4l$"]
+	background_list_full = [r"$t\bar{t}$", r"Drell-Yan+Jets", "Di-Bosons", "Single Top", "W+Jets", r"$ZZ \rightarrow 4l$","Signal"]
 	background_list_fullQCD = [r"$t\bar{t}$", r"Drell-Yan+Jets", "Di-Bosons", "Single Top", "W+Jets", r"$ZZ \rightarrow 4l$","QCD"]
 	background_list_test = [r"$ZZ \rightarrow 4l$"]
 	background_list_none = []
@@ -121,85 +118,28 @@ if __name__ == "__main__":
 			"W+Jets HT 1200-2500 GeV": ["WJetsToLNu_HT-1200To2500"], "W+Jets HT 2500-Inf GeV": ["WJetsToLNu_HT-2500ToInf"],
 			r"$ZZ \rightarrow 4l$" : ["ZZ4l"],
 			"QCD": ["QCD_HT50to100","QCD_HT100to200","QCD_HT200to300","QCD_HT300to500","QCD_HT500to700","QCD_HT700to1000","QCD_HT1000to1500","QCD_HT1500to2000","QCD_HT2000toInf"],
+			"Signal": ["Signal_2TeV"],
 	}
 
 	all_sample_array = []
 	for background in background_list:
+		print(background_dict[background])
 		all_sample_array.append(background_dict[background])
 	
-	#Make the colors easier on the eyes
-	#all_sample_array = list(itertools.chain.from_iterable(all_sample_array))
-	#background_list = all_sample_array #Produce list of all backgrounds rather than combining them
-	#TABLEAU_COLORS = []
-	
-	#for background_type in background_dict.keys():
-#	for i in range(len(background_list_full)):
-#		TABLEAU_COLORS.append(cmap_array[i](np.linspace(0,1,len(background_dict[background_list_full[i]]))))
-	#TABLEAU_COLORS = cmap(np.linspace(0,1,len(background_list)))
-
-	#print(TABLEAU_COLORS)
-	
-	#Dictinary with file names
-	trigger_name = "BothTriggers"
-	four_tau_names = {
-		"boostedtau_pt_Trigg": "BoostedTau_pT_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-		"Leadingboostedtau_pt_Trigg": "BoostedTau_Leading_pT_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-		"Subleadingboostedtau_pt_Trigg": "BoostedTau_Subleading_pT_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion], 
-		"Thirdleadingboostedtau_pt_Trigg": "BoostedTau_3rdleading_pT_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion], 
-		"Fourthleadingboostedtau_pt_Trigg": "BoostedTau_4thleading_pT_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion], 
-		"boostedtau_eta_Trigg": "BoostedTau_eta_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-		"boostedtau_phi_Trigg": "BoostedTau_phi_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-		"boostedtau_iso_Trigg": "BoostedTau_iso_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-		"electron_pt_Trigg": "Electron_pT_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-		"Leadingelectron_pt_Trigg": "Electron_Leading_pT_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-		"electron_eta_Trigg": "Electron_eta_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-		"electron_phi_Trigg": "Electron_phi_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-		"muon_pt_Trigg": "Muon_pT_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-		"Leadingmuon_pt_Trigg": "Muon_Leading_pT_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-		"muon_eta_Trigg": "Muon_eta_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-		"muon_phi_Trigg": "Muon_phi_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-		"Leadingmuon_eta_Trigg": "Muon_Leading_eta_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-		"Jet_pt_Trigg": "Jet_pT_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-		"LeadingJet_pt_Trigg": "Jet_Leading_pT_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-		"Jet_eta_Trigg": "Jet_eta_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-		"Jet_phi_Trigg": "Jet_phi_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-		"AK8Jet_pt_Trigg": "AK8Jet_pT_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-		"LeadingAK8Jet_pt_Trigg": "AK8Jet_Leading_pT_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-		"AK8Jet_eta_Trigg": "AK8Jet_eta_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-		"AK8Jet_phi_Trigg": "AK8Jet_phi_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-        "nAK8Jet_Trigg": "nAK8Jets_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-		"MET": "MET_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-		"HT": "HT_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-		"MHT": "MHT_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-		"Mini_Cutflow": "Mini_Cutflow_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-		"Mini_NMinus1": "Mini_NMinus1_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-        "ZMult": "ZBosonMult_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-        "bJetMult": "bJetMult_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-        "LeadingPair_dR": "LeadDiTau_DeltaR_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-        "NextLeadingPair_dR": "NextLeadDiTau_DeltaR_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-        "FourTauMass": "FourTauMass_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
-	}
-
-
 	#Import coffea files with histograms
 	coffea_input = util.load(coffea_file)
 
-#	print("Number of events prior to selections: %d"%coffea_input["ZZ4l"]["n_Skim"])
-#	print("Number of events after Trigger selection: %d"%(coffea_input["ZZ4l"]["n_Trigger"]))
-#	print("Number of events after Leading Boosted Tau selection: %d"%(coffea_input["ZZ4l"]["n_LeadBoostedTau"]))
-#	print("Number of events after Sub-Leading Boosted Tau selection: %d"%(coffea_input["ZZ4l"]["n_SubLeadBoostedTau"]))
-#	print("Number of events after 3rd-Leading Boosted Tau selection: %d"%(coffea_input["ZZ4l"]["n_3rdLeadBoostedTau"]))
-#	print("Number of events after 4th-Leading Boosted Tau selection: %d"%(coffea_input["ZZ4l"]["n_4thLeadBoostedTau"]))
-#	print("Number of events after di-tau mass selections: %d"%(coffea_input["ZZ4l"]["n_VisMass"]))
-#	print("Number of events after di-tau Delta R selection: %d"%(coffea_input["ZZ4l"]["n_Higgs_dR"]))
-
 	#Produce csv table
 	if (cutflow_csv_bool):
-		table_keys = ["Sample","PreSkim","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]
+		table_keys = ["Sample","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]
 		table_array = []
+	#	var_dict = {
+	#			"SkimOnly": "n_Skim" ,"Trigger" : "n_Trigger", "LeadingBoostedTau": "n_LeadBoostedTau","SubleadingBoostedTau": "n_SubLeadBoostedTau",
+	#			"3rdLeadingBoostedTau": "n_3rdLeadBoostedTau","4thLeadingBoostedTau": "n_4thLeadBoostedTau","VisMassSelec": "n_VisMass","Higgs_dR" : "n_Higgs_dR"
+	#		}
 		var_dict = {
-				"SkimOnly": "n_Skim" ,"Trigger" : "n_Trigger", "LeadingBoostedTau": "n_LeadBoostedTau","SubleadingBoostedTau": "n_SubLeadBoostedTau",
-				"3rdLeadingBoostedTau": "n_3rdLeadBoostedTau","4thLeadingBoostedTau": "n_4thLeadBoostedTau","VisMassSelec": "n_VisMass","Higgs_dR" : "n_Higgs_dR"
+				"SkimOnly": "w_Skim" ,"Trigger" : "w_Trigger", "LeadingBoostedTau": "w_LeadBoostedTau","SubleadingBoostedTau": "w_SubLeadBoostedTau",
+				"3rdLeadingBoostedTau": "w_3rdLeadBoostedTau","4thLeadingBoostedTau": "w_4thLeadBoostedTau","VisMassSelec": "w_VisMass","Higgs_dR" : "w_Higgs_dR"
 			}
 		#table_dict["Sample"] = ["Muon Data Set","HT Data Set", "Both Sets of Data"]
 		samples = ["TTToSemiLeptonic","TTTo2L2Nu","TTToHadronic","DYJetsToLL_M-4to50_HT-70to100","DYJetsToLL_M-4to50_HT-100to200","DYJetsToLL_M-4to50_HT-200to400",
@@ -207,7 +147,7 @@ if __name__ == "__main__":
 				"DYJetsToLL_M-50_HT-400to600","DYJetsToLL_M-50_HT-600to800","DYJetsToLL_M-50_HT-800to1200","DYJetsToLL_M-50_HT-1200to2500","DYJetsToLL_M-50_HT-2500toInf",
 				"ZZ4l","WZ2l2q","WZ1l1nu2q","ZZ2l2q", "WZ1l3nu", "VV2l2nu", "WWTo1L1Nu2Q", "WWTo4Q", "ZZTo4Q", "ZZTo2L2Nu", "ZZTo2Nu2Q","Tbar-tchan","T-tchan","Tbar-tW","T-tW",
 				"ST_s-channel_4f_leptonDecays", "ST_s-channel_4f_hadronicDecays","WJetsToLNu_HT-70To100","WJetsToLNu_HT-100To200","WJetsToLNu_HT-200To400","WJetsToLNu_HT-400To600",
-				"WJetsToLNu_HT-600To800","WJetsToLNu_HT-800To1200","WJetsToLNu_HT-1200To2500","WJetsToLNu_HT-2500ToInf"]
+				"WJetsToLNu_HT-600To800","WJetsToLNu_HT-800To1200","WJetsToLNu_HT-1200To2500","WJetsToLNu_HT-2500ToInf","Signal_2TeV","Data_Mu","Data_HT"]
        
 		with open("../numEvents_JSON.json") as json_file:
 			pre_skim_dict = json.load(json_file)
@@ -215,19 +155,19 @@ if __name__ == "__main__":
 		#print(pre_skim_dict)
 		
 		for sample in samples:
-			table_dict = dict.fromkeys(["Sample","PreSkim","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"])
+			table_dict = dict.fromkeys(["Sample","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"])
 			table_dict["Sample"] = sample
-			print(pre_skim_dict[sample])
+			#print(pre_skim_dict[sample])
 			all_labels = list(var_dict.keys())
-			all_labels.append("PreSkim") 
+			#all_labels.append("PreSkim") 
 			for key in all_labels:
-				if (key == "PreSkim"):
-					table_dict[key] = pre_skim_dict[sample]
-				else:
-					table_dict[key] = coffea_input[sample][var_dict[key]]
+				#if (key == "PreSkim"):
+				#	table_dict[key] = pre_skim_dict[sample]
+				#else:
+				table_dict[key] = coffea_input[sample][var_dict[key]]
 			table_array.append(table_dict)
 
-		with open("NanoAOD_UL_DeepTau_Cutflow_v2.csv", "w", newline="") as f:
+		with open("NanoAOD_UL_DeepTau_DataMC_Cutflow_Weights_Tightp95Cut_WSignal_Fixed.csv", "w", newline="") as f:
 			w = csv.DictWriter(f,table_keys)
 			w.writeheader()
 			w.writerows(table_array)

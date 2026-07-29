@@ -37,7 +37,7 @@ except Exception as err:
 #warnings.filterwarnings("error")
 
 #Dan's Code for debugging mysterious error
-os.environ['PATH']="/nfs_scratch/dan/testbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+#os.environ['PATH']="/nfs_scratch/dan/testbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 #Global Variables
 WScaleFactor = 1.21
@@ -50,7 +50,7 @@ TT_Had_BR = 0.4544
 lumi_table_data = {"MC Sample":[], "Luminosity":[], "Cross Section (pb)":[], "Number of Events":[], "Calculated Weight":[]}
 
 #Dictionary of cross sections 
-xSection_Dictionary = {"Signal": 0.01, #Chosen to make plots readable
+xSection_Dictionary = {"Signal": 0.00001, #Chosen to make plots readable
 						"TTTo2L2Nu": 87.5595, "TTToSemiLeptonic": 365.2482, "TTToHadronic": 381.0923,
 						
 						#DiBoson Background
@@ -87,7 +87,10 @@ xSection_Dictionary = {"Signal": 0.01, #Chosen to make plots readable
 Lumi_2018 = 59830
 
 def weight_calc(sample,numEvents=1):
-	return Lumi_2018*xSection_Dictionary[sample]/numEvents
+    if ("Signal" in sample):
+        return Lumi_2018*xSection_Dictionary["Signal"]/numEvents
+    else:
+	    return Lumi_2018*xSection_Dictionary[sample]/numEvents
 
 #Era Enumeration
 class RunEra_Enum(Enum):
@@ -219,14 +222,28 @@ def four_mass(part_arr): #Four Particle mass assuming each event has 4 particles
 		(part_arr[0].Pz + part_arr[1].Pz + part_arr[2].Pz + part_arr[3].Pz)**2)
 
 class Analysis4TauProcessor(processor.ProcessorABC):
-	def __init__(self, sumWEvents_Dict, nBoostedTaus = 0, ApplyTrigger = True, year = 2018): #Additional arguements can be added later
+	#def __init__(self, sumWEvents_Dict, nBoostedTaus = 0, ApplyTrigger = True, year = 2018): #Additional arguements can be added later
+	def __init__(self, sumWEvents_Dict, nBoostedTaus = 0, Trigger_Code = 3, year = 2018): #Additional arguements can be added later
 		#Initial variables
 		self.isData = False #Default assumption is MC
 		self.nBoostedTau_Selec = nBoostedTaus #Number of tau selections
-		self.ApplyTrigger = ApplyTrigger
+		#self.ApplyTrigger = ApplyTrigger
 		#self.numEvents_Dict = numEvents_Dict
 		self.sumWEvents_Dict = sumWEvents_Dict
 		self.year = year
+
+		#Work out Triggering logic
+		self.Mu_Trigger = False
+		self.HT_Trigger = False
+		if (np.bitwise_and(Trigger_Code,1) != 1):
+			self.ApplyTrigger = True
+			self.Mu_Trigger = True
+		elif (np.bitwise_and(Trigger_Code,2) != 1):
+			self.ApplyTrigger = True
+			self.HT_Trigger = True
+		else:
+			self.ApplyTrigger = False
+
 		#pass
 
 		#Corrections
@@ -477,13 +494,15 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				#h_NMinus1 = hist.Hist.new.StrCategory(["SkimOnly","METCut","nFatJetReq","FlagReq","PVSelec","LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]).Double()
 
 			#Fill initial entries in skim and N-1 histograms (Old version raw counts not good for evaulatuing MC)
-			n_Skim = np.size(event_level.nFatJet)
-			h_CutFlow.fill("SkimOnly",weight=n_Skim)
+		#	n_Skim = np.size(event_level.nFatJet)
+		#	h_CutFlow.fill("SkimOnly",weight=n_Skim)
 			#h_NMinus1.fill("SkimOnly",weight=0)
 			
 			#Obtain the cross section scale factor	
 			if (self.isData):
 				CrossSec_Weight = 1 
+			elif "Signal" in dataset:
+				CrossSec_Weight = weight_calc(dataset)
 			else:
 				CrossSec_Weight = weight_calc(dataset,self.sumWEvents_Dict[dataset])
 
@@ -579,13 +598,25 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				muon = muon[lumi_mask_arr]
 				event_level = event_level[lumi_mask_arr]	
 			
+			#Fill initial entries in skim and N-1 histograms (Old version raw counts not good for evaulatuing MC)
+			n_Skim = np.size(event_level.nFatJet)
+			if (self.isData):
+				w_Skim = n_Skim
+			else:
+				if ("Signal" in dataset):
+					w_Skim = n_Skim
+				else:
+					w_Skim = ak.sum(event_level.event_weight*CrossSec_Weight)
+			h_CutFlow.fill("SkimOnly",weight=n_Skim)
+			#h_NMinus1.fill("SkimOnly",weight=0)
+			
 			#############
 			#Trigger and Offline Cuts
 			#############
 			n_Trigger = 0
 			if (self.ApplyTrigger):
 				if (self.isData):
-					if ("Data_Mu" == dataset):
+					if ("Data_Mu" == dataset and self.Mu_Trigger):
 					#	print("Applying Single Muon Trigger (Muon Data)")
 					#	print("Event Count before Trigger+Selections: %d"%ak.num(event_level.HT,axis=0))
 						#HLT Trigger(s)
@@ -626,7 +657,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					#	print("Event Count after Trigger+Selections: %d"%ak.num(event_level.HT,axis=0))
 
 					#JetHT Data
-					if ("Data_HT" == dataset):
+					if ("Data_HT" == dataset and self.HT_Trigger):
 					#	print("Applying JetHT Trigger (Data JetHT)")
 					#	print("Event Count before Trigger+Selections: %d"%ak.num(event_level.HT,axis=0))
 						#HLT Trigger(s)
@@ -657,76 +688,130 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					print("About to Apply both sets of triggers to MC")
 					print("Event Count before Trigger+Selections: %d"%ak.num(event_level.HT,axis=0))
 					init_event_count = ak.num(event_level.HT,axis=0) #Store initial number of events
+					HT_trigger_event_count = 0
+					mu_trigger_event_count = 0
+
 					trigger_cond_mu = event_level.Mu_Trigger
 			
-					boostedtau_mu =  boostedtau[trigger_cond_mu]
-					AK8Jet_mu =  AK8Jet[trigger_cond_mu]
-					Jet_mu =  Jet[trigger_cond_mu]
-					electron_mu =  electron[trigger_cond_mu]
-					muon_mu =  muon[trigger_cond_mu]
-					GenPart_mu = GenPart[trigger_cond_mu]
-					event_level_mu =  event_level[trigger_cond_mu]
+					if (self.Mu_Trigger):
+						boostedtau_mu =  boostedtau[trigger_cond_mu]
+						AK8Jet_mu =  AK8Jet[trigger_cond_mu]
+						Jet_mu =  Jet[trigger_cond_mu]
+						electron_mu =  electron[trigger_cond_mu]
+						muon_mu =  muon[trigger_cond_mu]
+						GenPart_mu = GenPart[trigger_cond_mu]
+						event_level_mu =  event_level[trigger_cond_mu]
 
-					#Muon Trigger offline selection
-					nMuon_Cond = ak.any(muon_mu.nMu > 0, axis = 1) 
-					boostedtau_mu = boostedtau_mu[nMuon_Cond]
-					AK8Jet_mu = AK8Jet_mu[nMuon_Cond]
-					Jet_mu = Jet_mu[nMuon_Cond]
-					electron_mu = electron_mu[nMuon_Cond]
-					muon_mu = muon_mu[nMuon_Cond]
-					GenPart_mu = GenPart_mu[nMuon_Cond]
-					event_level_mu = event_level_mu[nMuon_Cond]				
+						#Muon Trigger offline selection
+						nMuon_Cond = ak.any(muon_mu.nMu > 0, axis = 1) 
+						boostedtau_mu = boostedtau_mu[nMuon_Cond]
+						AK8Jet_mu = AK8Jet_mu[nMuon_Cond]
+						Jet_mu = Jet_mu[nMuon_Cond]
+						electron_mu = electron_mu[nMuon_Cond]
+						muon_mu = muon_mu[nMuon_Cond]
+						GenPart_mu = GenPart_mu[nMuon_Cond]
+						event_level_mu = event_level_mu[nMuon_Cond]				
+							
+						#Combined pT eta and ID selection
+						mu_selec_Mask = (
+								(muon_mu.pt > 52) &
+								(abs(muon_mu.eta) < 2.4) &
+								(muon_mu.IDSelec)
+							)
+						mu_selec_cond = ak.any(mu_selec_Mask,axis=1)
 						
-					#Combined pT eta and ID selection
-					mu_selec_Mask = (
-							(muon_mu.pt > 52) &
-							(abs(muon_mu.eta) < 2.4) &
-							(muon_mu.IDSelec)
-						)
-					mu_selec_cond = ak.any(mu_selec_Mask,axis=1)
-					
-					boostedtau_mu = boostedtau_mu[mu_selec_cond]
-					AK8Jet_mu = AK8Jet_mu[mu_selec_cond]
-					Jet_mu = Jet_mu[mu_selec_cond]
-					electron_mu = electron_mu[mu_selec_cond]
-					muon_mu = muon_mu[mu_selec_cond]
-					event_level_mu = event_level_mu[mu_selec_cond]	
-					GenPart_mu = GenPart_mu[mu_selec_cond]
-					
-					#print("Single Muon Trigger and Selections Applied To MC %s"%dataset)
-					#print("Event Count after Trigger+Selections: %d"%ak.num(event_level_mu.HT,axis=0))
-					mu_trigger_event_count = ak.num(event_level_mu.HT,axis=0)
+						boostedtau_mu = boostedtau_mu[mu_selec_cond]
+						AK8Jet_mu = AK8Jet_mu[mu_selec_cond]
+						Jet_mu = Jet_mu[mu_selec_cond]
+						electron_mu = electron_mu[mu_selec_cond]
+						muon_mu = muon_mu[mu_selec_cond]
+						event_level_mu = event_level_mu[mu_selec_cond]	
+						GenPart_mu = GenPart_mu[mu_selec_cond]
+						
+						#print("Single Muon Trigger and Selections Applied To MC %s"%dataset)
+						#print("Event Count after Trigger+Selections: %d"%ak.num(event_level_mu.HT,axis=0))
+						mu_trigger_event_count = ak.num(event_level_mu.HT,axis=0)
 
 					#Fail Single Muon trigger and pass Jet HT Trigger
-					boostedtau_HT = boostedtau[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
-					AK8Jet_HT = AK8Jet[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
-					Jet_HT = Jet[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
-					electron_HT = electron[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
-					muon_HT = muon[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
-					GenPart_HT = GenPart[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
-					event_level_HT = event_level[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
-					
-					#Offline Cuts
-					HTMETMHT_Selec = ((event_level_HT.HT > 550) &
-										   (event_level_HT.MET_pt > 110) &
-										   (event_level_HT.MHT > 110)
-										)
-					boostedtau_HT = boostedtau_HT[HTMETMHT_Selec]
-					AK8Jet_HT = AK8Jet_HT[HTMETMHT_Selec]
-					Jet_HT = Jet_HT[HTMETMHT_Selec]
-					electron_HT = electron_HT[HTMETMHT_Selec]
-					muon_HT = muon_HT[HTMETMHT_Selec]
-					GenPart_HT = GenPart_HT[HTMETMHT_Selec]
-					event_level_HT = event_level_HT[HTMETMHT_Selec]
+					if (self.Mu_Trigger):
+						HT_TriggerCond = np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger
+					else:
+						HT_TriggerCond = event_level.METHTMHT_Trigger
 
-					#Memory management
-					boostedtau = ak.concatenate((boostedtau_mu,boostedtau_HT))
-					AK8Jet = ak.concatenate((AK8Jet_mu,AK8Jet_HT))
-					Jet = ak.concatenate((Jet_mu,Jet_HT))
-					electron = ak.concatenate((electron_mu,electron_HT))
-					muon = ak.concatenate((muon_mu,muon_HT))
-					GenPart = ak.concatenate((GenPart_mu, GenPart_HT))
-					event_level = ak.concatenate((event_level_mu,event_level_HT))
+					if (self.HT_Trigger):
+						boostedtau_HT = boostedtau[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+						AK8Jet_HT = AK8Jet[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+						Jet_HT = Jet[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+						electron_HT = electron[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+						muon_HT = muon[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+						GenPart_HT = GenPart[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+						event_level_HT = event_level[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+						
+						#Offline Cuts
+						HTMETMHT_Selec = ((event_level_HT.HT > 550) &
+											   (event_level_HT.MET_pt > 110) &
+											   (event_level_HT.MHT > 110)
+											)
+						boostedtau_HT = boostedtau_HT[HTMETMHT_Selec]
+						AK8Jet_HT = AK8Jet_HT[HTMETMHT_Selec]
+						Jet_HT = Jet_HT[HTMETMHT_Selec]
+						electron_HT = electron_HT[HTMETMHT_Selec]
+						muon_HT = muon_HT[HTMETMHT_Selec]
+						GenPart_HT = GenPart_HT[HTMETMHT_Selec]
+						event_level_HT = event_level_HT[HTMETMHT_Selec]
+
+					#Recombine and Memory management
+					if (self.Mu_Trigger and self.HT_Trigger):
+						boostedtau = ak.concatenate((boostedtau_mu,boostedtau_HT))
+						AK8Jet = ak.concatenate((AK8Jet_mu,AK8Jet_HT))
+						Jet = ak.concatenate((Jet_mu,Jet_HT))
+						electron = ak.concatenate((electron_mu,electron_HT))
+						muon = ak.concatenate((muon_mu,muon_HT))
+						GenPart = ak.concatenate((GenPart_mu, GenPart_HT))
+						event_level = ak.concatenate((event_level_mu,event_level_HT))
+						
+						#Memory Management
+						del boostedtau_mu, boostedtau_HT
+						del AK8Jet_mu, AK8Jet_HT
+						del Jet_mu, Jet_HT
+						del electron_mu, electron_HT
+						del muon_mu, muon_HT
+						del GenPart_mu, GenPart_HT
+						del event_level_mu, event_level_HT
+					if (self.MU_Trigger and not(self.HT_Trigger)):
+						boostedtau = boostedtau_mu
+						AK8Jet = AK8Jet_mu
+						Jet = Jet_mu
+						electron = electron_mu
+						muon = muon_mu
+						GenPart = GenPart_mu
+						event_level = event_level_mu
+						
+						#Memory Management
+						del boostedtau_mu
+						del AK8Jet_mu
+						del Jet_mu
+						del electron_mu
+						del muon_mu
+						del GenPart_mu
+						del event_level_mu
+					if (not(self.MU_Trigger) and self.HT_Trigger):
+						boostedtau = boostedtau_HT
+						AK8Jet = AK8Jet_HT
+						Jet = Jet_HT
+						electron = electron_HT
+						muon = muon_HT
+						GenPart = GenPart_HT
+						event_level = event_level_HT
+						
+						#Memory Management
+						del boostedtau_HT
+						del AK8Jet_HT
+						del Jet_HT
+						del electron_HT
+						del muon_HT
+						del GenPart_HT
+						del event_level_HT
 					
 				#	print("JetHT Trigger and Selections Applied To MC %s"%dataset)
 				#	print("Event Count after Trigger+Selections: %d"%ak.num(event_level_HT.HT,axis=0))
@@ -739,16 +824,17 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						print("Single Muon Selection count: %d"%mu_trigger_event_count)
 						print("Jet HT selection count: %d"%HT_trigger_event_count)
 
-					del boostedtau_mu, boostedtau_HT
-					del AK8Jet_mu, AK8Jet_HT
-					del Jet_mu, Jet_HT
-					del electron_mu, electron_HT
-					del muon_mu, muon_HT
-					del GenPart_mu, GenPart_HT
-					del event_level_mu, event_level_HT
+
 
 				#Fill post trigger entries in skim and N-1 histograms
 				n_Trigger = np.size(event_level.nFatJet)
+				if (self.isData):
+					w_Trigger = n_Trigger
+				else:
+					if ("Signal" in dataset):
+						w_Trigger = n_Trigger
+					else:
+						w_Trigger = ak.sum(event_level.event_weight*CrossSec_Weight)
 				h_CutFlow.fill("Trigger",weight=n_Trigger)
 				#h_NMinus1.fill("Trigger",weight=n_PreTrigger - n_Trigger)
 
@@ -820,7 +906,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				pT_Cond = boostedtau.pt > 30
 				eta_Cond = np.abs(boostedtau.eta) < 2.3
 				decayMode_Cond = boostedtau.decay >= 0.5
-				DBT_Iso_Cond = boostedtau.DBT >= 0.9 #0.85
+				DBT_Iso_Cond = boostedtau.DBT >= 0.95 #0.85
 				
 				boostedtau_selec_cond = pT_Cond & eta_Cond & decayMode_Cond & DBT_Iso_Cond
 				boostedtau = boostedtau[boostedtau_selec_cond] #Apply selections to all individual taus
@@ -837,6 +923,13 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 
 				#Fill post leading tau selection entries in skim and N-1 histograms
 				n_LeadBoostedTau = np.size(event_level.nFatJet)
+				if (self.isData):
+					w_LeadBoostedTau = n_LeadBoostedTau 
+				else:
+					if ("Signal" in dataset):
+						w_LeadBoostedTau = n_LeadBoostedTau
+					else:
+						w_LeadBoostedTau = ak.sum(event_level.event_weight*CrossSec_Weight)
 				h_CutFlow.fill("LeadingBoostedTau",weight=n_LeadBoostedTau)
 				#h_NMinus1.fill("LeadingBoostedTau",weight=n_PreTrigger - n_LeadBoostedTau)
 
@@ -856,6 +949,13 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 
 					#Fill post subl-leading tau selection entries in skim and N-1 histograms
 					n_SubLeadBoostedTau = np.size(event_level.nFatJet)
+					if (self.isData):
+						w_SubLeadBoostedTau = n_SubLeadBoostedTau 
+					else:
+						if ("Signal" in dataset):
+							w_SubLeadBoostedTau = n_SubLeadBoostedTau
+						else:
+							w_SubLeadBoostedTau = ak.sum(event_level.event_weight*CrossSec_Weight)
 					h_CutFlow.fill("SubleadingBoostedTau",weight=n_SubLeadBoostedTau)
 					#h_NMinus1.fill("SubleadingBoostedTau",weight=n_LeadBoostedTau - n_SubLeadBoostedTau)
 
@@ -875,6 +975,13 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 
 					#Fill post 3rd leading tau selection entries in skim and N-1 histograms
 					n_3rdLeadBoostedTau = np.size(event_level.nFatJet)
+					if (self.isData):
+						w_3rdLeadBoostedTau = n_3rdLeadBoostedTau 
+					else:
+						if ("Signal" in dataset):
+							w_3rdLeadBoostedTau = n_3rdLeadBoostedTau
+						else:
+							w_3rdLeadBoostedTau = ak.sum(event_level.event_weight*CrossSec_Weight)
 					h_CutFlow.fill("3rdLeadingBoostedTau",weight=n_3rdLeadBoostedTau)
 					#h_NMinus1.fill("3rdLeadingBoostedTau",weight=n_SubLeadBoostedTau - n_3rdLeadBoostedTau)
 
@@ -894,6 +1001,13 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 
 					#Fill post 4th leading tau selection entries in skim and N-1 histograms
 					n_4thLeadBoostedTau = np.size(event_level.nFatJet)
+					if (self.isData):
+						w_4thLeadBoostedTau = n_4thLeadBoostedTau 
+					else:
+						if ("Signal" in dataset):
+							w_4thLeadBoostedTau = n_4thLeadBoostedTau
+						else:
+							w_4thLeadBoostedTau = ak.sum(event_level.event_weight*CrossSec_Weight)
 					h_CutFlow.fill("4thLeadingBoostedTau",weight=n_4thLeadBoostedTau)
 					#h_NMinus1.fill("4thLeadingBoostedTau",weight=n_3rdLeadBoostedTau - n_4thLeadBoostedTau)
 
@@ -958,6 +1072,8 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			#############
 			n_VisMass = 0
 			n_DeltaR = 0
+			w_VisMass = 0
+			w_DeltaR = 0
 			if (ak.num(event_level.MET_pt,axis=0) > 0): #Only do this if there are any events left
 				#Leading and next leading pair 4-vectors
 				leading_higgs = ak.zip({
@@ -994,6 +1110,13 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 
 				#Fill post visable mass entries in skim and N-1 histograms
 				n_VisMass = np.size(event_level.nFatJet)
+				if (self.isData):
+					w_VisMass = n_VisMass 
+				else:
+					if ("Signal" in dataset):
+						w_VisMass = n_VisMass
+					else:
+						w_VisMass = ak.sum(event_level.event_weight*CrossSec_Weight)
 				h_CutFlow.fill("VisMassSelec",weight=n_VisMass)
 			#h_NMinus1.fill("VisMassSelec",weight=n_Trigger - n_VisMass)
 		   
@@ -1009,12 +1132,19 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				muon = muon[topo_cond]
 				event_level = event_level[topo_cond]
 				
-				#Apply selections ot higgs objects
+				#Apply selections to higgs objects
 				leading_higgs = leading_higgs[topo_cond]
 				nextleading_higgs = nextleading_higgs[topo_cond]
 
 				#Fill post visable mass entries in skim and N-1 histograms
 				n_DeltaR = np.size(event_level.nFatJet)
+				if (self.isData):
+					w_DeltaR = n_DeltaR 
+				else:
+					if ("Signal" in dataset):
+						w_DeltaR = n_DeltaR
+					else:
+						w_DeltaR = ak.sum(event_level.event_weight*CrossSec_Weight)
 				h_CutFlow.fill("Higgs_dR",weight=n_DeltaR)
 				#h_NMinus1.fill("Higgs_dR",weight=n_VisMass - n_DeltaR)
 
@@ -1330,6 +1460,15 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					"n_Trigger": n_Trigger,
 					"n_VisMass": n_VisMass,
 					"n_Higgs_dR": n_DeltaR,
+					
+					"w_Skim": w_Skim,
+					"w_LeadBoostedTau": w_LeadBoostedTau,
+					"w_SubLeadBoostedTau": w_SubLeadBoostedTau,
+					"w_3rdLeadBoostedTau": w_3rdLeadBoostedTau,
+					"w_4thLeadBoostedTau": w_4thLeadBoostedTau,
+					"w_Trigger": w_Trigger,
+					"w_VisMass": w_VisMass,
+					"w_Higgs_dR": w_DeltaR,
 					
 					#Boosted Tau kineamtic distirubtions
 					"boostedtau_pt_Trigg": h_boostedtau_pT_Trigger,
