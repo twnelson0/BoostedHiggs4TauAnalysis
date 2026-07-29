@@ -739,13 +739,13 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						HT_TriggerCond = event_level.METHTMHT_Trigger
 
 					if (self.HT_Trigger):
-						boostedtau_HT = boostedtau[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
-						AK8Jet_HT = AK8Jet[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
-						Jet_HT = Jet[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
-						electron_HT = electron[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
-						muon_HT = muon[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
-						GenPart_HT = GenPart[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
-						event_level_HT = event_level[np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger]
+						boostedtau_HT = boostedtau[HT_TriggerCond]
+						AK8Jet_HT = AK8Jet[HT_TriggerCond]
+						Jet_HT = Jet[HT_TriggerCond]
+						electron_HT = electron[HT_TriggerCond]
+						muon_HT = muon[HT_TriggerCond]
+						GenPart_HT = GenPart[HT_TriggerCond]
+						event_level_HT = event_level[HT_TriggerCond]
 						
 						#Offline Cuts
 						HTMETMHT_Selec = ((event_level_HT.HT > 550) &
@@ -759,6 +759,8 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						muon_HT = muon_HT[HTMETMHT_Selec]
 						GenPart_HT = GenPart_HT[HTMETMHT_Selec]
 						event_level_HT = event_level_HT[HTMETMHT_Selec]
+					
+						HT_trigger_event_count = ak.num(event_level_HT.HT,axis=0)
 
 					#Recombine and Memory management
 					if (self.Mu_Trigger and self.HT_Trigger):
@@ -778,7 +780,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						del muon_mu, muon_HT
 						del GenPart_mu, GenPart_HT
 						del event_level_mu, event_level_HT
-					if (self.MU_Trigger and not(self.HT_Trigger)):
+					if (self.Mu_Trigger and not(self.HT_Trigger)):
 						boostedtau = boostedtau_mu
 						AK8Jet = AK8Jet_mu
 						Jet = Jet_mu
@@ -795,7 +797,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						del muon_mu
 						del GenPart_mu
 						del event_level_mu
-					if (not(self.MU_Trigger) and self.HT_Trigger):
+					if (not(self.Mu_Trigger) and self.HT_Trigger):
 						boostedtau = boostedtau_HT
 						AK8Jet = AK8Jet_HT
 						Jet = Jet_HT
@@ -815,7 +817,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					
 				#	print("JetHT Trigger and Selections Applied To MC %s"%dataset)
 				#	print("Event Count after Trigger+Selections: %d"%ak.num(event_level_HT.HT,axis=0))
-					HT_trigger_event_count = ak.num(event_level_HT.HT,axis=0)
+
 
 					#Verify event counts make sense
 					if (init_event_count < HT_trigger_event_count + mu_trigger_event_count):
