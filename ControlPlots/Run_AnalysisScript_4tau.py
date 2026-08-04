@@ -459,7 +459,7 @@ if __name__ == "__main__":
 
 	
 	for n_taus in range(4,5):
-		for trigger_bit in range(1,4):
+		for trigger_bit in range(1,3):
 			print("About to run processor")
 			start_time = time.time()
 			if (run_on_condor):
@@ -472,7 +472,7 @@ if __name__ == "__main__":
 			#Save coffea file
 			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_VlooseWP_NoISO.coffea")
 			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_tightWP_p95_SignalNoSkim_FixedSignalWeight.coffea")
-			outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_tightWP_p95_SignalNoSkim_" + trigger_bit_dict[trigger_bit]	+ ".coffea")
+			outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_tightWP_p95_SignalNoSkim_" + trigger_bit_dict[trigger_bit]	+ "_Ver2.coffea")
 			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"DummyTest_" + trigger_bit_dict[trigger_bit]	+ ".coffea")
 			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_VlooseWP_MCOnly.coffea")
 			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_VlooseWP_Test.coffea")

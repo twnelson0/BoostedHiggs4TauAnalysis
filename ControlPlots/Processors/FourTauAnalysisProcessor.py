@@ -235,14 +235,15 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 		#Work out Triggering logic
 		self.Mu_Trigger = False
 		self.HT_Trigger = False
-		if (np.bitwise_and(Trigger_Code,1) != 1):
+		self.ApplyTrigger = False
+		if (np.bitwise_and(Trigger_Code,1) != 0):
 			self.ApplyTrigger = True
 			self.Mu_Trigger = True
-		elif (np.bitwise_and(Trigger_Code,2) != 1):
+		if (np.bitwise_and(Trigger_Code,2) != 0):
 			self.ApplyTrigger = True
 			self.HT_Trigger = True
-		else:
-			self.ApplyTrigger = False
+		#else:
+		#	self.ApplyTrigger = False
 
 		#pass
 
@@ -734,7 +735,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 
 					#Fail Single Muon trigger and pass Jet HT Trigger
 					if (self.Mu_Trigger):
-						HT_TriggerCond = np.bitwise_not(event_level.Mu_Trigger) & event_level.METHTMHT_Trigger
+						HT_TriggerCond = np.bitwise_not(event_level.Mu_Trigger) & (event_level.METHTMHT_Trigger)
 					else:
 						HT_TriggerCond = event_level.METHTMHT_Trigger
 
@@ -780,6 +781,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						del muon_mu, muon_HT
 						del GenPart_mu, GenPart_HT
 						del event_level_mu, event_level_HT
+					
 					if (self.Mu_Trigger and not(self.HT_Trigger)):
 						boostedtau = boostedtau_mu
 						AK8Jet = AK8Jet_mu
@@ -797,6 +799,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						del muon_mu
 						del GenPart_mu
 						del event_level_mu
+					
 					if (not(self.Mu_Trigger) and self.HT_Trigger):
 						boostedtau = boostedtau_HT
 						AK8Jet = AK8Jet_HT

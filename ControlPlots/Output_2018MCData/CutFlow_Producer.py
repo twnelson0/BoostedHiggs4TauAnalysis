@@ -1,17 +1,11 @@
-import uproot
-import hist
-from hist import intervals
-import matplotlib as mpl
-import matplotlib.pyplot as plt
 import numpy as np
-import mplhep as hep
 from coffea import processor, nanoevents
-from coffea.nanoevents.methods import candidate, vector
+#from coffea.nanoevents.methods import candidate, vector
 from coffea import util
 from math import pi
 import pandas as pd
 from matplotlib.backends.backend_pdf import PdfPages
-import vector
+#import vector
 import os
 import time
 import datetime
@@ -20,23 +14,6 @@ import sys
 import argparse
 import itertools
 import json
-
-#Plot style variables defined
-hep.style.use(hep.style.CMS)
-#cmap = mpl.colormaps['PiYG'] 
-#cmap = mpl.colormaps['plasma'] 
-cmap = mpl.colormaps['hsv'] 
-
-#Collection of color maps
-cmap0 = mpl.colormaps['Reds']
-cmap1 = mpl.colormaps['Greens']
-cmap2 = mpl.colormaps['Blues']
-cmap3 = mpl.colormaps['Oranges']
-cmap4 = mpl.colormaps['Greys']
-cmap5 = mpl.colormaps['Purples']
-cmap_array = [cmap0,cmap1,cmap2,cmap3,cmap4,cmap5]
-
-TABLEAU_COLORS = ['blue','orange','green','red','purple','brown','pink','gray','olive','cyan']
 
 #Control Region dictionary
 region_dict = {"All": "NoControlRegion",
@@ -53,6 +30,7 @@ region_dict = {"All": "NoControlRegion",
 parse = argparse.ArgumentParser()
 parse.add_argument("-f", "--File", help = "Input coffea file")
 parse.add_argument("-n", "--NumberTau", help = "Number of boosted taus in selection")
+parse.add_argument("-o", "--OutputFile", help = "Name of csv file to produce")
 args = parse.parse_args()
 
 if __name__ == "__main__":
@@ -61,6 +39,7 @@ if __name__ == "__main__":
 	cutflow_csv_bool = True
 
 	coffea_file = args.File
+	Output_File = args.OutputFile
 
 	#Dictionaries and arrays with information on plot constrution, naming and samples
 	four_tau_hist_list = [
@@ -161,13 +140,13 @@ if __name__ == "__main__":
 			all_labels = list(var_dict.keys())
 			#all_labels.append("PreSkim") 
 			for key in all_labels:
-				#if (key == "PreSkim"):
-				#	table_dict[key] = pre_skim_dict[sample]
+			#	if (key == "PreSkim" and sample == "Signal_2TeV"):
+			#		table_dict[key] = pre_skim_dict[sample]
 				#else:
 				table_dict[key] = coffea_input[sample][var_dict[key]]
 			table_array.append(table_dict)
 
-		with open("NanoAOD_UL_DeepTau_DataMC_Cutflow_Weights_Tightp95Cut_WSignal_Fixed.csv", "w", newline="") as f:
+		with open(Output_File + ".csv", "w", newline="") as f:
 			w = csv.DictWriter(f,table_keys)
 			w.writeheader()
 			w.writerows(table_array)
