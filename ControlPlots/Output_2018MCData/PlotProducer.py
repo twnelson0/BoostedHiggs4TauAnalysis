@@ -128,18 +128,6 @@ if __name__ == "__main__":
 	for background in background_list:
 		all_sample_array.append(background_dict[background])
 	
-	#Make the colors easier on the eyes
-	#all_sample_array = list(itertools.chain.from_iterable(all_sample_array))
-	#background_list = all_sample_array #Produce list of all backgrounds rather than combining them
-	#TABLEAU_COLORS = []
-	
-	#for background_type in background_dict.keys():
-#	for i in range(len(background_list_full)):
-#		TABLEAU_COLORS.append(cmap_array[i](np.linspace(0,1,len(background_dict[background_list_full[i]]))))
-	#TABLEAU_COLORS = cmap(np.linspace(0,1,len(background_list)))
-
-	#print(TABLEAU_COLORS)
-	
 	#Dictinary with file names
 	trigger_name = "BothTriggers"
 	four_tau_names = {
@@ -350,7 +338,6 @@ if __name__ == "__main__":
 		data_stack = hist_dict_data[hist_name] #.stack("data")    
 		#signal_array = [signal_stack]
 		data_array = [data_stack] #["Data"]]
-		
 
 		for background in background_list:
 			background_array.append(background_stack[background]) #Is this line fucking up your scaling??
@@ -370,28 +357,30 @@ if __name__ == "__main__":
 		#print(len(background_signal_list))
 		#print(len(TABLEAU_COLORS))
 		#background_signal_list.append("Signal 2 TeV")
+
+		#data_mc_axis = plt.axis(markersize = 10,xlabel = axis_label)
 		
 		fig, ax_main, ax_comp = hep.comp.data_model(
-			data_hist = coffea_input["Data_Mu"][hist_name][{"region": args.ControlRegion}] + coffea_input["Data_HT"][hist_name][{"region": args.ControlRegion}], #Oh shit this is a bug you've never included JetHT 
-			#stacked_components = background_array,
+			data_hist = coffea_input["Data_Mu"][hist_name][{"region": args.ControlRegion}] + coffea_input["Data_HT"][hist_name][{"region": args.ControlRegion}],  
             stacked_components = background_array[:len(background_array)-1],
             stacked_labels = background_list[:len(background_list)-1],
 			stacked_colors = TABLEAU_COLORS[:len(background_list)-1],
-            #unstacked_components = background_array[len(background_array)-1],
-            #unstacked_colors = TABLEAU_COLORS[len(background_list)-1],
-			#stacked_colors = TABLEAU_COLORS,
-           # unstacked_labels = background_list[len(background_list)-1], 
 			xlabel = axis_label,
+			#stacked_kwargs = {"markersize": 10}, #Crashes
+			#unstacked_kwargs_list = [{"makersize": 100}], #Does fuck all
+			#ax_main = data_mx_axis,
 			model_uncertainty=True,
-			#model_sum_kwargs={"show": True, "label": "Model", "color": "navy"},
 			comparison = "ratio",
-            markersize = 10,
+            markersize = 20,
 			flow = "sum",
-			#linewidth=2,
+
 
 		)
+		#ax_main(markersize = 10) #Make the data points thicker
+		#Stupid solution to make the points thicker (draw a copy of the data ontop of the previously produced ratio plot with thicker points)
+		hep.histplot(coffea_input["Data_Mu"][hist_name][{"region": args.ControlRegion}] + coffea_input["Data_HT"][hist_name][{"region": args.ControlRegion}], ax=ax_main, histtype="errorbar",markersize=20, yerr=True, color = "k") 
 		#Add signal
-		hep.histplot(background_array[len(background_array)-1], ax=ax_main, color = TABLEAU_COLORS[len(background_list)], label = background_list[len(background_list)-1], histtype = "step")
+		hep.histplot(background_array[len(background_array)-1], ax=ax_main, color = 'cyan', linewidth = 3.2, label = background_list[len(background_list)-1], histtype = "step")
 		ax_main.legend(fontsize = 14)
 		hep.yscale_legend(ax_main)
 		hep.cms.label(data=True, ax = ax_main, text = "2018 Data Preliminary")	
