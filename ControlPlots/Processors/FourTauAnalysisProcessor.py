@@ -222,13 +222,10 @@ def four_mass(part_arr): #Four Particle mass assuming each event has 4 particles
 		(part_arr[0].Pz + part_arr[1].Pz + part_arr[2].Pz + part_arr[3].Pz)**2)
 
 class Analysis4TauProcessor(processor.ProcessorABC):
-	#def __init__(self, sumWEvents_Dict, nBoostedTaus = 0, ApplyTrigger = True, year = 2018): #Additional arguements can be added later
 	def __init__(self, sumWEvents_Dict, nBoostedTaus = 0, Trigger_Code = 3, year = 2018): #Additional arguements can be added later
 		#Initial variables
 		self.isData = False #Default assumption is MC
 		self.nBoostedTau_Selec = nBoostedTaus #Number of tau selections
-		#self.ApplyTrigger = ApplyTrigger
-		#self.numEvents_Dict = numEvents_Dict
 		self.sumWEvents_Dict = sumWEvents_Dict
 		self.year = year
 
@@ -242,13 +239,8 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 		if (np.bitwise_and(Trigger_Code,2) != 0):
 			self.ApplyTrigger = True
 			self.HT_Trigger = True
-		#else:
-		#	self.ApplyTrigger = False
-
-		#pass
 
 		#Corrections
-		#print("Pulling Corrections")
 		self.lumi_mask = {
 			"2018": LumiMask(jsonfile=GOLDEN_JSON[str(self.year)].expanduser())
 		}
@@ -489,15 +481,8 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			#Add cutflow and N-1 tables
 			if (self.ApplyTrigger):
 				h_CutFlow = hist.Hist.new.StrCategory(["SkimOnly","Trigger""LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]).Double()
-				#h_NMinus1 = hist.Hist.new.StrCategory(["SkimOnly","METCut","nFatJetReq","FlagReq","PVSelec","LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","Trigger","VisMassSelec","Higgs_dR"]).Double()
 			else:
 				h_CutFlow = hist.Hist.new.StrCategory(["SkimOnly","LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]).Double()
-				#h_NMinus1 = hist.Hist.new.StrCategory(["SkimOnly","METCut","nFatJetReq","FlagReq","PVSelec","LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]).Double()
-
-			#Fill initial entries in skim and N-1 histograms (Old version raw counts not good for evaulatuing MC)
-		#	n_Skim = np.size(event_level.nFatJet)
-		#	h_CutFlow.fill("SkimOnly",weight=n_Skim)
-			#h_NMinus1.fill("SkimOnly",weight=0)
 			
 			#Obtain the cross section scale factor	
 			if (self.isData):
@@ -841,7 +826,6 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					else:
 						w_Trigger = ak.sum(event_level.event_weight*CrossSec_Weight)
 				h_CutFlow.fill("Trigger",weight=n_Trigger)
-				#h_NMinus1.fill("Trigger",weight=n_PreTrigger - n_Trigger)
 
 			#Force muon selection to check if that is the cause of the imbalance
 			if (not(self.ApplyTrigger)):
@@ -873,11 +857,6 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			muon = muon[flag_cond]
 			event_level = event_level[flag_cond]	
 
-		#	#Fill post flag selections entries in skim and N-1 histograms
-		#	n_FlagSelec = np.size(event_level.nFatJet)
-		#	h_CutFlow.fill("FlagReq",weight=n_FlagSelec)
-		#	h_NMinus1.fill("FlagReq",weight=n_FatJet - n_FlagSelec)
-
 			#PV selections
 			ndof_cond = event_level.PV_ndof > 4
 			PVz_cond = np.abs(event_level.PV_z) < 24
@@ -892,14 +871,9 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			muon = muon[PV_Cond]
 			event_level = event_level[PV_Cond]	
 
-		#	#Fill post PV selection entries in skim and N-1 histograms
-		#	n_PVSelec = np.size(event_level.nFatJet)
-		#	h_CutFlow.fill("PVSelec",weight=n_PVSelec)
-		#	h_NMinus1.fill("PVSelec",weight=n_FlagSelec - n_PVSelec)
-
-			#n_PreTrigger = n_PVSelec #Set number of events left before trigger seleciton to PV selection	
 			n_PreTrigger = n_Skim #Set number of events left before trigger seleciton to PV selection	
-			#Temp values of the Tau selections
+			
+            #Temp values of the Tau selections
 			n_LeadBoostedTau = -1
 			n_SubLeadBoostedTau = -1
 			n_3rdLeadBoostedTau = -1
@@ -936,9 +910,6 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					else:
 						w_LeadBoostedTau = ak.sum(event_level.event_weight*CrossSec_Weight)
 				h_CutFlow.fill("LeadingBoostedTau",weight=n_LeadBoostedTau)
-				#h_NMinus1.fill("LeadingBoostedTau",weight=n_PreTrigger - n_LeadBoostedTau)
-
-				#n_PreTrigger = n_LeadBoostedTau				
 				
 				#Impose selections on Subleading boosted tau
 				if (self.nBoostedTau_Selec > 1):
@@ -962,9 +933,6 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						else:
 							w_SubLeadBoostedTau = ak.sum(event_level.event_weight*CrossSec_Weight)
 					h_CutFlow.fill("SubleadingBoostedTau",weight=n_SubLeadBoostedTau)
-					#h_NMinus1.fill("SubleadingBoostedTau",weight=n_LeadBoostedTau - n_SubLeadBoostedTau)
-
-					#n_PreTrigger = n_SubLeadBoostedTau				
 				
 				#Impose selections on third-leading boosted tau
 				if (self.nBoostedTau_Selec > 2):
@@ -988,9 +956,6 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						else:
 							w_3rdLeadBoostedTau = ak.sum(event_level.event_weight*CrossSec_Weight)
 					h_CutFlow.fill("3rdLeadingBoostedTau",weight=n_3rdLeadBoostedTau)
-					#h_NMinus1.fill("3rdLeadingBoostedTau",weight=n_SubLeadBoostedTau - n_3rdLeadBoostedTau)
-
-					#n_PreTrigger = n_3rdLeadBoostedTau				
 				
 				#Impose selections on fourth-leading boosted tau
 				if (self.nBoostedTau_Selec > 3):
@@ -1014,9 +979,6 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						else:
 							w_4thLeadBoostedTau = ak.sum(event_level.event_weight*CrossSec_Weight)
 					h_CutFlow.fill("4thLeadingBoostedTau",weight=n_4thLeadBoostedTau)
-					#h_NMinus1.fill("4thLeadingBoostedTau",weight=n_3rdLeadBoostedTau - n_4thLeadBoostedTau)
-
-					#n_PreTrigger = n_4thLeadBoostedTau				
 			
 			#############
 			#Find 2 valid tau pairings
@@ -1123,7 +1085,6 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					else:
 						w_VisMass = ak.sum(event_level.event_weight*CrossSec_Weight)
 				h_CutFlow.fill("VisMassSelec",weight=n_VisMass)
-			#h_NMinus1.fill("VisMassSelec",weight=n_Trigger - n_VisMass)
 		   
 
 			if (ak.num(event_level.MET_pt,axis=0) > 0): #Only do this if there are any events left
@@ -1151,7 +1112,6 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					else:
 						w_DeltaR = ak.sum(event_level.event_weight*CrossSec_Weight)
 				h_CutFlow.fill("Higgs_dR",weight=n_DeltaR)
-				#h_NMinus1.fill("Higgs_dR",weight=n_VisMass - n_DeltaR)
 
 
 			#############
@@ -1392,7 +1352,6 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						region_cond = ak.ones_like(event_level.event_num) == 1
 				
 					#Boosted Taus
-					#h_boostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)].pt),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(boostedtau[ak.ravel(region_cond)].pt))[0]), region = region)
 					if (self.nBoostedTau_Selec >= 1):
 						h_Leadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)][:,0].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(boostedtau[ak.ravel(region_cond)],axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
 
@@ -1484,9 +1443,6 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					"boostedtau_eta_Trigg": h_boostedtau_eta_Trigger,
 					"boostedtau_phi_Trigg": h_boostedtau_phi_Trigger,
 					"boostedtau_iso_Trigg": h_boostedtau_raw_iso_Trigger,
-
-					#Store Leading Boosted tau pt For the purposes of quanitative statistical comparisions
-					#"LeadingBoostedTau_pt_Array": ak.ravel(boostedtau.pt),
 					
 					#Electron kineamtic distirubtions
 					"electron_pt_Trigg": h_electron_pT_Trigger,
@@ -1503,7 +1459,6 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					
 					#Jet kineamtic distirubtions
 					"Jet_pt_Trigg": h_Jet_pT_Trigger,
-					#"LeadingJet_pt_Trigg": h_LeadingJet_pT_Trigger,
 					"Jet_eta_Trigg": h_Jet_eta_Trigger,
 					"Jet_phi_Trigg": h_Jet_phi_Trigger,
 					
@@ -1521,7 +1476,6 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 
 					#Store the Mini Cutflow and N-1 Table 
 					"Mini_Cutflow": h_CutFlow,
-					#"Mini_NMinus1": h_NMinus1,
 
 					#Multiplicites
 					"ZMult": h_ZMult,

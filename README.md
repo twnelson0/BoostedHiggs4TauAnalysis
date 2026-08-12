@@ -30,6 +30,18 @@ pip install --force-reinstall -v "setuptools==53.0.0"
 
 ## Running Instructions
 
+### Trigger Turn On Curves
+The code contained in the directory `TriggerEff/` is used to produce trigger efficiency turn on curves.
+The processor can either be run offline or online.
+To run the processor on HTC set the variable `run_on_condor` to `True` in the file `TriggerEff/Run_Trigger_Eff.py`.
+To run the processor offline set the variable `run_on_condor` to `False`. 
+To run the processor offline a python virtual environment must be setup on the AF due to versioning and package issues.
+The instructions to set up the virtual environment provided in the **Installation/Setup** section will be sufficient to run the trigger efficiency processor offline.
+To run the trigger efficiency processor (online or offline) simply run `python3 Run_Trigger_Eff.py` in the directory `TriggerEff`.
+The virtual environment set up in the **Installation/Setup** section will also be sufficient to run the plotting script.
+To produce the trigger turn on curves navigate to the directory `TriggerEff/Output_2018` and run the command `python3 Produce_TriggerTurnOnPlots.py -f "Your_Output_File.coffea"`.
+The argument `"Your_Output_File.coffea"` will be a coffea file produced by the processor in the directory `Output_2018`.
+
 ### Control Plots
 To produce the control plots navigate to the directory `ControlPlots` and run the runner script via `python3 Run_AnalysisSCript_4tau.py`.
 This will create a coffea output file in the output directory(ies).
@@ -56,3 +68,22 @@ To run the coffea processor offline/not on HTC condor the variable `run_on_condo
 To run the control plot processor offline one must be in a virtual environment on the Wisconsin AF due to versioning issues, to see what specific packages and versions need to be installed see the installation section of the README.
 When in the appropriate virtual environment and with the change to `run_on_condor` made the processor is run via the python runner script `python3 Run_AnalysisSCript_4tau.py`.
 
+#### Trigger Modification
+The control plot producing script allows the user to run on either one or a combination of the triggers (`Mu50` and `PFHT500_PFMHT100_PFMET100`) and their associated offline selections used in this analysis.
+This behavior is controlled by an argument passed to the processor called `Trigger_Code`.
+The argument `Trigger_Code` takes an integer $n \in \mathbb{Z}_4$. 
+When a value is unspecified the default value of `Trigger_Code` is 3.
+The values of the variable `Trigger_Code` and their associated behaviors are listed in the following table.
+
+|`Trigger_Code`  | Behavior   |
+|---|---|
+| 0  |  No triggers are applied |
+| 1 | Only `Mu50` and associated offline selections are applied  |
+| 2 | Only `PFHT500_PFMHT100_PFMET100` and associated offline selections are applied |
+| 3 | Both triggers and associated offline selections are applied   |
+
+### Neural Network
+
+#### Training
+
+#### Running

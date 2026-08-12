@@ -459,7 +459,7 @@ if __name__ == "__main__":
 
 	
 	for n_taus in range(4,5):
-		for trigger_bit in range(1,3):
+		for trigger_bit in range(3,4):
 			print("About to run processor")
 			start_time = time.time()
 			if (run_on_condor):
