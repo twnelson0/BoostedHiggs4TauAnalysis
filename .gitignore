@@ -9,6 +9,7 @@ Venv/
 .evn/
 .local/share/jupyter/kernels/python3
 ControlPlots/PlottingEnv
+ControlPlots/ParquetTestEnv
 
 #Output files (Generally ignore these files)
 *.csv

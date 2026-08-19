@@ -57,7 +57,7 @@ def move_X509():
 
 if __name__ == "__main__":
 	#Condor related stuff
-	run_on_condor = True
+	run_on_condor = False 
 	os.environ["CONDOR_CONFIG"] = "/etc/condor/condor_config"
 	
 	if (run_on_condor):
@@ -83,6 +83,7 @@ if __name__ == "__main__":
 					"when_to_transfer_ouput": "ON_EXIT_OR_EVICT",
 					"transfer_executable": "false",
 					"Requirements": "HasSingularityJobStart",
+                    #"Requirements": "HAS_CMS_HDFS",
 					"container_image": "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/coffeateam/coffea-base-almalinux9:0.7.30-py3.10",
 					"InitialDir": f'/scratch/{os.environ["USER"]}',
 					'transfer_input_files': f'{os.environ["PWD"]}, {_x509_path}',
@@ -214,21 +215,24 @@ if __name__ == "__main__":
 	QCD_HT1000To1500 = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT1000to1500_23April26_0536_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	QCD_HT1500To2000 = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT1500to2000_23April26_0539_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	QCD_HT2000ToInf = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT2000toInf_23April26_0541_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	Signal_HH_2TeV = glob.glob("/hdfs/store/user/twnelson/HH4Tau_EtAl/Full_Production_CMSSW_13_0_13_Feb_25/2018/MC/XHH4Tau_X2TeV/*.root")
+	#Signal_HH_2TeV = glob.glob("/hdfs/store/user/twnelson/HH4Tau_EtAl/Full_Production_CMSSW_13_0_13_Feb_25/2018/MC/XHH4Tau_X2TeV/*.root")
+	Signal_HH_2TeV = glob.glob(Skimmed_4tau_loc_MC + "2TeVSignal_05August26_1636_skim_NewSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
 
 	#Arrays of Signal
 	#Signal_Base = "/hdfs/store/user/abdollah/RadionHH4tau_UL_Nov2025/"
 	#HH_4Tau_2018_Signal = glob.glob()
 
 	#Debugging MC
-	SingleMu_2018A_Debug = SingleMu_2018A_Debug[:5] 
-	JetHT_2018A_Debug = JetHT_2018A[:5]
-	DYJets_Debug = DYJetsToLL_M50_HT1200to2500_2018[:5]
+	SingleMu_2018A_Debug = SingleMu_2018A_Debug[:15] 
+	JetHT_2018A_Debug = JetHT_2018A[:15]
+	DYJets_Debug = DYJetsToLL_M50_HT1200to2500_2018[:15]
 
 	file_dict_data_mc_mix = {
 		"Data_Mu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in SingleMu_2018A_Debug],
 		"Data_HT": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in JetHT_2018A_Debug],
-		"DYJetsToLL_M-50_HT-1200to2500": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJets_Debug],
+		#"DYJetsToLL_M-50_HT-1200to2500": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJets_Debug],
+        "TTToSemiLeptonic": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in TTToSemiLeptonic_2018[:15]],
+        "Signal_2TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_2TeV[:5]]
 		#"Data_Mu": SingleMu_2018A_Debug,
 		#"Data_HT": JetHT_2018A_Debug,
 		#"DYJetsToLL_M-50_HT-1200to2500": DYJets_Debug,
@@ -437,12 +441,12 @@ if __name__ == "__main__":
 	
 	#Set file dictionary and list of backgrounds prior to running processor
 	#file_dict = file_dict_data_test
-	file_dict = file_dict_full
+	#file_dict = file_dict_full
 	#file_dict = file_dict_signal_only
 	#file_dict = file_dict_data_only
 	#file_dict = file_dict_MC_only
 	#file_dict = file_dict_test
-	#file_dict = file_dict_data_mc_mix
+	file_dict = file_dict_data_mc_mix
 	#file_dict = file_dict_ZZ4L_Only
 	#file_dict = file_dict_Test_Reweighting
 
@@ -472,7 +476,8 @@ if __name__ == "__main__":
 			#Save coffea file
 			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_VlooseWP_NoISO.coffea")
 			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_tightWP_p95_SignalNoSkim_FixedSignalWeight.coffea")
-			outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_tightWP_p95_SignalNoSkim_" + trigger_bit_dict[trigger_bit]	+ "_Ver2.coffea")
+			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_tightWP_p95_Signal_" + trigger_bit_dict[trigger_bit]	+ "_Ver3.coffea")
+			outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_tightWP_p95_Signal_" + trigger_bit_dict[trigger_bit]	+ "_OfflineTest.coffea")
 			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"DummyTest_" + trigger_bit_dict[trigger_bit]	+ ".coffea")
 			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_VlooseWP_MCOnly.coffea")
 			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_VlooseWP_Test.coffea")

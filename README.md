@@ -71,7 +71,7 @@ When in the appropriate virtual environment and with the change to `run_on_condo
 #### Trigger Modification
 The control plot producing script allows the user to run on either one or a combination of the triggers (`Mu50` and `PFHT500_PFMHT100_PFMET100`) and their associated offline selections used in this analysis.
 This behavior is controlled by an argument passed to the processor called `Trigger_Code`.
-The argument `Trigger_Code` takes an integer $n \in \mathbb{Z}_4$. 
+The argument `Trigger_Code` takes an integer value between 0 and 3.
 When a value is unspecified the default value of `Trigger_Code` is 3.
 The values of the variable `Trigger_Code` and their associated behaviors are listed in the following table.
 
@@ -81,6 +81,12 @@ The values of the variable `Trigger_Code` and their associated behaviors are lis
 | 1 | Only `Mu50` and associated offline selections are applied  |
 | 2 | Only `PFHT500_PFMHT100_PFMET100` and associated offline selections are applied |
 | 3 | Both triggers and associated offline selections are applied   |
+
+### Cutflow Table
+The output files produced by the control plot processor can be used to produce cutflow tables (tables in csv format).
+To produce the cutflow table(s) navigate to the directory `ControlPlots/Output_2018MCData/` (this is the directory where the output file is saved to).
+From this directory run the following command: `python3 Cutflow_Producer -f "Input_File.coffea" -n 4 -o "Out_CSV_Name"`.
+The arguments required by this function are `-f` which denotes the name of the coffea file from which you wish to produce the cutflow table, `-n` which denotes the number of boosted taus in the final state (which should just be 4), and finally `-o` which denotes the name of the cutflow table cvs file. 
 
 ### Neural Network
 
