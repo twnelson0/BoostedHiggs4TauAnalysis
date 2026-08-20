@@ -1154,8 +1154,8 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				event_level["nBJetsLoose"] = NLooseJets
 				
 				#Get Z_multiplicity	
-				electron_ZMult = Z_Mult_Function(electron,"ele")
-				muon_ZMult = Z_Mult_Function(muon,"mu")
+				electron_ZMult = Z_Mult_Function(ak.materialize(electron),"ele")
+				muon_ZMult = Z_Mult_Function(ak.materialize(muon),"mu")
 				event_level["ZMult"] = muon_ZMult + electron_ZMult
 				event_level["ZMult_e"] = electron_ZMult
 				event_level["ZMult_mu"] = muon_ZMult
@@ -1497,4 +1497,5 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			raise ValueError(f"Here is (hopefully) a more useful error message: {err}")
 
 	def postprocess(self, accumulator):
-		pass
+		return accumulator
+		#pass

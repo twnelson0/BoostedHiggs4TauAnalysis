@@ -57,7 +57,7 @@ def move_X509():
 
 if __name__ == "__main__":
 	#Condor related stuff
-	run_on_condor = False 
+	run_on_condor = True
 	os.environ["CONDOR_CONFIG"] = "/etc/condor/condor_config"
 	
 	if (run_on_condor):
@@ -84,7 +84,7 @@ if __name__ == "__main__":
 					"transfer_executable": "false",
 					"Requirements": "HasSingularityJobStart",
                     #"Requirements": "HAS_CMS_HDFS",
-					"container_image": "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/coffeateam/coffea-base-almalinux9:0.7.30-py3.10",
+					"container_image": "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/coffeateam/coffea-dask-almalinux9:2026.4.0-py3.12",
 					"InitialDir": f'/scratch/{os.environ["USER"]}',
 					'transfer_input_files': f'{os.environ["PWD"]}, {_x509_path}',
 

@@ -21,8 +21,12 @@ ControlPlots/ParquetTestEnv
 #Output file ignore exceptions
 !ZorW_NLO_corrections.root
 !pileup_*.root
-!ControlPlots/Corrections/muonefficiencies/Run2/UL/2018/*
-#Note files not needed to be saved
+!PileupHistogram-goldenJSON-13tev*.root
+!ControlPlots/Corrections/muonefficiencies/muonefficiencies/Run2/UL/2018/2018_highPt/*.json
+!ControlPlots/Corrections/jsonpog-integration/POG/LUM/*/*
+
+
+#Note files that do not not need to be saved/ported to git
 Simple_CrossSec.txt
 Full_CrossSecDict.txt
 
