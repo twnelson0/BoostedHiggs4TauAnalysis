@@ -1265,72 +1265,72 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			#############
 			#Store Parquet Files
 			############
-			if (ak.num(event_level.HT,axis=0) > 0):
-				var_nn = ak.zip( #Variables to be exported to .parquet file
-					{
-						"radion_pt": radionPT_Arr,
-						"vis_mass": LeadingHiggs_mass_Arr,
-						"vis_mass2": SubLeadingHiggs_mass_Arr,
-						"radion_eta": Radion_Reco.eta,
-						"higgs1_dr": leading_dR_Arr,
-						"higgs2_dr": nextleading_dR_Arr,
-						"dphi_H1": phi_leading,
-						"dphi_H2": phi_subleading,
-						"dphi_H1_MET": leadingHiggs_MET_dPhi_Arr,
-						"dphi_H2_MET": subleadingHiggs_MET_dPhi_Arr,
-						"dr_HH": diHiggs_dR_Arr, 
-						"dphi_HH": Higgs_DeltaPhi_Arr,
-						"dr_H1_Rad": leadingHiggs_Rad_dR,
-						"dr_H2_Rad": subleadingHiggs_Rad_dR,
-						"dphi_rad_MET": radionMET_dPhi,
-						"H1OS": event_level.LeadingPair_Charge,
-						"H2OS": event_level.SubleadingPair_Charge,
-						"ZMult": ak.ravel(event_level.ZMult), 
-						"numBJet": event_level.nBJets,
-						"RecoRadion_Mass": FourTau_Mass_Arr,
-						"LeadingTau_pT": boostedtau[:,0].pt,
-						"weight": event_level.event_weight*CrossSec_Weight,
-					}
-				)
-				#Save parquet files
-				#file_path = "root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/"
-				file_path = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/" + str(self.year) + "/"
-				file_path = "root://cmsxrootd.hep.wisc.edu//" + file_path[6:]
-				#file_path = ""
-				#file_path = "~/Analysis/BoostedTau/ControlPlots/BoostedHiggs4TauAnalysis/ControlPlots/Processors/"
-				if not(self.isData):
-					print("Not Data")
-					print(dataset)
-					file_name = dataset + "_BoostedTau.parquet"
-					if (dataset != "Signal"):
-						file_name = dataset + ".parquet"
-						if (os.path.isfile(file_path + file_name)): #Append to the parquet file
-							print("Appending file")
-							file_data = ak.from_parquet(file_path + file_name)
-							var_nn = ak.concatenate([file_data,var_nn])
-							ak.to_parquet(var_nn,file_path + file_name)
-						else: #Create the parquet file
-							print("Creating file")
-							if (ak.num(FourTau_Mass_Arr,axis=0) > 0):
-								#print(file_name)
-								#print(var_nn)
-								#temp_data_frame = ak.to_pandas(var_nn)
-								#temp_data_frame.to_parquet(file_path + file_name)
-								ak.to_parquet(var_nn,file_path + file_name)
-				else:
-					print("Is Data")
-					file_name = dataset + "_BoostedTau.parquet"
-					if (os.path.isfile(file_path + file_name)): #Append to the parquet file
-						print("Appending file")
-						file_data = ak.from_parquet(file_path + file_name)
-						var_nn = ak.concatenate([file_data,var_nn])
-						ak.to_parquet(var_nn,file_path + file_name)
-					else: #Create the parquet file
-						print("Creating file")
-						if (ak.num(FourTau_Mass_Arr,axis=0) > 0):
-							#temp_data_frame = ak.to_pandas(var_nn)
-							#temp_data_frame.to_parquet(file_path + file_name)
-							ak.to_parquet(var_nn,file_path + file_name)
+		#	if (ak.num(event_level.HT,axis=0) > 0):
+		#		var_nn = ak.zip( #Variables to be exported to .parquet file
+		#			{
+		#				"radion_pt": radionPT_Arr,
+		#				"vis_mass": LeadingHiggs_mass_Arr,
+		#				"vis_mass2": SubLeadingHiggs_mass_Arr,
+		#				"radion_eta": Radion_Reco.eta,
+		#				"higgs1_dr": leading_dR_Arr,
+		#				"higgs2_dr": nextleading_dR_Arr,
+		#				"dphi_H1": phi_leading,
+		#				"dphi_H2": phi_subleading,
+		#				"dphi_H1_MET": leadingHiggs_MET_dPhi_Arr,
+		#				"dphi_H2_MET": subleadingHiggs_MET_dPhi_Arr,
+		#				"dr_HH": diHiggs_dR_Arr, 
+		#				"dphi_HH": Higgs_DeltaPhi_Arr,
+		#				"dr_H1_Rad": leadingHiggs_Rad_dR,
+		#				"dr_H2_Rad": subleadingHiggs_Rad_dR,
+		#				"dphi_rad_MET": radionMET_dPhi,
+		#				"H1OS": event_level.LeadingPair_Charge,
+		#				"H2OS": event_level.SubleadingPair_Charge,
+		#				"ZMult": ak.ravel(event_level.ZMult), 
+		#				"numBJet": event_level.nBJets,
+		#				"RecoRadion_Mass": FourTau_Mass_Arr,
+		#				"LeadingTau_pT": boostedtau[:,0].pt,
+		#				"weight": event_level.event_weight*CrossSec_Weight,
+		#			}
+		#		)
+		#		#Save parquet files
+		#		#file_path = "root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/"
+		#		file_path = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/" + str(self.year) + "/"
+		#		file_path = "root://cmsxrootd.hep.wisc.edu//" + file_path[6:]
+		#		#file_path = ""
+		#		#file_path = "~/Analysis/BoostedTau/ControlPlots/BoostedHiggs4TauAnalysis/ControlPlots/Processors/"
+		#		if not(self.isData):
+		#			print("Not Data")
+		#			print(dataset)
+		#			file_name = dataset + "_BoostedTau.parquet"
+		#			if (dataset != "Signal"):
+		#				file_name = dataset + ".parquet"
+		#				if (os.path.isfile(file_path + file_name)): #Append to the parquet file
+		#					print("Appending file")
+		#					file_data = ak.from_parquet(file_path + file_name)
+		#					var_nn = ak.concatenate([file_data,var_nn])
+		#					ak.to_parquet(var_nn,file_path + file_name)
+		#				else: #Create the parquet file
+		#					print("Creating file")
+		#					if (ak.num(FourTau_Mass_Arr,axis=0) > 0):
+		#						#print(file_name)
+		#						#print(var_nn)
+		#						#temp_data_frame = ak.to_pandas(var_nn)
+		#						#temp_data_frame.to_parquet(file_path + file_name)
+		#						ak.to_parquet(var_nn,file_path + file_name)
+		#		else:
+		#			print("Is Data")
+		#			file_name = dataset + "_BoostedTau.parquet"
+		#			if (os.path.isfile(file_path + file_name)): #Append to the parquet file
+		#				print("Appending file")
+		#				file_data = ak.from_parquet(file_path + file_name)
+		#				var_nn = ak.concatenate([file_data,var_nn])
+		#				ak.to_parquet(var_nn,file_path + file_name)
+		#			else: #Create the parquet file
+		#				print("Creating file")
+		#				if (ak.num(FourTau_Mass_Arr,axis=0) > 0):
+		#					#temp_data_frame = ak.to_pandas(var_nn)
+		#					#temp_data_frame.to_parquet(file_path + file_name)
+		#					ak.to_parquet(var_nn,file_path + file_name)
 
 			
 			#############
