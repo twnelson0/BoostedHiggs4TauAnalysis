@@ -49,41 +49,63 @@ TT_Had_BR = 0.4544
 #Functions and variables for Luminosity weights
 lumi_table_data = {"MC Sample":[], "Luminosity":[], "Cross Section (pb)":[], "Number of Events":[], "Calculated Weight":[]}
 
-#Dictionary of cross sections 
-xSection_Dictionary = {"Signal": 0.000001, #Chosen to make plots readable
-						"TTTo2L2Nu": 87.5595, "TTToSemiLeptonic": 365.2482, "TTToHadronic": 381.0923,
-						
+#Dictionary of cross sections
+xSection_Dictionary = {"Signal": 0.01, #Chosen to make plots readable
+						#TTBar Background
+						"TTTo2L2Nu": 831.76*TT_FullLep_BR, "TTToSemiLeptonic": 831.76*TT_SemiLep_BR, "TTToHadronic": 831.76*TT_Had_BR,
 						#DiBoson Background
-						"ZZ2l2q": 3.676, "WZ2l2q": 6.565, "WZ1l1nu2q": 9.119, "WZ1l3nu": 3.414, "VV2l2nu": 11.09, "WWTo1L1Nu2Q": 51.65, "WWTo4Q": 51.03, "ZZTo4Q": 3.262, "ZZTo2L2Nu": 0.9738, "ZZTo2Nu2Q": 4.545, #"WZ3l1nu.root" : 27.57,
-						
+						"ZZ2l2q": 3.22, "WZ3l1nu": 4.708, "WZ2l2q": 5.595, "WZ1l1nu2q": 10.71, "VV2l2nu": 11.95, "WZ1l3nu": 3.05, #"WZ3l1nu.root" : 27.57,
 						#ZZ->4l
-						"ZZ4l": 1.325,
-						
-						"Tbar-tchan": 80.0, "T-tchan": 134.2, "Tbar-tW": 39.65, "T-tW": 39.65, "ST_s-channel_4f_leptonDecays": 3.588, "ST_s-channel_4f_hadronicDecays": 7.485,
+						"ZZ4l": 1.212,
+						#DiBoson continued
+						#"ZZTo2L2Nu_powheg": 0.564, "ZZTo2L2Q_amcNLO": 3.22, "ZZTo4L_powheg": 1.212, "WWTo2L2Nu_powheg": 12.178, "WWTo4Q_powheg": 51.723, "WWTo1LNuQQ_powheg": 49.997, 
+						#"WZTo1L3Nu_amcatnloFXFX": 3.033, "WZTo2L2Q_amcNLO": 5.595, "WZTo3LNu_amcNLO": 4.42965, "WZTo1L1Nu2Q_amcNLO": 10.71, "WW1l1nu2q": 49.997, "WZ1l3nu": 3.05,
+						#Single Top Background
+						"Tbar-tchan": 26.23, "T-tchan": 44.07, "Tbar-tW": 35.6, "T-tW": 35.6, 
 						#Drell-Yan Jets
-						"DYJetsToLL_M-4to50_HT-70to100": 314.8,
-						"DYJetsToLL_M-4to50_HT-100to200": 190.6,
-						"DYJetsToLL_M-4to50_HT-200to400": 42.27,
-						"DYJetsToLL_M-4to50_HT-400to600": 4.05,
-						"DYJetsToLL_M-4to50_HT-600toInf": 1.216,
-						"DYJetsToLL_M-50_HT-70to100": 140.0,
-						"DYJetsToLL_M-50_HT-100to200": 139.2,
-						"DYJetsToLL_M-50_HT-200to400": 38.4,
-						"DYJetsToLL_M-50_HT-400to600": 5.174,
-						"DYJetsToLL_M-50_HT-600to800": 1.258,
-						"DYJetsToLL_M-50_HT-800to1200": 0.5598,
-						"DYJetsToLL_M-50_HT-1200to2500": 0.1305,
-						"DYJetsToLL_M-50_HT-2500toInf": 0.002997,
-						
+						"DYJetsToLL_Pt-50To100": 387.130778, "DYJetsToLL_Pt-100To250": 89.395097,"DYJetsToLL_Pt-250To400": 3.435181, "DYJetsToLL_Pt-400To650": 0.464024, "DYJetsToLL_Pt-650ToInf": 0.043602,
 						#WJets
-						"WJetsToLNu_HT-70To100":1283.0, "WJetsToLNu_HT-100To200" : 1244.0, "WJetsToLNu_HT-200To400": 337.8, "WJetsToLNu_HT-400To600": 44.93, "WJetsToLNu_HT-600To800": 11.19, "WJetsToLNu_HT-800To1200": 4.926, "WJetsToLNu_HT-1200To2500" : 1.152, "WJetsToLNu_HT-2500ToInf" : 0.02646, 
+						"WJetsToLNu_HT-100To200" : 1345*WScaleFactor, "WJetsToLNu_HT-200To400": 359.7*WScaleFactor, "WJetsToLNu_HT-400To600": 48.91*WScaleFactor, "WJetsToLNu_HT-600To800": 12.05*WScaleFactor, "WJetsToLNu_HT-800To1200": 5.501*WScaleFactor, "WJetsToLNu_HT-1200To2500" : 1.329*WScaleFactor, "WJetsToLNu_HT-2500ToInf" : 0.03216*WScaleFactor, 
 						#SM Higgs
 						"ZH125": 0.7544*0.0621, "ggZHLL125":0.1223 * 0.062 * 3 * 0.033658, "ggZHNuNu125": 0.1223*0.062*0.2,"ggZHQQ125": 0.1223*0.062*0.6991, "toptopH125": 0.5033*0.062, #"ggH125": 48.30* 0.0621, "qqH125": 3.770 * 0.0621, "WPlusH125": 
-						
 						#QCD
-						"QCD_HT50to100": 186100000.0, "QCD_HT100to200": 23630000.0, "QCD_HT200to300": 1554000.0, "QCD_HT300to500": 323800.0, "QCD_HT500to700": 30280.0, 
-						"QCD_HT700to1000": 6392.0, "QCD_HT1000to1500": 1118.0, "QCD_HT1500to2000": 108.9, "QCD_HT2000toInf": 21.93,   
+						"QCD_HT300to500": 347700, "QCD_HT500to700": 32100, "QCD_HT700to1000": 6831, "QCD_HT1000to1500": 1207, "QCD_HT1500to2000": 119.9, "QCD_HT2000toInf": 25.24,
 						}	
+
+#xSection_Dictionary_UL = {"Signal": 0.000001, #Chosen to make plots readable
+#						"TTTo2L2Nu": 87.5595, "TTToSemiLeptonic": 365.2482, "TTToHadronic": 381.0923,
+#						
+#						#DiBoson Background
+#						"ZZ2l2q": 3.676, "WZ2l2q": 6.565, "WZ1l1nu2q": 9.119, "WZ1l3nu": 3.414, "VV2l2nu": 11.09, "WWTo1L1Nu2Q": 51.65, "WWTo4Q": 51.03, "ZZTo4Q": 3.262, "ZZTo2L2Nu": 0.9738, "ZZTo2Nu2Q": 4.545, #"WZ3l1nu.root" : 27.57,
+#						
+#						#ZZ->4l
+#						"ZZ4l": 1.325,
+#						
+#						"Tbar-tchan": 80.0, "T-tchan": 134.2, "Tbar-tW": 39.65, "T-tW": 39.65, "ST_s-channel_4f_leptonDecays": 3.588, "ST_s-channel_4f_hadronicDecays": 7.485,
+#						#Drell-Yan Jets
+#						"DYJetsToLL_M-4to50_HT-70to100": 314.8,
+#						"DYJetsToLL_M-4to50_HT-100to200": 190.6,
+#						"DYJetsToLL_M-4to50_HT-200to400": 42.27,
+#						"DYJetsToLL_M-4to50_HT-400to600": 4.05,
+#						"DYJetsToLL_M-4to50_HT-600toInf": 1.216,
+#						"DYJetsToLL_M-50_HT-70to100": 140.0,
+#						"DYJetsToLL_M-50_HT-100to200": 139.2,
+#						"DYJetsToLL_M-50_HT-200to400": 38.4,
+#						"DYJetsToLL_M-50_HT-400to600": 5.174,
+#						"DYJetsToLL_M-50_HT-600to800": 1.258,
+#						"DYJetsToLL_M-50_HT-800to1200": 0.5598,
+#						"DYJetsToLL_M-50_HT-1200to2500": 0.1305,
+#						"DYJetsToLL_M-50_HT-2500toInf": 0.002997,
+#						
+#						#WJets
+#						"WJetsToLNu_HT-70To100":1283.0, "WJetsToLNu_HT-100To200" : 1244.0, "WJetsToLNu_HT-200To400": 337.8, "WJetsToLNu_HT-400To600": 44.93, "WJetsToLNu_HT-600To800": 11.19, "WJetsToLNu_HT-800To1200": 4.926, "WJetsToLNu_HT-1200To2500" : 1.152, "WJetsToLNu_HT-2500ToInf" : 0.02646, 
+#						#SM Higgs
+#						"ZH125": 0.7544*0.0621, "ggZHLL125":0.1223 * 0.062 * 3 * 0.033658, "ggZHNuNu125": 0.1223*0.062*0.2,"ggZHQQ125": 0.1223*0.062*0.6991, "toptopH125": 0.5033*0.062, #"ggH125": 48.30* 0.0621, "qqH125": 3.770 * 0.0621, "WPlusH125": 
+#						
+#						#QCD
+#						"QCD_HT50to100": 186100000.0, "QCD_HT100to200": 23630000.0, "QCD_HT200to300": 1554000.0, "QCD_HT300to500": 323800.0, "QCD_HT500to700": 30280.0, 
+#						"QCD_HT700to1000": 6392.0, "QCD_HT1000to1500": 1118.0, "QCD_HT1500to2000": 108.9, "QCD_HT2000toInf": 21.93,   
+#						}	
 Lumi_2018 = 59830
 
 def weight_calc(sample,numEvents=1):
@@ -222,13 +244,12 @@ def four_mass(part_arr): #Four Particle mass assuming each event has 4 particles
 		(part_arr[0].Pz + part_arr[1].Pz + part_arr[2].Pz + part_arr[3].Pz)**2)
 
 class Analysis4TauProcessor(processor.ProcessorABC):
-	def __init__(self, sumWEvents_Dict, nBoostedTaus = 0, Trigger_Code = 3, Tau_WP = 0.95, year = "2018"): #Additional arguements can be added later
+	def __init__(self, sumWEvents_Dict, nBoostedTaus = 0, Trigger_Code = 3, year = "2018"): #Additional arguements can be added later
 		#Initial variables
 		self.isData = False #Default assumption is MC
 		self.nBoostedTau_Selec = nBoostedTaus #Number of tau selections
 		self.sumWEvents_Dict = sumWEvents_Dict
 		self.year = int(year)
-		self.tauWP = Tau_WP
 
 		#Work out Triggering logic
 		self.Mu_Trigger = False
@@ -266,35 +287,35 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			#Objects for analysis
 			event_level = ak.zip(
 				{
-					"METHTMHT_Trigger": events.HLT_PFHT500_PFMET100_PFMHT100_IDTight,
-					"Mu_Trigger": events.HLT_Mu50,
-					"MET_pt": events.MET_pt,
-					"MET_Phi": events.MET_phi,
-					"event_weight": ak.ones_like(events.MET_pt), #*0.9,
-					"n_electrons": ak.zeros_like(events.MET_pt),
-					"n_muons": ak.zeros_like(events.MET_pt),
-					"n_tau_electrons": ak.zeros_like(events.MET_pt),
-					"n_tau_muons": ak.zeros_like(events.MET_pt),
-					"n_tau_hadronic": ak.zeros_like(events.MET_pt),
+					"METHTMHT_Trigger": events.HLTJet,
+					"Mu_Trigger": events.HLTEleMuX,
+					"MET_pt": events.pfMET,
+					"MET_Phi": events.pfMETPhi,
+					"event_weight": ak.ones_like(events.pfMET), #*0.9,
+					"n_electrons": ak.zeros_like(events.pfMET),
+					"n_muons": ak.zeros_like(events.pfMET),
+					"n_tau_electrons": ak.zeros_like(events.pfMET),
+					"n_tau_muons": ak.zeros_like(events.pfMET),
+					"n_tau_hadronic": ak.zeros_like(events.pfMET),
 					"event_num": events.event,
 					"run": events.run,
-					"Lumi" : events.luminosityBlock,
-					"PV_ndof": events.PV_ndof,
-					"PV_z": events.PV_z,
-					"PV_x": events.PV_x,
-					"PV_y": events.PV_y,
-					"Num_PV": events.PV_npvs,
-					"nFatJet": events.nFatJet,
-					"Flag_goodVertices": events.Flag_goodVertices,
-					"Flag_globalSuperTightHalo2016Filter": events.Flag_globalSuperTightHalo2016Filter,
-					"Flag_HBHENoiseFilter": events.Flag_HBHENoiseFilter,
-					"Flag_HBHENoiseIsoFilter": events.Flag_HBHENoiseIsoFilter,
-					"Flag_EcalDeadCellTriggerPrimitiveFilter": events.Flag_EcalDeadCellTriggerPrimitiveFilter,
-					"Flag_BadPFMuonFilter": events.Flag_BadPFMuonFilter,
-					"Flag_BadPFMuonDzFilter": events.Flag_BadPFMuonDzFilter,
-					"Flag_hfNoisyHitsFilter": events.Flag_hfNoisyHitsFilter,
-					"Flag_eeBadScFilter": events.Flag_eeBadScFilter,
-					"Flag_ecalBadCalibFilter": events.Flag_ecalBadCalibFilter,
+					"Lumi" : events.lumis,
+					#"PV_ndof": events.PV_ndof,
+					#"PV_z": events.PV_z,
+					#"PV_x": events.PV_x,
+					#"PV_y": events.PV_y,
+					#"Num_PV": events.PV_npvs,
+					"nFatJet": events.nAK8Jet,
+					#"Flag_goodVertices": events.Flag_goodVertices,
+					#"Flag_globalSuperTightHalo2016Filter": events.Flag_globalSuperTightHalo2016Filter,
+					#"Flag_HBHENoiseFilter": events.Flag_HBHENoiseFilter,
+					#"Flag_HBHENoiseIsoFilter": events.Flag_HBHENoiseIsoFilter,
+					#"Flag_EcalDeadCellTriggerPrimitiveFilter": events.Flag_EcalDeadCellTriggerPrimitiveFilter,
+					#"Flag_BadPFMuonFilter": events.Flag_BadPFMuonFilter,
+					#"Flag_BadPFMuonDzFilter": events.Flag_BadPFMuonDzFilter,
+					#"Flag_hfNoisyHitsFilter": events.Flag_hfNoisyHitsFilter,
+					#"Flag_eeBadScFilter": events.Flag_eeBadScFilter,
+					#"Flag_ecalBadCalibFilter": events.Flag_ecalBadCalibFilter,
 					#"genWeight": events.genWeight
 				},
 				with_name="EventArray",
@@ -302,40 +323,42 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			)
 			boostedtau = ak.zip( 
 				{
-					"pt": events.boostedTau_pt,
-					"Px": events.boostedTau_pt*np.cos(events.boostedTau_phi),
-					"Py": events.boostedTau_pt*np.sin(events.boostedTau_phi),
-					"Pz": (events.boostedTau_pt/np.sin(2*np.arctan(np.exp(-events.boostedTau_eta))))*np.cos(2*np.arctan(np.exp(-events.boostedTau_eta))),
-					"E": np.sqrt((events.boostedTau_pt/np.sin(2*np.arctan(np.exp(-events.boostedTau_eta))))**2 + events.boostedTau_mass**2),
-					"mass": events.boostedTau_mass,
-					"eta": events.boostedTau_eta,
-					"phi": events.boostedTau_phi,
-					"nBoostedTau": events.nboostedTau,
-					"charge": events.boostedTau_charge,
+					"pt": events.boostedTauPt,
+					"Px": events.boostedTauPt*np.cos(events.boostedTauPhi),
+					"Py": events.boostedTauPt*np.sin(events.boostedTauPhi),
+					"Pz": (events.boostedTauPt/np.sin(2*np.arctan(np.exp(-events.boostedTauEta))))*np.cos(2*np.arctan(np.exp(-events.boostedTauEta))),
+					"E": np.sqrt((events.boostedTauPt/np.sin(2*np.arctan(np.exp(-events.boostedTauEta))))**2 + events.boostedTauMass**2),
+					"mass": events.boostedTauMass,
+					"eta": events.boostedTauEta,
+					"phi": events.boostedTauPhi,
+					"nBoostedTau": events.nBoostedTau,
+					"charge": events.boostedTauCharge,
+					"decay": events.boostedTaupfTausDiscriminationByDecayModeFinding,
+					"MVA": events.boostedTauByIsolationMVArun2v1DBoldDMwLTrawNew,
+                    "iso": events.boostedTauByIsolationMVArun2v1DBoldDMwLTrawNew,
+					
 					#"iso": events.boostedTau_idDeepTau2018v2p7VSjet,
-					"iso": events.boostedTau_idDeepTau2018v2p7VSjet,
-					"MVA": events.boostedTau_rawMVAoldDM2017v2,
-					"DBT": events.boostedTau_rawDeepTau2018v2p7VSjet,
-					"decay": events.boostedTau_idDecayModeOldDMs,
+					#"DBT": events.boostedTau_rawDeepTau2018v2p7VSjet,
 				},
 				with_name="BoostedTauArray",
 				behavior=candidate.behavior,
 			)
 			electron = ak.zip(
 				{
-					"pt": events.Electron_pt,
-					"eta": events.Electron_eta,
-					"phi": events.Electron_phi,
-					"charge": events.Electron_charge,
-					"nElectron": events.nElectron,
-					"Px": events.Electron_pt*np.cos(events.Electron_phi),
-					"Py": events.Electron_pt*np.sin(events.Electron_phi),
-					"Pz": events.Electron_pt*np.tan(2*np.arctan(np.exp(-events.Electron_eta)))**-1,
-					"E": np.sqrt(events.Electron_pt**2 + (events.Electron_pt/np.tan(2*np.arctan(np.exp(-events.Electron_eta))))**2 + events.Electron_mass**2),
-					"mass": events.Electron_mass, 
-					"SCEta": events.Electron_deltaEtaSC,
-					"IDMVANoIso": events.Electron_mvaNoIso,
-					"RelIso": events.Electron_pfRelIso03_all,
+					"pt": events.elePt,
+					"eta": events.eleEta,
+					"phi": events.elePhi,
+					"charge": events.eleCharge,
+					"Px": events.elePt*np.cos(events.elePhi),
+					"Py": events.elePt*np.sin(events.elePhi),
+					"Pz": events.elePt*np.tan(2*np.arctan(np.exp(-events.eleEta)))**-1,
+					"E": events.eleEn,
+					"SCEta": events.eleSCEta,
+					"IDMVANoIso": events.eleIDMVANoIso,
+					
+				#	"nElectron": events.nElectron,
+				#	"RelIso": events.Electron_pfRelIso03_all,
+				#	"mass": events.Electron_mass, 
 						
 				},
 				with_name="ElectronArray",
@@ -344,23 +367,23 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			)
 			muon = ak.zip(
 				{
-					"pt": events.Muon_pt,
-					"eta": events.Muon_eta,
-					"phi": events.Muon_phi,
-					"charge": events.Muon_charge,
-					"nMuon": events.nMuon,
-					"Px": events.Muon_pt*np.cos(events.Muon_phi),
-					"Py": events.Muon_pt*np.sin(events.Muon_phi),
-					"Pz": events.Muon_pt*np.tan(2*np.arctan(np.exp(-events.Muon_eta)))**-1,
-					"E": np.sqrt(events.Muon_pt**2 + (events.Muon_pt/np.tan(2*np.arctan(np.exp(-events.Muon_eta))))**2 + events.Muon_mass**2),
-					"nMu": events.nMuon,
-					"mass": events.Muon_mass, 
-					"IDSelec": events.Muon_mediumId,
+					"pt": events.muPt,
+					"eta": events.muEta,
+					"phi": events.muPhi,
+					"charge": events.muCharge,
+					"Px": events.muPt*np.cos(events.muPhi),
+					"Py": events.muPt*np.sin(events.muPhi),
+					"Pz": events.muPt*np.tan(2*np.arctan(np.exp(-events.muEta)))**-1,
+					"E": events.muEn,
+					"nMu": events.nMu,
+					"IDSelec": events.muIDbit,
+					"D0": events.muD0,
+					"Dz": events.muDz,
+					
 					#"IDSelec": events.Muon_tightId,
-					"D0": events.Muon_dxy,
-					"Dz": events.Muon_dz,
-					"LooseId": events.Muon_looseId,
-					"RelIso": events.Muon_pfRelIso04_all,
+
+					#"LooseId": events.Muon_looseId,
+					#"RelIso": events.Muon_pfRelIso04_all,
 						
 				},
 				with_name="MuonArray",
@@ -370,14 +393,13 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 
 			AK8Jet = ak.zip(
 				{
-					"AK8JetDropMass": events.FatJet_msoftdrop,
-					"pt": events.FatJet_pt,
-					"eta": events.FatJet_eta,
-					"phi": events.FatJet_phi,
-					"nAK8Jet": events.nFatJet,
-					"softDropM": events.FatJet_msoftdrop,
-					"Id": events.FatJet_jetId,
-					"mass": events.FatJet_mass, 
+					"AK8JetDropMass": events.AK8JetSoftDropMass,
+					"pt": events.AK8JetPt,
+					"eta": events.AK8JetEta,
+					"phi": events.AK8JetPhi,
+					"nAK8Jet": events.nAK8Jet,
+					#"Id": events.FatJet_jetId,
+					#"mass": events.FatJet_mass, 
 				},
 				with_name="AK8JetArray",
 				behavior=candidate.behavior,
@@ -385,14 +407,14 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			
 			Jet = ak.zip(
 				{
-					"pt": events.Jet_pt,
-					"JetId": events.Jet_jetId, #Not sure that this is correct
-					"eta": events.Jet_eta,
-					"phi": events.Jet_phi,
-					"mass": events.Jet_mass,
+					"pt": events.jetPt,
+					"JetId": events.jetPFLooseId,
+					"eta": events.jetEta,
+					"phi": events.jetPhi,
+					#"mass": events.Jet_mass,
 					"nJet": events.nJet,
 					#"DeepCSVTags_b": events.Jet_btagCSVV2,
-					"DeepCSVTags_b": events.Jet_btagDeepB,
+					"DeepCSVTags_b": events.jetDeepCSVTags_b,
 				},
 				with_name="PFJetArray",
 				behavior=candidate.behavior,
@@ -402,10 +424,10 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			if (not(self.isData)):
 				GenPart = ak.zip(
 						{
-							"pt": events.GenPart_pt,
-							"id": events.GenPart_pdgId,
-							"status": events.GenPart_status,
-							"mother_id": events.GenPart_genPartIdxMother,
+							"pt": events.mcPt,
+							"id": events.mcPID,
+							#"status": events.GenPart_status,
+							"mother_id": events.mcMomPID,
 						},
 						with_name="GenParticleArray",
 						behavior=candidate.behavior, 
@@ -415,10 +437,10 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			print(type(dataset))
 			print(dataset)
 
-			if not(self.isData):
-				#print("Is MC events are equal to gen weights")
-				event_level["event_weight"] = events.genWeight #Set the event weight to the gen weight
-				event_level["Pileup_nTrueInt"] = events.Pileup_nTrueInt
+		#	if not(self.isData):
+		#		#print("Is MC events are equal to gen weights")
+		#		event_level["event_weight"] = events.genWeight #Set the event weight to the gen weight
+		#		event_level["Pileup_nTrueInt"] = events.Pileup_nTrueInt
 			
 
 			#############
@@ -514,82 +536,82 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			#############
 			#Corrections
 			#############
-			if (ak.num(event_level.run,axis=0) > 0):
-				METPhiCorrections = METPhi_Corrections(uncorrMET_pt = event_level.MET_pt,uncorrMET_phi = event_level.MET_Phi, run_num = event_level.run, isData = self.isData, nPV = event_level.Num_PV, year=2018)
-				event_level["MET_pt"]= METPhiCorrections["MET_pt_corr"]
-				event_level["MET_Phi"]= METPhiCorrections["MET_phi_corr"]
+		#	if (ak.num(event_level.run,axis=0) > 0):
+		#		METPhiCorrections = METPhi_Corrections(uncorrMET_pt = event_level.MET_pt,uncorrMET_phi = event_level.MET_Phi, run_num = event_level.run, isData = self.isData, nPV = event_level.Num_PV, year=2018)
+		#		event_level["MET_pt"]= METPhiCorrections["MET_pt_corr"]
+		#		event_level["MET_Phi"]= METPhiCorrections["MET_phi_corr"]
 
 			#Corrections to be applied to inidiviual backgrounds
-			if (not(self.isData)): 
-				#Top pT reweighting
-				if ("TTTo" in dataset): # or "ST_" in dataset):
-					gen_top = GenPart[(GenPart.id == 6) & (GenPart.status == 22)] 
-					gen_antitop = GenPart[(GenPart.id == -6) & (GenPart.status == 22)]
-					SF_top = 0.103*np.exp(-0.0118*gen_top.pt) - 1.34e-4*gen_top.pt + 0.973
-					SF_antitop = 0.103*np.exp(-0.0118*gen_antitop.pt) - 1.34e-4*gen_antitop.pt + 0.973
-					topPtWeight = ak.firsts(np.sqrt(SF_top*SF_antitop))
-				elif ("ST_" in dataset):
-					gen_top = GenPart[(abs(GenPart.id) == 6) & (GenPart.status == 22)]
-					SF_top = 0.103*np.exp(-0.0118*gen_top.pt) - 1.34e-4*gen_top.pt + 0.973
-					topPtWeight = ak.firsts(SF_top)
-				else:
-					topPtWeight = ak.ones_like(event_level.run)
+		#	if (not(self.isData)): 
+		#		#Top pT reweighting
+		#		if ("TTTo" in dataset): # or "ST_" in dataset):
+		#			gen_top = GenPart[(GenPart.id == 6) & (GenPart.status == 22)] 
+		#			gen_antitop = GenPart[(GenPart.id == -6) & (GenPart.status == 22)]
+		#			SF_top = 0.103*np.exp(-0.0118*gen_top.pt) - 1.34e-4*gen_top.pt + 0.973
+		#			SF_antitop = 0.103*np.exp(-0.0118*gen_antitop.pt) - 1.34e-4*gen_antitop.pt + 0.973
+		#			topPtWeight = ak.firsts(np.sqrt(SF_top*SF_antitop))
+		#		elif ("ST_" in dataset):
+		#			gen_top = GenPart[(abs(GenPart.id) == 6) & (GenPart.status == 22)]
+		#			SF_top = 0.103*np.exp(-0.0118*gen_top.pt) - 1.34e-4*gen_top.pt + 0.973
+		#			topPtWeight = ak.firsts(SF_top)
+		#		else:
+		#			topPtWeight = ak.ones_like(event_level.run)
 
-				event_level["event_weight"] = event_level.event_weight*topPtWeight #Update event_weight
-			
-				#QCD EWK Corrections 
-				if (("DYJetsToLL_M-50" in dataset or "DYJetstoLL_M-4To50" in dataset) and ak.num(event_level.run,axis=0) > 0):
-				#if ("DYJetsToLL_M-50" in dataset or "DYJetstoLL_M-4To50" in dataset):
-					gen_Z = GenPart[(GenPart.id == 23) & (GenPart.status == 22)]	
-					qcdZWeight = kFactor.getQCDZ(ak.firsts(gen_Z.pt))	 
-					genZ_pt_NoneHandling = ak.fill_none(ak.firsts(gen_Z.pt),-999)
-					ewkZWeight = kFactor.getEWKZ(genZ_pt_NoneHandling)
-					combinedWZgenpTWeight = ewkZWeight*qcdZWeight*0.934
-				elif ("WJets" in dataset and ak.num(event_level.run,axis=0) > 0):
-					gen_W = GenPart[(abs(GenPart.id) == 24) & (GenPart.status == 22)]	
-					qcdWWeight = kFactor.getQCDW(ak.firsts(gen_W.pt))	 
-					genW_pt_NoneHandling = ak.fill_none(ak.firsts(gen_W.pt),-999)
-					ewkWWeight = kFactor.getEWKW(genW_pt_NoneHandling)	 
-					combinedWZgenpTWeight = ewkWWeight*qcdWWeight*0.9135
-				else:
-					if (ak.num(event_level.run,axis=0) > 0):
-						combinedWZgenpTWeight = ak.ones_like(event_level.run)
-			  
-				if (ak.num(event_level.run,axis=0) > 0):
-					event_level["event_weight"] = event_level.event_weight*combinedWZgenpTWeight #Update event_weight
-					event_level["event_weight"] = ak.fill_none(event_level.event_weight,1) #Edge cases
-				#Pile Up Reweighting
-				#PU_reweight = PU_Reweight.getPUSF(event_level.Pileup_nTrueInt, era = str(2018), var = 'nominal')
-				PU_reweight = getPUSF(event_level.Pileup_nTrueInt, era = str(2018), var = 'nominal')
-				event_level["event_weight"] = event_level.event_weight*PU_reweight
+		#		event_level["event_weight"] = event_level.event_weight*topPtWeight #Update event_weight
+		#	
+		#		#QCD EWK Corrections 
+		#		if (("DYJetsToLL_M-50" in dataset or "DYJetstoLL_M-4To50" in dataset) and ak.num(event_level.run,axis=0) > 0):
+		#		#if ("DYJetsToLL_M-50" in dataset or "DYJetstoLL_M-4To50" in dataset):
+		#			gen_Z = GenPart[(GenPart.id == 23) & (GenPart.status == 22)]	
+		#			qcdZWeight = kFactor.getQCDZ(ak.firsts(gen_Z.pt))	 
+		#			genZ_pt_NoneHandling = ak.fill_none(ak.firsts(gen_Z.pt),-999)
+		#			ewkZWeight = kFactor.getEWKZ(genZ_pt_NoneHandling)
+		#			combinedWZgenpTWeight = ewkZWeight*qcdZWeight*0.934
+		#		elif ("WJets" in dataset and ak.num(event_level.run,axis=0) > 0):
+		#			gen_W = GenPart[(abs(GenPart.id) == 24) & (GenPart.status == 22)]	
+		#			qcdWWeight = kFactor.getQCDW(ak.firsts(gen_W.pt))	 
+		#			genW_pt_NoneHandling = ak.fill_none(ak.firsts(gen_W.pt),-999)
+		#			ewkWWeight = kFactor.getEWKW(genW_pt_NoneHandling)	 
+		#			combinedWZgenpTWeight = ewkWWeight*qcdWWeight*0.9135
+		#		else:
+		#			if (ak.num(event_level.run,axis=0) > 0):
+		#				combinedWZgenpTWeight = ak.ones_like(event_level.run)
+		#	  
+		#		if (ak.num(event_level.run,axis=0) > 0):
+		#			event_level["event_weight"] = event_level.event_weight*combinedWZgenpTWeight #Update event_weight
+		#			event_level["event_weight"] = ak.fill_none(event_level.event_weight,1) #Edge cases
+		#		#Pile Up Reweighting
+		#		#PU_reweight = PU_Reweight.getPUSF(event_level.Pileup_nTrueInt, era = str(2018), var = 'nominal')
+		#		PU_reweight = getPUSF(event_level.Pileup_nTrueInt, era = str(2018), var = 'nominal')
+		#		event_level["event_weight"] = event_level.event_weight*PU_reweight
 
-				#Muon SFs
-				#Muon ID Set
-				muon_SF_Map = (muon.pt > 50) & (abs(muon.eta) < 2.4)
-				n_Muon = ak.num(muon[muon_SF_Map])
-				MuonID_SF = self.MuonID["2018"]["NUM_probe_TightRelTkIso_DEN_MediumIDProbes"].evaluate(abs(ak.to_numpy(ak.flatten(muon[muon_SF_Map].eta))),ak.to_numpy(ak.flatten(muon[muon_SF_Map].pt)),"nominal")	
+		#		#Muon SFs
+		#		#Muon ID Set
+		#		muon_SF_Map = (muon.pt > 50) & (abs(muon.eta) < 2.4)
+		#		n_Muon = ak.num(muon[muon_SF_Map])
+		#		MuonID_SF = self.MuonID["2018"]["NUM_probe_TightRelTkIso_DEN_MediumIDProbes"].evaluate(abs(ak.to_numpy(ak.flatten(muon[muon_SF_Map].eta))),ak.to_numpy(ak.flatten(muon[muon_SF_Map].pt)),"nominal")	
 
-				#Muon Trigger SF
-				MuonTrigger_SF = self.MuonTrigger["2018"]["NUM_HLT_DEN_MediumIDTightRelIsoProbes"].evaluate(abs(ak.to_numpy(ak.flatten(muon[muon_SF_Map].eta))),ak.to_numpy(ak.flatten(muon[muon_SF_Map].pt)),"nominal")
+		#		#Muon Trigger SF
+		#		MuonTrigger_SF = self.MuonTrigger["2018"]["NUM_HLT_DEN_MediumIDTightRelIsoProbes"].evaluate(abs(ak.to_numpy(ak.flatten(muon[muon_SF_Map].eta))),ak.to_numpy(ak.flatten(muon[muon_SF_Map].pt)),"nominal")
 
-				#Combine Muon and Trigger scale factors
-				MuonSF = MuonID_SF*MuonTrigger_SF
-				MuonSF = ak.unflatten(MuonSF,n_Muon)
-				Muon_Weight = ak.prod(MuonSF,axis=-1)
-				event_level["event_weight"] = event_level.event_weight*Muon_Weight
+		#		#Combine Muon and Trigger scale factors
+		#		MuonSF = MuonID_SF*MuonTrigger_SF
+		#		MuonSF = ak.unflatten(MuonSF,n_Muon)
+		#		Muon_Weight = ak.prod(MuonSF,axis=-1)
+		#		event_level["event_weight"] = event_level.event_weight*Muon_Weight
 			
 			#Data Corrections (may need to move around and futz with where this is)
-			if (self.isData):
-				#GOLDENJSON selection
-				lumi_mask_arr = self.lumi_mask[str(self.year)](events.run, events.luminosityBlock)
-				
-				#Apply lumi mask selection to objects
-				boostedtau = boostedtau[lumi_mask_arr]
-				AK8Jet = AK8Jet[lumi_mask_arr]
-				Jet = Jet[lumi_mask_arr]
-				electron = electron[lumi_mask_arr]
-				muon = muon[lumi_mask_arr]
-				event_level = event_level[lumi_mask_arr]	
+		#	if (self.isData):
+		#		#GOLDENJSON selection
+		#		lumi_mask_arr = self.lumi_mask[str(self.year)](events.run, events.luminosityBlock)
+		#		
+		#		#Apply lumi mask selection to objects
+		#		boostedtau = boostedtau[lumi_mask_arr]
+		#		AK8Jet = AK8Jet[lumi_mask_arr]
+		#		Jet = Jet[lumi_mask_arr]
+		#		electron = electron[lumi_mask_arr]
+		#		muon = muon[lumi_mask_arr]
+		#		event_level = event_level[lumi_mask_arr]	
 			
 			#Fill initial entries in skim and N-1 histograms (Old version raw counts not good for evaulatuing MC)
 			n_Skim = np.size(event_level.nFatJet)
@@ -613,7 +635,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					#	print("Applying Single Muon Trigger (Muon Data)")
 					#	print("Event Count before Trigger+Selections: %d"%ak.num(event_level.HT,axis=0))
 						#HLT Trigger(s)
-						trigger_cond = event_level.Mu_Trigger
+						trigger_cond = np.bitwise_and(event_level.Mu_Trigger,(1 << 21) == (1 << 21))#event_level.Mu_Trigger
 			
 						boostedtau = boostedtau[trigger_cond]
 						AK8Jet = AK8Jet[trigger_cond]
@@ -654,12 +676,13 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					#	print("Applying JetHT Trigger (Data JetHT)")
 					#	print("Event Count before Trigger+Selections: %d"%ak.num(event_level.HT,axis=0))
 						#HLT Trigger(s)
-						boostedtau = boostedtau[event_level.METHTMHT_Trigger]
-						AK8Jet = AK8Jet[event_level.METHTMHT_Trigger]
-						Jet = Jet[event_level.METHTMHT_Trigger]
-						electron = electron[event_level.METHTMHT_Trigger]
-						muon = muon[event_level.METHTMHT_Trigger]
-						event_level = event_level[event_level.METHTMHT_Trigger]
+						HTMETMHT_TriggerCond = np.bitwise_and(event_level.METHTMHT_Trigger,(1 << 39) == (1 << 39))
+						boostedtau = boostedtau[HTMETMHT_TriggerCond]
+						AK8Jet = AK8Jet[HTMETMHT_TriggerCond]
+						Jet = Jet[HTMETMHT_TriggerCond]
+						electron = electron[HTMETMHT_TriggerCond]
+						muon = muon[HTMETMHT_TriggerCond]
+						event_level = event_level[HTMETMHT_TriggerCond]
 
 						#Offline Cuts
 						HT_Cond = event_level.HT > 550
@@ -684,16 +707,18 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					HT_trigger_event_count = 0
 					mu_trigger_event_count = 0
 
-					trigger_cond_mu = event_level.Mu_Trigger
+					#trigger_cond_mu = event_level.Mu_Trigger
+					trigger_cond_mu = np.bitwise_and(event_level.Mu_Trigger,(1 << 21) == (1 << 21)) #This is not being applied correctly
+				#	print(trigger_cond_mu)
 			
 					if (self.Mu_Trigger):
-						boostedtau_mu =  boostedtau[trigger_cond_mu]
-						AK8Jet_mu =  AK8Jet[trigger_cond_mu]
-						Jet_mu =  Jet[trigger_cond_mu]
-						electron_mu =  electron[trigger_cond_mu]
-						muon_mu =  muon[trigger_cond_mu]
+						boostedtau_mu = boostedtau[trigger_cond_mu]
+						AK8Jet_mu = AK8Jet[trigger_cond_mu]
+						Jet_mu = Jet[trigger_cond_mu]
+						electron_mu = electron[trigger_cond_mu]
+						muon_mu = muon[trigger_cond_mu]
 						GenPart_mu = GenPart[trigger_cond_mu]
-						event_level_mu =  event_level[trigger_cond_mu]
+						event_level_mu = event_level[trigger_cond_mu]
 
 						#Muon Trigger offline selection
 						nMuon_Cond = ak.any(muon_mu.nMu > 0, axis = 1) 
@@ -727,9 +752,9 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 
 					#Fail Single Muon trigger and pass Jet HT Trigger
 					if (self.Mu_Trigger):
-						HT_TriggerCond = np.bitwise_not(event_level.Mu_Trigger) & (event_level.METHTMHT_Trigger)
+						HT_TriggerCond = np.bitwise_not(np.bitwise_and(event_level.Mu_Trigger,(1 << 21) == (1 << 21))) & (np.bitwise_and(event_level.METHTMHT_Trigger,(1 << 39) == (1 << 39)))
 					else:
-						HT_TriggerCond = event_level.METHTMHT_Trigger
+						HT_TriggerCond = np.bitwise_and(event_level.METHTMHT_Trigger,(1 << 39) == (1 << 39))
 
 					if (self.HT_Trigger):
 						boostedtau_HT = boostedtau[HT_TriggerCond]
@@ -851,32 +876,32 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			#Cut Selections
 			#############
 			#Noise Filters 
-			Flag_Array = ["Flag_goodVertices", "Flag_globalSuperTightHalo2016Filter", "Flag_HBHENoiseFilter", "Flag_HBHENoiseIsoFilter", "Flag_EcalDeadCellTriggerPrimitiveFilter", "Flag_BadPFMuonFilter", "Flag_BadPFMuonDzFilter", "Flag_hfNoisyHitsFilter", "Flag_eeBadScFilter", "Flag_ecalBadCalibFilter"]
-			flag_cond = event_level[Flag_Array[0]] #Initialize the condition as the first flag since logical and it with itself will act like an identiy operator
-			
-			for flag in Flag_Array:
-				flag_cond = flag_cond & event_level[flag]
-			
-			boostedtau = boostedtau[flag_cond]
-			AK8Jet = AK8Jet[flag_cond]
-			Jet = Jet[flag_cond]
-			electron = electron[flag_cond]
-			muon = muon[flag_cond]
-			event_level = event_level[flag_cond]	
+		#	Flag_Array = ["Flag_goodVertices", "Flag_globalSuperTightHalo2016Filter", "Flag_HBHENoiseFilter", "Flag_HBHENoiseIsoFilter", "Flag_EcalDeadCellTriggerPrimitiveFilter", "Flag_BadPFMuonFilter", "Flag_BadPFMuonDzFilter", "Flag_hfNoisyHitsFilter", "Flag_eeBadScFilter", "Flag_ecalBadCalibFilter"]
+		#	flag_cond = event_level[Flag_Array[0]] #Initialize the condition as the first flag since logical and it with itself will act like an identiy operator
+		#	
+		#	for flag in Flag_Array:
+		#		flag_cond = flag_cond & event_level[flag]
+		#	
+		#	boostedtau = boostedtau[flag_cond]
+		#	AK8Jet = AK8Jet[flag_cond]
+		#	Jet = Jet[flag_cond]
+		#	electron = electron[flag_cond]
+		#	muon = muon[flag_cond]
+		#	event_level = event_level[flag_cond]	
 
-			#PV selections
-			ndof_cond = event_level.PV_ndof > 4
-			PVz_cond = np.abs(event_level.PV_z) < 24
-			PVr_cond = np.sqrt(event_level.PV_x**2 + event_level.PV_y**2) < 2
-			#PV_Cond = np.bitwise_and(ndof_cond,np.bitwise_and(PVz_cond,PVr_cond))
-			PV_Cond = ndof_cond & PVz_cond & PVr_cond
-			
-			boostedtau = boostedtau[PV_Cond]
-			AK8Jet = AK8Jet[PV_Cond]
-			Jet = Jet[PV_Cond]
-			electron = electron[PV_Cond]
-			muon = muon[PV_Cond]
-			event_level = event_level[PV_Cond]	
+		#	#PV selections
+		#	ndof_cond = event_level.PV_ndof > 4
+		#	PVz_cond = np.abs(event_level.PV_z) < 24
+		#	PVr_cond = np.sqrt(event_level.PV_x**2 + event_level.PV_y**2) < 2
+		#	#PV_Cond = np.bitwise_and(ndof_cond,np.bitwise_and(PVz_cond,PVr_cond))
+		#	PV_Cond = ndof_cond & PVz_cond & PVr_cond
+		#	
+		#	boostedtau = boostedtau[PV_Cond]
+		#	AK8Jet = AK8Jet[PV_Cond]
+		#	Jet = Jet[PV_Cond]
+		#	electron = electron[PV_Cond]
+		#	muon = muon[PV_Cond]
+		#	event_level = event_level[PV_Cond]	
 
 			n_PreTrigger = n_Skim #Set number of events left before trigger seleciton to PV selection	
 			
@@ -892,12 +917,9 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				pT_Cond = boostedtau.pt > 30
 				eta_Cond = np.abs(boostedtau.eta) < 2.3
 				decayMode_Cond = boostedtau.decay >= 0.5
-				#DBT_Iso_Cond = boostedtau.DBT >= 0.95 #0.85
-				DBT_Iso_Cond = boostedtau.DBT >= self.tauWP #0.85
-				#MVA_Iso_Cond = boostedtau.MVA >= 0.0
+				DBT_Iso_Cond = boostedtau.MVA >= 0.0 #0.85
 				
-				#boostedtau_selec_cond = pT_Cond & eta_Cond & decayMode_Cond & DBT_Iso_Cond
-				boostedtau_selec_cond = pT_Cond & eta_Cond & decayMode_Cond & MVA_Iso_Cond
+				boostedtau_selec_cond = pT_Cond & eta_Cond & decayMode_Cond & DBT_Iso_Cond
 				boostedtau = boostedtau[boostedtau_selec_cond] #Apply selections to all individual taus
 			
 				#Require events have at least 1 boosted tau
@@ -1132,7 +1154,8 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				def Z_Mult_Function(lepton,lep_flavor): 
 					#Make Good muon selection
 					if (lep_flavor == "mu"):
-						id_cond = muon.IDSelec 
+						#id_cond = muon.IDSelec 
+						id_cond = np.bitwise_and(muon.IDSelec,2) != 0 
 						d0_cond = np.abs(lepton.D0) < 0.045
 						dz_cond = np.abs(lepton.Dz) < 0.2
 						good_lepton_cond = id_cond & d0_cond & dz_cond
@@ -1295,63 +1318,29 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						"dphi_rad_MET": radionMET_dPhi,
 						"H1OS": event_level.LeadingPair_Charge,
 						"H2OS": event_level.SubleadingPair_Charge,
-					#	"ZMult": ak.ravel(event_level.ZMult), 
-					#	"numBJet": event_level.nBJets,
-						#"RecoRadion_Mass": FourTau_Mass_Arr,
-						#"LeadingTau_pT": boostedtau[:,0].pt,
-						#"weight": event_level.event_weight*CrossSec_Weight,
+						"ZMult": ak.ravel(event_level.ZMult), 
+						"numBJet": event_level.nBJets,
+						"RecoRadion_Mass": FourTau_Mass_Arr,
+						"LeadingTau_pT": boostedtau[:,0].pt,
+						"weight": event_level.event_weight*CrossSec_Weight,
 					}
 				)
 				#Save parquet files
 				#file_path = "root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/"
-				#file_path = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/" + str(self.year) + "/"
-				#file_path = "root://cmsxrootd.hep.wisc.edu//" + file_path[6:]
+			#	file_path = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/" + str(self.year) + "/"
+			#	file_path = "root://cmsxrootd.hep.wisc.edu//" + file_path[6:]
 				#file_path = f'/nfs_scratch/twnelson/Parquet_Files/{self.year}/'
 				#file_path = '/nfs_scratch/twnelson/Parquet_Files/2018/'
 				file_path = ""
 				#file_path = "~/Analysis/BoostedTau/ControlPlots/BoostedHiggs4TauAnalysis/ControlPlots/Processors/"
-				print("==================Metadata Crap==================")
-				print(events.metadata['fileuuid'])
-				print(events.metadata['entrystart'])
-				print(events.metadata['entrystop'])
+			#	print("==================Metadata Crap==================")
+			#	print(events.metadata['fileuuid'])
+			#	print(events.metadata['entrystart'])
+			#	print(events.metadata['entrystop'])
 
-				file_name = dataset + "_" + events.metadata['fileuuid'] + "_BoostedTau.parquet"
-				#if ():
-				ak.to_parquet(var_nn,file_path + file_name)
-
-			#	if not(self.isData):
-			#		print("Not Data")
-			#		print(dataset)
-			#		file_name = dataset + "_BoostedTau.parquet"
-			#		if (dataset != "Signal"):
-			#			file_name = dataset + ".parquet"
-			#			if (os.path.isfile(file_path + file_name)): #Append to the parquet file
-			#				print("Appending file")
-			#				file_data = ak.from_parquet(file_path + file_name)
-			#				var_nn = ak.concatenate([file_data,var_nn])
-			#				ak.to_parquet(var_nn,file_path + file_name)
-			#			else: #Create the parquet file
-			#				print("Creating file")
-			#				if (ak.num(FourTau_Mass_Arr,axis=0) > 0):
-			#					#print(file_name)
-			#					#print(var_nn)
-			#					#temp_data_frame = ak.to_pandas(var_nn)
-			#					#temp_data_frame.to_parquet(file_path + file_name)
-			#					ak.to_parquet(var_nn,file_path + file_name)
-			#	else:
-			#		print("Is Data")
-			#		file_name = dataset + "_BoostedTau.parquet"
-			#		if (os.path.isfile(file_path + file_name)): #Append to the parquet file
-			#			print("Appending file")
-			#			file_data = ak.from_parquet(file_path + file_name)
-			#			var_nn = ak.concatenate([file_data,var_nn])
-			#			ak.to_parquet(var_nn,file_path + file_name)
-			#		else: #Create the parquet file
-			#			print("Creating file")
-			#			if (ak.num(FourTau_Mass_Arr,axis=0) > 0):
-			#				#temp_data_frame = ak.to_pandas(var_nn)
-			#				#temp_data_frame.to_parquet(file_path + file_name)
-			#				ak.to_parquet(var_nn,file_path + file_name)
+			#	file_name = dataset + "_" + events.metadata['fileuuid'] + "_BoostedTau.parquet"
+			#	#if ():
+			#	ak.to_parquet(var_nn,file_path + file_name)
 
 			
 			#############

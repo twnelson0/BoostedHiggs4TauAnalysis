@@ -226,7 +226,7 @@ def plot_input_features(X, y, idx_label, xlabel):
     #plt.hist(decisions[0],bins=bin_edges,density=True,histtype='stepfilled',color='blue',label='Background- ZZ4l + ZZ2l2q',alpha=0.5)
     #plt.hist(decisions[0],bins=bin_edges,density=True,histtype='stepfilled',color='blue',label='Background- ZZ4l',alpha=0.5)
     #plt.hist(decisions[1],bins=bin_edges,density=True,histtype='stepfilled',color='orange',label='Signal-GluGluToRadionToHHTo4T_M-2000',alpha=0.5)
-    plt.hist(decisions[0],bins=bin_edges,density=True,histtype='stepfilled',color='blue',label='Background- ZZ4l',alpha=0.5)
+    plt.hist(decisions[0],bins=bin_edges,density=True,histtype='stepfilled',color='blue',label=r'Background- $t\bar{t}$',alpha=0.5)
     plt.hist(decisions[1],bins=bin_edges,density=True,histtype='stepfilled',color='red',label='Signal-GluGluToRadionToHHTo4T_M-2000',alpha=0.5)
     #plt.hist(decisions[2],bins=bin_edges,density=True,histtype='stepfilled',color='mediumpurple',label='ttcc',alpha=0.5)
     #plt.hist(decisions[3],bins=bin_edges,density=True,histtype='stepfilled',color='cadetblue',label='ttlf',alpha=0.5)

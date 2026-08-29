@@ -57,7 +57,7 @@ def move_X509():
 
 if __name__ == "__main__":
 	#Condor related stuff
-	run_on_condor = True
+	run_on_condor = True 
 	os.environ["CONDOR_CONFIG"] = "/etc/condor/condor_config"
 	
 	if (run_on_condor):
@@ -83,7 +83,6 @@ if __name__ == "__main__":
 					"when_to_transfer_ouput": "ON_EXIT_OR_EVICT",
 					"transfer_executable": "false",
 					"Requirements": "HasSingularityJobStart",
-                    #"Requirements": "HAS_CMS_HDFS",
 					"container_image": "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/coffeateam/coffea-dask-almalinux9:2026.4.0-py3.12",
 					"InitialDir": f'/scratch/{os.environ["USER"]}',
 					'transfer_input_files': f'{os.environ["PWD"]}, {_x509_path}',
@@ -216,7 +215,7 @@ if __name__ == "__main__":
 	QCD_HT1500To2000 = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT1500to2000_23April26_0539_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	QCD_HT2000ToInf = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT2000toInf_23April26_0541_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	#Signal_HH_2TeV = glob.glob("/hdfs/store/user/twnelson/HH4Tau_EtAl/Full_Production_CMSSW_13_0_13_Feb_25/2018/MC/XHH4Tau_X2TeV/*.root")
-	Signal_HH_2TeV = glob.glob(Skimmed_4tau_loc_MC + "2TeVSignal_05August26_1636_skim_NewSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	Signal_HH_2TeV = glob.glob(Skimmed_4tau_loc_MC + "2TeVSignal_4Tau_18August26_1525_skim_NewSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
 
 	#Arrays of Signal
 	#Signal_Base = "/hdfs/store/user/abdollah/RadionHH4tau_UL_Nov2025/"
@@ -438,15 +437,22 @@ if __name__ == "__main__":
 	file_dict_signal_only = {
 		"Signal_2TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_2TeV]
 	}
+
+	file_dict_prob = {
+			#"ZZTo2Nu2Q": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/MC/ZZTo2Nu2Q_04March26_0510_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_63.root"],
+			"DYJetsToLL_M-50_HT-70to100": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/MC/DYJetsToLL_M-50_HT-70to100_12December25_1556_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_174.root"]
+	}
 	
 	#Set file dictionary and list of backgrounds prior to running processor
 	#file_dict = file_dict_data_test
-	#file_dict = file_dict_full
+	file_dict = file_dict_full
+	#file_dict = file_dict_prob
+	
 	#file_dict = file_dict_signal_only
 	#file_dict = file_dict_data_only
 	#file_dict = file_dict_MC_only
 	#file_dict = file_dict_test
-	file_dict = file_dict_data_mc_mix
+	#file_dict = file_dict_data_mc_mix
 	#file_dict = file_dict_ZZ4L_Only
 	#file_dict = file_dict_Test_Reweighting
 
@@ -460,15 +466,17 @@ if __name__ == "__main__":
 #		numEvents_Dict = json.load(json_file)
 	
 	trigger_bit_dict = {0:"NoTrigger",1:"SingleMuonTrigger",2:"HTMETMHTTrigger",3:"BothTriggers"}
+    WP_Array = np.linspace(start=0.85,stop=0.95,num=11) 
+	trigger_bit = 3
 
-	
 	for n_taus in range(4,5):
-		for trigger_bit in range(3,4):
+		#for trigger_bit in range(3,4):
+        for wp in WP_Array:
 			print("About to run processor")
 			start_time = time.time()
 			if (run_on_condor):
 				print(f"https://cms02.hep.wisc.edu:8009/user/{os.environ['USER']}/{cluster.dashboard_link}")
-			fourtau_out = runner(file_dict, treename="Events", processor_instance=AnalysisProcessor.Analysis4TauProcessor(sumWEvents_Dict = sumWEvents_Dict, nBoostedTaus = n_taus, Trigger_Code = trigger_bit)) #Modified for NanoAOD (changd treename)
+			fourtau_out = runner(file_dict, treename="Events", processor_instance=AnalysisProcessor.Analysis4TauProcessor(sumWEvents_Dict = sumWEvents_Dict, nBoostedTaus = n_taus, Trigger_Code = trigger_bit, Tau_WP = wp)) #Modified for NanoAOD (changd treename)
 			end_time = time.time()
 			time_running = end_time-start_time
 			print("It takes about %.1f s to run the coffea processor with %d boosted tau selections"%(time_running,n_taus))
@@ -476,14 +484,9 @@ if __name__ == "__main__":
 			#Save coffea file
 			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_VlooseWP_NoISO.coffea")
 			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_tightWP_p95_SignalNoSkim_FixedSignalWeight.coffea")
-			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_tightWP_p95_Signal_" + trigger_bit_dict[trigger_bit]	+ "_Ver3.coffea")
-			outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_tightWP_p95_Signal_" + trigger_bit_dict[trigger_bit]	+ "_OfflineTest.coffea")
+			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_tightWP_p95_Signal_" + trigger_bit_dict[trigger_bit]	+ "_Test.coffea")
+            outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_WP_p" + str(wp)[2:] + "_Signal_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
+			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_MVASelec_Signal_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
 			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"DummyTest_" + trigger_bit_dict[trigger_bit]	+ ".coffea")
-			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_VlooseWP_MCOnly.coffea")
-			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_VlooseWP_Test.coffea")
-			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_SubVVlooseWP_Test.coffea")
-			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_Test.coffea")
-			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_FullSetTest.coffea")
-			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_oopsBrokenProcessor.coffea")
 			util.save(fourtau_out, outfile)
 			print(f"Saved output to {outfile}")	

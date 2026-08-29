@@ -8,8 +8,9 @@ __pycache__/
 Venv/
 .evn/
 .local/share/jupyter/kernels/python3
-ControlPlots/PlottingEnv
-ControlPlots/ParquetTestEnv
+ControlPlots/PlottingEnv/
+ControlPlots/ParquetTestEnv/
+NN_Dir/NN_Env
 
 #Output files (Generally ignore these files)
 *.csv
@@ -22,8 +23,8 @@ ControlPlots/ParquetTestEnv
 !ZorW_NLO_corrections.root
 !pileup_*.root
 !PileupHistogram-goldenJSON-13tev*.root
-!ControlPlots/Corrections/muonefficiencies/muonefficiencies/Run2/UL/2018/2018_highPt/*.json
-!ControlPlots/Corrections/jsonpog-integration/POG/LUM/*/*
+#!ControlPlots/Corrections/muonefficiencies/muonefficiencies/Run2/UL/2018/2018_highPt/*.json
+#!ControlPlots/Corrections/jsonpog-integration/POG/LUM/*/*
 
 
 #Note files that do not not need to be saved/ported to git
