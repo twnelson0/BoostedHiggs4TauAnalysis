@@ -110,48 +110,37 @@ if __name__ == "__main__":
 
 	#Produce csv table
 	if (cutflow_csv_bool):
-		table_keys = ["Sample","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]
+		table_keys = ["Particle","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]
 		table_array = []
-	#	var_dict = {
-	#			"SkimOnly": "n_Skim" ,"Trigger" : "n_Trigger", "LeadingBoostedTau": "n_LeadBoostedTau","SubleadingBoostedTau": "n_SubLeadBoostedTau",
-	#			"3rdLeadingBoostedTau": "n_3rdLeadBoostedTau","4thLeadingBoostedTau": "n_4thLeadBoostedTau","VisMassSelec": "n_VisMass","Higgs_dR" : "n_Higgs_dR"
-	#		}
 		var_dict = {
-				"SkimOnly": "w_Skim" ,"Trigger" : "w_Trigger", "LeadingBoostedTau": "w_LeadBoostedTau","SubleadingBoostedTau": "w_SubLeadBoostedTau",
-				"3rdLeadingBoostedTau": "w_3rdLeadBoostedTau","4thLeadingBoostedTau": "w_4thLeadBoostedTau","VisMassSelec": "w_VisMass","Higgs_dR" : "w_Higgs_dR"
+				"SkimOnly": "n__Skim" ,"Trigger" : "n__Trigger", "LeadingBoostedTau": "n__LeadBoostedTau","SubleadingBoostedTau": "n__SubLeadBoostedTau",
+				"3rdLeadingBoostedTau": "n__3rdLeadBoostedTau","4thLeadingBoostedTau": "n__4thLeadBoostedTau","VisMassSelec": "n__VisMass","Higgs_dR" : "n__DeltaR"
 			}
-		#table_dict["Sample"] = ["Muon Data Set","HT Data Set", "Both Sets of Data"]
-		samples = ["TTToSemiLeptonic","TTTo2L2Nu","TTToHadronic","DYJetsToLL_M-4to50_HT-70to100","DYJetsToLL_M-4to50_HT-100to200","DYJetsToLL_M-4to50_HT-200to400",
-				"DYJetsToLL_M-4to50_HT-400to600","DYJetsToLL_M-4to50_HT-600toInf","DYJetsToLL_M-50_HT-70to100","DYJetsToLL_M-50_HT-100to200","DYJetsToLL_M-50_HT-200to400",
-				"DYJetsToLL_M-50_HT-400to600","DYJetsToLL_M-50_HT-600to800","DYJetsToLL_M-50_HT-800to1200","DYJetsToLL_M-50_HT-1200to2500","DYJetsToLL_M-50_HT-2500toInf",
-				"ZZ4l","WZ2l2q","WZ1l1nu2q","ZZ2l2q", "WZ1l3nu", "VV2l2nu", "WWTo1L1Nu2Q", "WWTo4Q", "ZZTo4Q", "ZZTo2L2Nu", "ZZTo2Nu2Q","Tbar-tchan","T-tchan","Tbar-tW","T-tW",
-				"ST_s-channel_4f_leptonDecays", "ST_s-channel_4f_hadronicDecays","WJetsToLNu_HT-70To100","WJetsToLNu_HT-100To200","WJetsToLNu_HT-200To400","WJetsToLNu_HT-400To600",
-				"WJetsToLNu_HT-600To800","WJetsToLNu_HT-800To1200","WJetsToLNu_HT-1200To2500","WJetsToLNu_HT-2500ToInf","Signal_2TeV","Data_Mu","Data_HT"]
 
 		samples = ["ZZ4l", "Signal_2TeV"]
-       
-		with open("../numEvents_JSON.json") as json_file:
-			pre_skim_dict = json.load(json_file)
-		#pre_skim_dict = json.loads("../numEvents_JSON.json")
-		#print(pre_skim_dict)
+		gen_particle = ["Tau","Electron","Muon"]
+		gen_part_dict = {"Tau": "GenTau","Electron": "GenEle","Muon": "GenMu"}
+	   
 		
 		for sample in samples:
-			table_dict = dict.fromkeys(["Sample","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"])
-			table_dict["Sample"] = sample
-			#print(pre_skim_dict[sample])
-			all_labels = list(var_dict.keys())
-			#all_labels.append("PreSkim") 
-			for key in all_labels:
-			#	if (key == "PreSkim" and sample == "Signal_2TeV"):
-			#		table_dict[key] = pre_skim_dict[sample]
-				#else:
-				table_dict[key] = coffea_input[sample][var_dict[key]]
-			table_array.append(table_dict)
+			table_array = []
+			for part in gen_particle:
+				table_dict = dict.fromkeys(["Particle","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"])
+				table_dict["Particle"] = part 
+				#print(pre_skim_dict[sample])
+				all_labels = list(var_dict.keys())
+				#all_labels.append("PreSkim") 
+				for key in all_labels:
+					#Set up output variable name
+					split_indx = var_dict[key].find("__")
+					var_name = var_dict[key][:split_indx + 1] + gen_part_dict[part] + var_dict[key][split_indx+1:]
+					table_dict[key] = coffea_input[sample][var_name]
+				table_array.append(table_dict)
 
-		with open(Output_File + ".csv", "w", newline="") as f:
-			w = csv.DictWriter(f,table_keys)
-			w.writeheader()
-			w.writerows(table_array)
+			with open(Output_File + "_" + sample + ".csv", "w", newline="") as f:
+				w = csv.DictWriter(f,table_keys)
+				w.writeheader()
+				w.writerows(table_array)
 
 
 

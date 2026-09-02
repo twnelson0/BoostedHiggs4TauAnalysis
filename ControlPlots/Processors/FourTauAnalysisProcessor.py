@@ -1,36 +1,36 @@
 try:
-    import awkward as ak
-    import uproot
-    import hist
-    from hist import intervals
-    import matplotlib.pyplot as plt
-    import numpy as np
-    from coffea import processor, nanoevents
-    from coffea.nanoevents import NanoEventsFactory, NanoAODSchema, BaseSchema
-    from coffea.nanoevents.methods import candidate, vector
-    from coffea import util
-    from coffea.lumi_tools import LumiMask
-    from math import pi
-    import numba 
-    import pandas as pd
-    from matplotlib.backends.backend_pdf import PdfPages
-    import vector
-    import os
-    import time
-    import datetime
-    from distributed import Client
-    from dask_jobqueue import HTCondorCluster
-    import csv
-    import glob
-    import json
-    from enum import Enum
-    from Corrections import kFactor as kFactor
-    #from Corrections import PU_Reweighting as PU_Reweight
-    from Corrections.corrections import *
-    from Corrections.muons import *
-    from Data.data_paths import GOLDEN_JSON
+	import awkward as ak
+	import uproot
+	import hist
+	from hist import intervals
+	import matplotlib.pyplot as plt
+	import numpy as np
+	from coffea import processor, nanoevents
+	from coffea.nanoevents import NanoEventsFactory, NanoAODSchema, BaseSchema
+	from coffea.nanoevents.methods import candidate, vector
+	from coffea import util
+	from coffea.lumi_tools import LumiMask
+	from math import pi
+	import numba 
+	import pandas as pd
+	from matplotlib.backends.backend_pdf import PdfPages
+	import vector
+	import os
+	import time
+	import datetime
+	from distributed import Client
+	from dask_jobqueue import HTCondorCluster
+	import csv
+	import glob
+	import json
+	from enum import Enum
+	from Corrections import kFactor as kFactor
+	#from Corrections import PU_Reweighting as PU_Reweight
+	from Corrections.corrections import *
+	from Corrections.muons import *
+	from Data.data_paths import GOLDEN_JSON
 except Exception as err:
-    raise ValueError("Import problem! {err}")
+	raise ValueError("Import problem! {err}")
 
 
 #import warnings
@@ -87,10 +87,10 @@ xSection_Dictionary = {"Signal": 0.000001, #Chosen to make plots readable
 Lumi_2018 = 59830
 
 def weight_calc(sample,numEvents=1):
-    if ("Signal" in sample):
-        return Lumi_2018*xSection_Dictionary["Signal"]/numEvents
-    else:
-	    return Lumi_2018*xSection_Dictionary[sample]/numEvents
+	if ("Signal" in sample):
+		return Lumi_2018*xSection_Dictionary["Signal"]/numEvents
+	else:
+		return Lumi_2018*xSection_Dictionary[sample]/numEvents
 
 #Era Enumeration
 class RunEra_Enum(Enum):
@@ -126,7 +126,7 @@ def METPhi_Corrections(uncorrMET_pt, uncorrMET_phi, run_num, isData, nPV, year=2
 	runera = -1
 
 	#Correct nPV (if nPV >= 100 nPV = 100 done in array friendly manner)
-    #nPV = np.floor((nPV % 100)/nPV)*nPV + np.floor(1/np.pow(2,np.floor(nPV % 100)/nPV))*100
+	#nPV = np.floor((nPV % 100)/nPV)*nPV + np.floor(1/np.pow(2,np.floor(nPV % 100)/nPV))*100
 	nPV = ak.where(nPV > 100, ak.ones_like(nPV)*100, nPV)
 
 	#Set run era
@@ -171,7 +171,7 @@ def METPhi_Corrections(uncorrMET_pt, uncorrMET_phi, run_num, isData, nPV, year=2
 	CorrectedPhi = vec_PhiCorrections(CorrectedMET_x,CorrectedMET_y)
 
 	MET_Phi_Corr["MET_pt_corr"] = CorrectedMET
-	MET_Phi_Corr["MET_phi_corr"] = 	CorrectedPhi
+	MET_Phi_Corr["MET_phi_corr"] =	CorrectedPhi
 
 	return MET_Phi_Corr
 
@@ -222,13 +222,14 @@ def four_mass(part_arr): #Four Particle mass assuming each event has 4 particles
 		(part_arr[0].Pz + part_arr[1].Pz + part_arr[2].Pz + part_arr[3].Pz)**2)
 
 class Analysis4TauProcessor(processor.ProcessorABC):
-	def __init__(self, sumWEvents_Dict, nBoostedTaus = 0, Trigger_Code = 3, Tau_WP = 0.95, year = "2018"): #Additional arguements can be added later
+	def __init__(self, sumWEvents_Dict, nBoostedTaus = 0, Trigger_Code = 3, Tau_WP = 0.95, year = "2018", use_DBT = True): #Additional arguements can be added later
 		#Initial variables
 		self.isData = False #Default assumption is MC
 		self.nBoostedTau_Selec = nBoostedTaus #Number of tau selections
 		self.sumWEvents_Dict = sumWEvents_Dict
 		self.year = int(year)
 		self.tauWP = Tau_WP
+		self.useDBT = use_DBT
 
 		#Work out Triggering logic
 		self.Mu_Trigger = False
@@ -487,7 +488,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			else:
 				h_CutFlow = hist.Hist.new.StrCategory(["SkimOnly","LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]).Double()
 			
-			#Obtain the cross section scale factor	
+			#Obtain the cross section lumi scale factor	
 			if (self.isData):
 				CrossSec_Weight = 1 
 			elif "Signal" in dataset:
@@ -589,10 +590,14 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				Jet = Jet[lumi_mask_arr]
 				electron = electron[lumi_mask_arr]
 				muon = muon[lumi_mask_arr]
-				event_level = event_level[lumi_mask_arr]	
+				event_level = event_level[lumi_mask_arr]
 			
 			#Fill initial entries in skim and N-1 histograms (Old version raw counts not good for evaulatuing MC)
 			n_Skim = np.size(event_level.nFatJet)
+			#Count Gen leptons (set to nonsence number so if you see this output than you know something went wrong)
+			n_tau_Skim = -999 
+			n_electron_Skim = -999
+			n_muon_Skim = -999 
 			if (self.isData):
 				w_Skim = n_Skim
 			else:
@@ -600,6 +605,10 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					w_Skim = n_Skim
 				else:
 					w_Skim = ak.sum(event_level.event_weight*CrossSec_Weight)
+				#Count Gen leptons
+				n_tau_Skim = ak.sum(ak.num(GenPart[abs(GenPart.id) == 15].id,axis=1))
+				n_electron_Skim = ak.sum(ak.num(GenPart[abs(GenPart.id) == 11].id,axis=1))
+				n_muon_Skim = ak.sum(ak.num(GenPart[abs(GenPart.id) == 13].id,axis=1))
 			h_CutFlow.fill("SkimOnly",weight=n_Skim)
 			#h_NMinus1.fill("SkimOnly",weight=0)
 			
@@ -608,19 +617,18 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			#############
 			n_Trigger = 0
 			if (self.ApplyTrigger):
-				if (self.isData):
+				if (self.isData): #Data Trigger Logic
+					#Muon Data
 					if ("Data_Mu" == dataset and self.Mu_Trigger):
-					#	print("Applying Single Muon Trigger (Muon Data)")
-					#	print("Event Count before Trigger+Selections: %d"%ak.num(event_level.HT,axis=0))
 						#HLT Trigger(s)
-						trigger_cond = event_level.Mu_Trigger
+						mu_trigger_cond = event_level.Mu_Trigger
 			
-						boostedtau = boostedtau[trigger_cond]
-						AK8Jet = AK8Jet[trigger_cond]
-						Jet = Jet[trigger_cond]
-						electron = electron[trigger_cond]
-						muon = muon[trigger_cond]
-						event_level = event_level[trigger_cond]
+						boostedtau = boostedtau[mu_trigger_cond]
+						AK8Jet = AK8Jet[mu_trigger_cond]
+						Jet = Jet[mu_trigger_cond]
+						electron = electron[mu_trigger_cond]
+						muon = muon[mu_trigger_cond]
+						event_level = event_level[mu_trigger_cond]
 
 						#Muon Trigger offline selection
 						nMuon_Cond = ak.any(muon.nMu > 0, axis = 1) 
@@ -645,21 +653,19 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						electron = electron[mu_selec_cond]
 						muon = muon[mu_selec_cond]
 						event_level = event_level[mu_selec_cond]	
-						
-					#	print("Single Muon Trigger and Selections Applied To Dataset %s"%dataset)
-					#	print("Event Count after Trigger+Selections: %d"%ak.num(event_level.HT,axis=0))
 
 					#JetHT Data
 					if ("Data_HT" == dataset and self.HT_Trigger):
 					#	print("Applying JetHT Trigger (Data JetHT)")
 					#	print("Event Count before Trigger+Selections: %d"%ak.num(event_level.HT,axis=0))
 						#HLT Trigger(s)
-						boostedtau = boostedtau[event_level.METHTMHT_Trigger]
-						AK8Jet = AK8Jet[event_level.METHTMHT_Trigger]
-						Jet = Jet[event_level.METHTMHT_Trigger]
-						electron = electron[event_level.METHTMHT_Trigger]
-						muon = muon[event_level.METHTMHT_Trigger]
-						event_level = event_level[event_level.METHTMHT_Trigger]
+						trigger_cond_METHTMHT = event_level.METHTMHT_Trigger
+						boostedtau = boostedtau[trigger_cond_HETHTMHT]
+						AK8Jet = AK8Jet[trigger_cond_HETHTMHT]
+						Jet = Jet[trigger_cond_HETHTMHT]
+						electron = electron[trigger_cond_HETHTMHT]
+						muon = muon[trigger_cond_HETHTMHT]
+						event_level = event_level[trigger_cond_HETHTMHT]
 
 						#Offline Cuts
 						HT_Cond = event_level.HT > 550
@@ -673,10 +679,8 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						electron = electron[HTMETMHT_Selec]
 						muon = muon[HTMETMHT_Selec]
 						event_level = event_level[HTMETMHT_Selec]
-						
-					#	print("JetHT Trigger and Selections Applied To Dataset %s"%dataset)
-					#	print("Event Count after Trigger+Selections: %d"%ak.num(event_level.HT,axis=0))
-				else: #Apply Triggers to MC
+				
+				else: #Triger MC logic
 					#HLT Trigger(s)
 					print("About to Apply both sets of triggers to MC")
 					print("Event Count before Trigger+Selections: %d"%ak.num(event_level.HT,axis=0))
@@ -825,6 +829,10 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 
 				#Fill post trigger entries in skim and N-1 histograms
 				n_Trigger = np.size(event_level.nFatJet)
+				#Count Gen leptons (set to nonsence number so if you see this output than you know something went wrong)
+				n_tau_Trigger = -999 
+				n_electron_Trigger = -999
+				n_muon_Trigger = -999 
 				if (self.isData):
 					w_Trigger = n_Trigger
 				else:
@@ -832,6 +840,10 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						w_Trigger = n_Trigger
 					else:
 						w_Trigger = ak.sum(event_level.event_weight*CrossSec_Weight)
+					#Count Gen leptons
+					n_tau_Trigger = ak.sum(ak.num(GenPart[abs(GenPart.id) == 15].id,axis=1))
+					n_electron_Trigger = ak.sum(ak.num(GenPart[abs(GenPart.id) == 11].id,axis=1))
+					n_muon_Trigger = ak.sum(ak.num(GenPart[abs(GenPart.id) == 13].id,axis=1))
 				h_CutFlow.fill("Trigger",weight=n_Trigger)
 
 			#Force muon selection to check if that is the cause of the imbalance
@@ -863,6 +875,8 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			electron = electron[flag_cond]
 			muon = muon[flag_cond]
 			event_level = event_level[flag_cond]	
+			if (not(self.isData)):
+				GenPart = GenPart[flag_cond]	
 
 			#PV selections
 			ndof_cond = event_level.PV_ndof > 4
@@ -877,10 +891,12 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			electron = electron[PV_Cond]
 			muon = muon[PV_Cond]
 			event_level = event_level[PV_Cond]	
+			if (not(self.isData)):
+				GenPart = GenPart[PV_Cond]
 
 			n_PreTrigger = n_Skim #Set number of events left before trigger seleciton to PV selection	
 			
-            #Temp values of the Tau selections
+			#Temp values of the Tau selections
 			n_LeadBoostedTau = -1
 			n_SubLeadBoostedTau = -1
 			n_3rdLeadBoostedTau = -1
@@ -894,10 +910,12 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				decayMode_Cond = boostedtau.decay >= 0.5
 				#DBT_Iso_Cond = boostedtau.DBT >= 0.95 #0.85
 				DBT_Iso_Cond = boostedtau.DBT >= self.tauWP #0.85
-				#MVA_Iso_Cond = boostedtau.MVA >= 0.0
+				MVA_Iso_Cond = boostedtau.MVA >= 0.0
 				
-				#boostedtau_selec_cond = pT_Cond & eta_Cond & decayMode_Cond & DBT_Iso_Cond
-				boostedtau_selec_cond = pT_Cond & eta_Cond & decayMode_Cond & MVA_Iso_Cond
+				if (self.useDBT):
+					boostedtau_selec_cond = pT_Cond & eta_Cond & decayMode_Cond & DBT_Iso_Cond
+				else:
+					boostedtau_selec_cond = pT_Cond & eta_Cond & decayMode_Cond & MVA_Iso_Cond
 				boostedtau = boostedtau[boostedtau_selec_cond] #Apply selections to all individual taus
 			
 				#Require events have at least 1 boosted tau
@@ -909,9 +927,15 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				electron = electron[lead_boostedtau_cond]
 				muon = muon[lead_boostedtau_cond]
 				event_level = event_level[lead_boostedtau_cond]
+				if (not(self.isData)):
+					GenPart = GenPart[lead_boostedtau_cond]
 
 				#Fill post leading tau selection entries in skim and N-1 histograms
 				n_LeadBoostedTau = np.size(event_level.nFatJet)
+				#Count Gen leptons (set to nonsence number so if you see this output than you know something went wrong)
+				n_tau_LeadBoostedTau = -999 
+				n_electron_LeadBoostedTau = -999
+				n_muon_LeadBoostedTau = -999 
 				if (self.isData):
 					w_LeadBoostedTau = n_LeadBoostedTau 
 				else:
@@ -919,6 +943,10 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						w_LeadBoostedTau = n_LeadBoostedTau
 					else:
 						w_LeadBoostedTau = ak.sum(event_level.event_weight*CrossSec_Weight)
+					#Count Gen leptons
+					n_tau_LeadBoostedTau = ak.sum(ak.num(GenPart[abs(GenPart.id) == 15].id,axis=1))
+					n_electron_LeadBoostedTau = ak.sum(ak.num(GenPart[abs(GenPart.id) == 11].id,axis=1))
+					n_muon_LeadBoostedTau = ak.sum(ak.num(GenPart[abs(GenPart.id) == 13].id,axis=1))
 				h_CutFlow.fill("LeadingBoostedTau",weight=n_LeadBoostedTau)
 				
 				#Impose selections on Subleading boosted tau
@@ -932,9 +960,15 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					electron = electron[sublead_boostedtau_cond]
 					muon = muon[sublead_boostedtau_cond]
 					event_level = event_level[sublead_boostedtau_cond]
+					if (not(self.isData)):
+						GenPart = GenPart[sublead_boostedtau_cond]
 
 					#Fill post subl-leading tau selection entries in skim and N-1 histograms
 					n_SubLeadBoostedTau = np.size(event_level.nFatJet)
+					#Count Gen leptons (set to nonsence number so if you see this output than you know something went wrong)
+					n_tau_SubLeadBoostedTau = -999 
+					n_electron_SubLeadBoostedTau = -999
+					n_muon_SubLeadBoostedTau = -999 
 					if (self.isData):
 						w_SubLeadBoostedTau = n_SubLeadBoostedTau 
 					else:
@@ -942,6 +976,10 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 							w_SubLeadBoostedTau = n_SubLeadBoostedTau
 						else:
 							w_SubLeadBoostedTau = ak.sum(event_level.event_weight*CrossSec_Weight)
+						#Count Gen leptons
+						n_tau_SubLeadBoostedTau = ak.sum(ak.num(GenPart[abs(GenPart.id) == 15].id,axis=1))
+						n_electron_SubLeadBoostedTau = ak.sum(ak.num(GenPart[abs(GenPart.id) == 11].id,axis=1))
+						n_muon_SubLeadBoostedTau = ak.sum(ak.num(GenPart[abs(GenPart.id) == 13].id,axis=1))
 					h_CutFlow.fill("SubleadingBoostedTau",weight=n_SubLeadBoostedTau)
 				
 				#Impose selections on third-leading boosted tau
@@ -955,9 +993,15 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					electron = electron[thirdlead_boostedtau_cond]
 					muon = muon[thirdlead_boostedtau_cond]
 					event_level = event_level[thirdlead_boostedtau_cond]
+					if (not(self.isData)):
+						GenPart = GenPart[thirdlead_boostedtau_cond]
 
 					#Fill post 3rd leading tau selection entries in skim and N-1 histograms
 					n_3rdLeadBoostedTau = np.size(event_level.nFatJet)
+					#Count Gen leptons (set to nonsence number so if you see this output than you know something went wrong)
+					n_tau_3rdLeadBoostedTau = -999 
+					n_electron_3rdLeadBoostedTau = -999
+					n_muon_3rdLeadBoostedTau = -999 
 					if (self.isData):
 						w_3rdLeadBoostedTau = n_3rdLeadBoostedTau 
 					else:
@@ -965,6 +1009,10 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 							w_3rdLeadBoostedTau = n_3rdLeadBoostedTau
 						else:
 							w_3rdLeadBoostedTau = ak.sum(event_level.event_weight*CrossSec_Weight)
+						#Count Gen leptons
+						n_tau_3rdLeadBoostedTau = ak.sum(ak.num(GenPart[abs(GenPart.id) == 15].id,axis=1))
+						n_electron_3rdLeadBoostedTau = ak.sum(ak.num(GenPart[abs(GenPart.id) == 11].id,axis=1))
+						n_muon_3rdLeadBoostedTau = ak.sum(ak.num(GenPart[abs(GenPart.id) == 13].id,axis=1))
 					h_CutFlow.fill("3rdLeadingBoostedTau",weight=n_3rdLeadBoostedTau)
 				
 				#Impose selections on fourth-leading boosted tau
@@ -978,9 +1026,15 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					electron = electron[fourthlead_boostedtau_cond]
 					muon = muon[fourthlead_boostedtau_cond]
 					event_level = event_level[fourthlead_boostedtau_cond]
+					if (not(self.isData)):
+						GenPart = GenPart[fourthlead_boostedtau_cond]
 
 					#Fill post 4th leading tau selection entries in skim and N-1 histograms
 					n_4thLeadBoostedTau = np.size(event_level.nFatJet)
+					#Count Gen leptons (set to nonsence number so if you see this output than you know something went wrong)
+					n_tau_4thLeadBoostedTau = -999 
+					n_electron_4thLeadBoostedTau = -999
+					n_muon_4thLeadBoostedTau = -999 
 					if (self.isData):
 						w_4thLeadBoostedTau = n_4thLeadBoostedTau 
 					else:
@@ -988,6 +1042,10 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 							w_4thLeadBoostedTau = n_4thLeadBoostedTau
 						else:
 							w_4thLeadBoostedTau = ak.sum(event_level.event_weight*CrossSec_Weight)
+						#Count Gen leptons
+						n_tau_4thLeadBoostedTau = ak.sum(ak.num(GenPart[abs(GenPart.id) == 15].id,axis=1))
+						n_electron_4thLeadBoostedTau = ak.sum(ak.num(GenPart[abs(GenPart.id) == 11].id,axis=1))
+						n_muon_4thLeadBoostedTau = ak.sum(ak.num(GenPart[abs(GenPart.id) == 13].id,axis=1))
 					h_CutFlow.fill("4thLeadingBoostedTau",weight=n_4thLeadBoostedTau)
 			
 			#############
@@ -1006,7 +1064,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				#Select tau that minimizes delta R	
 				lead_pair_btau = lead_pair_btau[deltaR_Arr == ak.min(deltaR_Arr,axis=1)] 
 
-				#Remove any events with no paired taus (NOT Convinced you need this!!)
+				#Remove any events with no paired taus 
 				boostedtau = boostedtau[ak.num(lead_pair_btau) > 0]
 				btau_4vec = btau_4vec[ak.num(lead_pair_btau) > 0]
 				Jet = Jet[ak.num(lead_pair_btau) > 0]
@@ -1014,6 +1072,8 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				muon = muon[ak.num(lead_pair_btau) > 0]
 				electron = electron[ak.num(lead_pair_btau) > 0]
 				event_level = event_level[ak.num(lead_pair_btau) > 0]
+				if (not(self.isData)):
+					GenPart = GenPart[ak.num(lead_pair_btau) > 0]
 				lead_pair_btau = lead_pair_btau[ak.num(lead_pair_btau) > 0]
 
 				#Store leading boosted tau and paired boosted tau
@@ -1051,6 +1111,22 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			n_DeltaR = 0
 			w_VisMass = 0
 			w_DeltaR = 0
+			
+			#Count Gen leptons (set to nonsence number so if you see this output than you know something went wrong)
+			n_tau_VisMass = -999 
+			n_electron_VisMass = -999
+			n_muon_VisMass = -999 
+			n_tau_DeltaR = -999 
+			n_electron_DeltaR = -999
+			n_muon_DeltaR = -999 
+			
+			if (not(self.isData)):
+				n_tau_VisMass = 0 
+				n_electron_VisMass = 0
+				n_muon_VisMass = 0 
+				n_tau_DeltaR = 0 
+				n_electron_DeltaR = 0
+				n_muon_DeltaR = 0 
 			if (ak.num(event_level.MET_pt,axis=0) > 0): #Only do this if there are any events left
 				#Leading and next leading pair 4-vectors
 				leading_higgs = ak.zip({
@@ -1080,6 +1156,8 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				electron = electron[vis_mass_cond]
 				muon = muon[vis_mass_cond]
 				event_level = event_level[vis_mass_cond]
+				if (not(self.isData)):
+					GenPart = GenPart[vis_mass_cond]
 
 				#Apply selections ot higgs objects
 				leading_higgs = leading_higgs[vis_mass_cond]
@@ -1094,8 +1172,13 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						w_VisMass = n_VisMass
 					else:
 						w_VisMass = ak.sum(event_level.event_weight*CrossSec_Weight)
+					#Count Gen leptons
+					n_tau_VisMass = ak.sum(ak.num(GenPart[abs(GenPart.id) == 15].id,axis=1))
+					n_electron_VisMass = ak.sum(ak.num(GenPart[abs(GenPart.id) == 11].id,axis=1))
+					n_muon_VisMass = ak.sum(ak.num(GenPart[abs(GenPart.id) == 13].id,axis=1))
 				h_CutFlow.fill("VisMassSelec",weight=n_VisMass)
 		   
+
 
 			if (ak.num(event_level.MET_pt,axis=0) > 0): #Only do this if there are any events left
 				#Topology selection
@@ -1107,6 +1190,8 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				electron = electron[topo_cond]
 				muon = muon[topo_cond]
 				event_level = event_level[topo_cond]
+				if (not(self.isData)):
+					GenPart = GenPart[topo_cond]
 				
 				#Apply selections to higgs objects
 				leading_higgs = leading_higgs[topo_cond]
@@ -1114,6 +1199,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 
 				#Fill post visable mass entries in skim and N-1 histograms
 				n_DeltaR = np.size(event_level.nFatJet)
+
 				if (self.isData):
 					w_DeltaR = n_DeltaR 
 				else:
@@ -1121,6 +1207,10 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						w_DeltaR = n_DeltaR
 					else:
 						w_DeltaR = ak.sum(event_level.event_weight*CrossSec_Weight)
+					#Count Gen leptons
+					n_tau_DeltaR = ak.sum(ak.num(GenPart[abs(GenPart.id) == 15].id,axis=1))
+					n_electron_DeltaR = ak.sum(ak.num(GenPart[abs(GenPart.id) == 11].id,axis=1))
+					n_muon_DeltaR = ak.sum(ak.num(GenPart[abs(GenPart.id) == 13].id,axis=1))
 				h_CutFlow.fill("Higgs_dR",weight=n_DeltaR)
 
 
@@ -1511,7 +1601,40 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					#Pair Delta Rs
 					"LeadingPair_dR": h_leading_boostedtau_deltaR,
 					"NextLeadingPair_dR": h_nextleading_boostedtau_deltaR,
-					"FourTauMass": h_FourTau_Mass
+					"FourTauMass": h_FourTau_Mass,
+
+					#Gen Level information
+					"n_GenTau_Skim": n_tau_Skim,
+					"n_GenEle_Skim": n_electron_Skim,
+					"n_GenMu_Skim": n_muon_Skim,
+					
+					"n_GenTau_Trigger": n_tau_Trigger,
+					"n_GenEle_Trigger": n_electron_Trigger,
+					"n_GenMu_Trigger": n_muon_Trigger,
+					
+					"n_GenTau_LeadBoostedTau": n_tau_LeadBoostedTau,
+					"n_GenEle_LeadBoostedTau": n_electron_LeadBoostedTau,
+					"n_GenMu_LeadBoostedTau": n_muon_LeadBoostedTau,
+					
+					"n_GenTau_SubLeadBoostedTau": n_tau_SubLeadBoostedTau,
+					"n_GenEle_SubLeadBoostedTau": n_electron_SubLeadBoostedTau,
+					"n_GenMu_SubLeadBoostedTau": n_muon_SubLeadBoostedTau,
+					
+					"n_GenTau_3rdLeadBoostedTau": n_tau_3rdLeadBoostedTau,
+					"n_GenEle_3rdLeadBoostedTau": n_electron_3rdLeadBoostedTau,
+					"n_GenMu_3rdLeadBoostedTau": n_muon_3rdLeadBoostedTau,
+					
+					"n_GenTau_4thLeadBoostedTau": n_tau_4thLeadBoostedTau,
+					"n_GenEle_4thLeadBoostedTau": n_electron_4thLeadBoostedTau,
+					"n_GenMu_4thLeadBoostedTau": n_muon_4thLeadBoostedTau,
+					
+					"n_GenTau_VisMass": n_tau_VisMass,
+					"n_GenEle_VisMass": n_electron_VisMass,
+					"n_GenMu_VisMass": n_muon_VisMass,
+					
+					"n_GenTau_DeltaR": n_tau_DeltaR,
+					"n_GenEle_DeltaR": n_electron_DeltaR,
+					"n_GenMu_DeltaR": n_muon_DeltaR,
 				}
 			}
 		except Exception as err:

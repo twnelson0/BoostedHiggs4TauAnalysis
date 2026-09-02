@@ -127,11 +127,9 @@ if __name__ == "__main__":
 				"ZZ4l","WZ2l2q","WZ1l1nu2q","ZZ2l2q", "WZ1l3nu", "VV2l2nu", "WWTo1L1Nu2Q", "WWTo4Q", "ZZTo4Q", "ZZTo2L2Nu", "ZZTo2Nu2Q","Tbar-tchan","T-tchan","Tbar-tW","T-tW",
 				"ST_s-channel_4f_leptonDecays", "ST_s-channel_4f_hadronicDecays","WJetsToLNu_HT-70To100","WJetsToLNu_HT-100To200","WJetsToLNu_HT-200To400","WJetsToLNu_HT-400To600",
 				"WJetsToLNu_HT-600To800","WJetsToLNu_HT-800To1200","WJetsToLNu_HT-1200To2500","WJetsToLNu_HT-2500ToInf","Signal_2TeV","Data_Mu","Data_HT"]
-
-		samples = ["ZZ4l", "Signal_2TeV"]
        
-		with open("../numEvents_JSON.json") as json_file:
-			pre_skim_dict = json.load(json_file)
+	#	with open("../numEvents_JSON.json") as json_file:
+	#		pre_skim_dict = json.load(json_file)
 		#pre_skim_dict = json.loads("../numEvents_JSON.json")
 		#print(pre_skim_dict)
 		
