@@ -57,7 +57,9 @@ def prepare_data():
     # Get data from root files
     #samples = ['output_ZZ', 'out_2000']  ## eventually change this to 'output_ZZ_even', 'out_2000_even' 
     #samples = ['output_ZZ_odd', 'out_2000_odd']
-    samples = ["ZZ4l","Signal"]
+    #samples = ["ZZ4l","Signal"]
+    samples = ["Signal_2TeV","TTTo2L2Nu","TTToSemiLeptonic"]
+    #samples = ["Signal_2TeV","TTTo2L2Nu"]
     DataFrames = {} # define empty dictionary to hold dataframes
     Selection = {}    
 
@@ -72,7 +74,7 @@ def prepare_data():
     #Read training data from parquet files
     for s in samples:
         #file = pd.read_parquet(s + ".paquet",engine="pyarrow")
-        DataFrames[s] = pd.read_parquet(s + ".parquet",engine="pyarrow")
+        DataFrames[s] = pd.read_parquet("/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/New_Dir/" + s + ".parquet",engine="pyarrow")
         #DataFrames[s] = pd.Series({var : DataFrames[s][var].to_numpy() for var in ML_inputs}) #Store everything as a pandas series (using a series may be causing problems)
         #DataFrames[s] = pd.DataFrame({var: DataFrames[s][var].to_list for var in ML_inputs})
         DataFrames[s] = DataFrames[s].iloc[0:8500]
@@ -119,17 +121,22 @@ def prepare_data():
     print(X_train)
 
     scaler = StandardScaler() # initialise StandardScaler
+    print("About to run scaler")
     scaler.fit(X_train) # Fit only to the training data (This line is causing problems not sure why though)
+    print("Ran scaler")
     X_train_scaled = scaler.transform(X_train)
     X_test_scaled = scaler.transform(X_test)
     X_scaled = scaler.transform(X)
-
+	
+    print("Plotting ML inputs")
     for x,var in enumerate(ML_inputs):
+        print(var)
         plot_input_features(X, y, x,var)
 
     # Save .csv with normalizations
     mean = scaler.mean_
     std  = scaler.scale_
+    print("Saving input features")
     with open('variable_norm.csv', mode='w') as norm_file:
         headerList = ['', 'mu', 'std']
         norm_writer = csv.DictWriter(norm_file,delimiter=',',fieldnames=headerList) 
@@ -142,9 +149,12 @@ def prepare_data():
     y_valid, y_train_nn = y_train[:1000], y_train[1000:] # first 1000 events for validation
 
     print('Input feature correlation')
-    print(DataFrames['Signal'].corr()) #Pearson
+    print(DataFrames['Signal_2TeV'].corr()) #Pearson
+    print("INput featuers data set printed")
     fig = pyplot.figure(figsize=(20, 16))
-    corrMatrix = DataFrames['Signal'].corr()
+    print("Obtaingin Correlation Matrix")
+    corrMatrix = DataFrames['Signal_2TeV'].corr()
+    print("Correlation matrix obtained")
     ax = pyplot.gca()    
     pyplot.text(0.5, 1.05, "CMS Simulation (Work In Progress)      (13 TeV)", fontweight="bold", horizontalalignment='center',verticalalignment='center', transform=ax.transAxes, fontsize=28)   
     sns.heatmap(corrMatrix, annot=True, cmap=pyplot.cm.Blues)

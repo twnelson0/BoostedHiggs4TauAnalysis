@@ -26,11 +26,11 @@ class CountingProcessor(processor.ProcessorABC):
 		pass
 	def process(self,events):
 		dataset = events.metadata['dataset']
-		event_count = ak.num(events.boostedTau_pt,axis=0)
+		event_count = ak.num(events.run,axis=0)
 
 		return {dataset: {"n_events": event_count}}
 
 	def postprocess(self, accumulator):
-		pass
+		return accumulator
 
 
