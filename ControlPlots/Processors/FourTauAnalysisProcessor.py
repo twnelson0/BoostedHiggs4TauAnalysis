@@ -222,7 +222,7 @@ def four_mass(part_arr): #Four Particle mass assuming each event has 4 particles
 		(part_arr[0].Pz + part_arr[1].Pz + part_arr[2].Pz + part_arr[3].Pz)**2)
 
 class Analysis4TauProcessor(processor.ProcessorABC):
-	def __init__(self, sumWEvents_Dict, nBoostedTaus = 0, Trigger_Code = 3, Tau_WP = 0.95, year = "2018", use_DBT = True): #Additional arguements can be added later
+	def __init__(self, sumWEvents_Dict, nBoostedTaus = 4, Trigger_Code = 3, Tau_WP = 0.95, year = "2018", use_DBT = True): #Additional arguements can be added later
 		#Initial variables
 		self.isData = False #Default assumption is MC
 		self.nBoostedTau_Selec = nBoostedTaus #Number of tau selections
@@ -1121,7 +1121,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			w_VisMass = 0
 			w_DeltaR = 0
 			
-			#Count Gen leptons (set to nonsence number so if you see this output than you know something went wrong)
+			#Count Gen leptons (default to nonsence number so if you see this output than you know something went wrong)
 			n_tau_VisMass = -999 
 			n_electron_VisMass = -999
 			n_muon_VisMass = -999 

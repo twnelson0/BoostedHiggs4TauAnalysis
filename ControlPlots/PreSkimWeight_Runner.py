@@ -281,15 +281,18 @@ if __name__ == "__main__":
 	#	sumWEvents_Dict[key] = fourtau_out[key]["genWeightSum"]
 		numEvents_Dict[key] = int(fourtau_out[key]["n_events"])
 
+	count_json_name = "numEvents_UnSkimmedTest.json"
+	genWeight_json_name = "genWeightSum_2018_QCDOnly_JSON.json"
+	
 	#Save the sumW and counts as JSON files
 	#with open("genWeightSum_2018_WithQCD_WithData_JSON.json", "w") as fp:
 #	with open("genWeightSum_2018_SlightlyLargerTest_JSON.json", "w") as fp:
-#	#with open("genWeightSum_2018_QCDOnly_JSON.json", "w") as fp:
+#	#with open(count_json_name, "w") as fp:
 #		json.dump(sumWEvents_Dict, fp)
 	
 	#with open("numEvents_2018_WithQCD_WithData_JSON.json", "w") as fp:
 	#with open("numEvents_2016APV_ZZ4lUnSkimmed_JSON.json", "w") as fp:
 	#with open("numEvents_2018_With2TeVSignal_JSON.json", "w") as fp:
-	with open("numEvents_UnSkimmedTest.json", "w") as fp:
+	with open(count_json_name, "w") as fp:
 		json.dump(numEvents_Dict, fp)
 
