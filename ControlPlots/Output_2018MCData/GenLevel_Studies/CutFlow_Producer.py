@@ -4,7 +4,6 @@ from coffea import processor, nanoevents
 from coffea import util
 from math import pi
 import pandas as pd
-import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 #import vector
 import os
@@ -42,6 +41,18 @@ if __name__ == "__main__":
 	coffea_file = args.File
 	Output_File = args.OutputFile
 
+	#Dictionaries and arrays with information on plot constrution, naming and samples
+	four_tau_hist_list = [
+			"boostedtau_pt_Trigg","boostedtau_eta_Trigg","boostedtau_phi_Trigg",
+			"electron_pt_Trigg","electron_eta_Trigg","electron_phi_Trigg",
+			"muon_pt_Trigg","muon_eta_Trigg","muon_phi_Trigg", #"Leadingmuon_pt_Trigg",#"Leadingmuon_eta_Trigg",
+			"Jet_pt_Trigg","Jet_eta_Trigg","Jet_phi_Trigg",
+			"AK8Jet_pt_Trigg","AK8Jet_eta_Trigg","AK8Jet_phi_Trigg","nAK8Jet_Trigg",
+			"MET","HT","MHT", #, "Mini_Cutflow", "Mini_NMinus1"
+			"ZMult", "bJetMult",
+			"LeadingPair_dR", "NextLeadingPair_dR", "FourTauMass"
+			]
+
 	#Additional boosted tau distributions to pull based on boosted tau requirements
 	add_var = []
 	n_tau = int(args.NumberTau)
@@ -57,6 +68,8 @@ if __name__ == "__main__":
 	if (n_tau == 4):
 		print("Four Boosted taus required")
 		add_var = ["Leadingboostedtau_pt_Trigg", "Subleadingboostedtau_pt_Trigg","Thirdleadingboostedtau_pt_Trigg","Fourthleadingboostedtau_pt_Trigg"]
+
+	four_tau_hist_list = add_var + four_tau_hist_list
 	
 	background_list_full = [r"$t\bar{t}$", r"Drell-Yan+Jets", "Di-Bosons", "Single Top", "W+Jets", r"$ZZ \rightarrow 4l$","Signal"]
 	background_list_fullQCD = [r"$t\bar{t}$", r"Drell-Yan+Jets", "Di-Bosons", "Single Top", "W+Jets", r"$ZZ \rightarrow 4l$","QCD"]
@@ -97,17 +110,16 @@ if __name__ == "__main__":
 
 	#Produce csv table
 	if (cutflow_csv_bool):
-		#table_keys = ["Sample","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]
-		table_keys = ["Sample","PreSkim","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]
+		table_keys = ["Sample","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]
 		table_array = []
-		var_dict = {
-				"SkimOnly": "n_Skim" ,"Trigger" : "n_Trigger", "LeadingBoostedTau": "n_LeadBoostedTau","SubleadingBoostedTau": "n_SubLeadBoostedTau",
-				"3rdLeadingBoostedTau": "n_3rdLeadBoostedTau","4thLeadingBoostedTau": "n_4thLeadBoostedTau","VisMassSelec": "n_VisMass","Higgs_dR" : "n_Higgs_dR"
-			}
 	#	var_dict = {
-	#			"SkimOnly": "w_Skim" ,"Trigger" : "w_Trigger", "LeadingBoostedTau": "w_LeadBoostedTau","SubleadingBoostedTau": "w_SubLeadBoostedTau",
-	#			"3rdLeadingBoostedTau": "w_3rdLeadBoostedTau","4thLeadingBoostedTau": "w_4thLeadBoostedTau","VisMassSelec": "w_VisMass","Higgs_dR" : "w_Higgs_dR"
+	#			"SkimOnly": "n_Skim" ,"Trigger" : "n_Trigger", "LeadingBoostedTau": "n_LeadBoostedTau","SubleadingBoostedTau": "n_SubLeadBoostedTau",
+	#			"3rdLeadingBoostedTau": "n_3rdLeadBoostedTau","4thLeadingBoostedTau": "n_4thLeadBoostedTau","VisMassSelec": "n_VisMass","Higgs_dR" : "n_Higgs_dR"
 	#		}
+		var_dict = {
+				"SkimOnly": "w_Skim" ,"Trigger" : "w_Trigger", "LeadingBoostedTau": "w_LeadBoostedTau","SubleadingBoostedTau": "w_SubLeadBoostedTau",
+				"3rdLeadingBoostedTau": "w_3rdLeadBoostedTau","4thLeadingBoostedTau": "w_4thLeadBoostedTau","VisMassSelec": "w_VisMass","Higgs_dR" : "w_Higgs_dR"
+			}
 		#table_dict["Sample"] = ["Muon Data Set","HT Data Set", "Both Sets of Data"]
 		samples = ["TTToSemiLeptonic","TTTo2L2Nu","TTToHadronic","DYJetsToLL_M-4to50_HT-70to100","DYJetsToLL_M-4to50_HT-100to200","DYJetsToLL_M-4to50_HT-200to400",
 				"DYJetsToLL_M-4to50_HT-400to600","DYJetsToLL_M-4to50_HT-600toInf","DYJetsToLL_M-50_HT-70to100","DYJetsToLL_M-50_HT-100to200","DYJetsToLL_M-50_HT-200to400",
@@ -118,31 +130,22 @@ if __name__ == "__main__":
 
 		samples = ["ZZ4l", "Signal_2TeV"]
        
-		with open("../numEvents_2018_With2TeVSignal_JSON.json") as json_file:
-			pre_skim_dict = json.load(json_file)
+		#with open("../numEvents_JSON.json") as json_file:
+		#	pre_skim_dict = json.load(json_file)
 		#pre_skim_dict = json.loads("../numEvents_JSON.json")
 		#print(pre_skim_dict)
 		
 		for sample in samples:
-			#table_dict = dict.fromkeys(["Sample","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"])
-			table_dict = dict.fromkeys(["Sample","PreSkim","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"])
+			table_dict = dict.fromkeys(["Sample","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"])
 			table_dict["Sample"] = sample
 			#print(pre_skim_dict[sample])
-			#all_labels = list(var_dict.keys())
-			all_labels = list(table_dict.keys())
+			all_labels = list(var_dict.keys())
 			#all_labels.append("PreSkim") 
-			for key in all_labels[1:]:
-				if (key == "PreSkim"):
-					table_dict[key] = pre_skim_dict[sample]
-					#Produce Skimming Samples
-					fig,ax = plt.subplots()
-					ax.set_title(sample)
-					#coffea_input[sample]["MVA_Skim"][0::4j].plot1d(ax=ax)
-					#plt.savefig("UL_MVA_" + sample + "_Distribution.png")
-					coffea_input[sample]["DBT_Skim"][0::4j].plot1d(ax=ax)
-					plt.savefig("UL_DBT_" + sample + "_Distribution.png")
-				else:
-					table_dict[key] = coffea_input[sample][var_dict[key]]
+			for key in all_labels:
+			#	if (key == "PreSkim" and sample == "Signal_2TeV"):
+			#		table_dict[key] = pre_skim_dict[sample]
+				#else:
+				table_dict[key] = coffea_input[sample][var_dict[key]]
 			table_array.append(table_dict)
 
 		with open(Output_File + ".csv", "w", newline="") as f:

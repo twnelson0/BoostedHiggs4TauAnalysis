@@ -203,6 +203,29 @@ if __name__ == "__main__":
 		temp_file = uproot.open(file_dict[process][0])
 		N_PreSkim_Dict[process] = temp_file['hcount'].member('fEntries')/2
 
+	#Save the number of events prior to skimming used
+	file_name = "Prelegacy_PreSkim_Counts"
+	table_array = []
+	table_keys = ["Sample","PreSkim"]
+	for sample in list(N_PreSkim_Dict.keys()):
+		table_dict = dict.fromkeys(["Sample","PreSkim"])
+		for key in table_dict:
+			if (key == "Sample"):
+				print(sample)
+				table_dict[key] = sample 
+			if (key == "PreSkim"): 
+				table_dict[key] = N_PreSkim_Dict[sample]
+		table_array.append(table_dict)
+		#print(table_array)
+	
+	print(table_array)	
+	
+	if not(os.path.isfile(file_name + ".csv")):
+		with open(file_name + ".csv", "w", newline = "") as f:
+			w = csv.DictWriter(f,table_keys)
+			w.writeheader()
+			w.writerows(table_array)
+
 	
 	for n_taus in range(4,5):
 		for trigger_bit in range(3,4):
@@ -219,7 +242,7 @@ if __name__ == "__main__":
 			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_VlooseWP_NoISO.coffea")
 			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_tightWP_p95_SignalNoSkim_FixedSignalWeight.coffea")
 			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_tightWP_p95_Signal_" + trigger_bit_dict[trigger_bit]	+ "_Test.coffea")
-			outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_PreLegacy_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
+			outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_PreLegacy_All_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
 			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"DummyTest_" + trigger_bit_dict[trigger_bit]	+ ".coffea")
 			util.save(fourtau_out, outfile)
 			print(f"Saved output to {outfile}")	

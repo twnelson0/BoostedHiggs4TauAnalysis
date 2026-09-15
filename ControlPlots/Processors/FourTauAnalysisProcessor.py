@@ -474,6 +474,10 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			h_ZMult = hist.Hist.new.Regular(6,0,6, label=r"Z Boson Multiplicity",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
 			h_bJetMult = hist.Hist.new.Regular(6,0,6, label = r"b-Jet Multiplicity",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
 
+			#Add MVA and DBT histograms
+			h_DBTVar = hist.Hist.new.Regular(100,0,1, label=r"boostedTau_rawDeepTau2018v2p7VSjet", overflow = False).Double()
+			h_MVAVar = hist.Hist.new.Regular(100,-1,1, label=r"boostedTau_rawMVAoldDM2017v2", overflow = False).Double()
+
 
 			#di-boosted tau delta Rs
 			h_leading_boostedtau_deltaR = hist.Hist.new.Regular(10,0,5, label = r"Leading boosted $\tau$ pair $\Delta$R",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
@@ -610,6 +614,11 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				n_electron_Skim = ak.sum(ak.num(GenPart[abs(GenPart.id) == 11].id,axis=1))
 				n_muon_Skim = ak.sum(ak.num(GenPart[abs(GenPart.id) == 13].id,axis=1))
 			h_CutFlow.fill("SkimOnly",weight=n_Skim)
+
+			#Fill the MVA and the DBT histograms
+			h_DBTVar.fill(ak.ravel(boostedtau.DBT))
+			h_MVAVar.fill(ak.ravel(boostedtau.MVA))
+
 			#h_NMinus1.fill("SkimOnly",weight=0)
 			
 			#############
@@ -1550,6 +1559,10 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					"w_Trigger": w_Trigger,
 					"w_VisMass": w_VisMass,
 					"w_Higgs_dR": w_DeltaR,
+
+					#MVA and DBT Histograms
+					"DBT_Skim": h_DBTVar,
+					"MVA_Skim": h_MVAVar,
 					
 					#Boosted Tau kineamtic distirubtions
 					"boostedtau_pt_Trigg": h_boostedtau_pT_Trigger,

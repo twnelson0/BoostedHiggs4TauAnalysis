@@ -4,7 +4,6 @@ from coffea import processor, nanoevents
 from coffea import util
 from math import pi
 import pandas as pd
-import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 #import vector
 import os
@@ -73,18 +72,16 @@ if __name__ == "__main__":
 	#Background names to samples dictionary
 	background_dict = {r"$t\bar{t}$" : ["TTToSemiLeptonic","TTTo2L2Nu","TTToHadronic"], 
 			r"$t\bar{t}$ Hadronic" : ["TTToHadronic"], r"$t\bar{t}$ Semileptonic" : ["TTToSemiLeptonic"], r"$t\bar{t}$ 2L2Nu" : ["TTTo2L2Nu"],
-			r"Drell-Yan+Jets": ["DYJetsToLL_M-4to50_HT-70to100","DYJetsToLL_M-4to50_HT-100to200","DYJetsToLL_M-4to50_HT-200to400","DYJetsToLL_M-4to50_HT-400to600",
-			"DYJetsToLL_M-4to50_HT-600toInf","DYJetsToLL_M-50_HT-70to100","DYJetsToLL_M-50_HT-100to200","DYJetsToLL_M-50_HT-200to400",
-			"DYJetsToLL_M-50_HT-400to600","DYJetsToLL_M-50_HT-600to800","DYJetsToLL_M-50_HT-800to1200","DYJetsToLL_M-50_HT-1200to2500","DYJetsToLL_M-50_HT-2500toInf"], 
-			"Di-Bosons": ["WZ2l2q","WZ1l1nu2q","ZZ2l2q", "WZ1l3nu", "VV2l2nu", "WWTo1L1Nu2Q", "WWTo4Q", "ZZTo4Q", "ZZTo2L2Nu", "ZZTo2Nu2Q"], 
-			"Single Top": ["Tbar-tchan","T-tchan","Tbar-tW","T-tW","ST_s-channel_4f_leptonDecays", "ST_s-channel_4f_hadronicDecays"], 
-			"W+Jets": ["WJetsToLNu_HT-70To100","WJetsToLNu_HT-100To200","WJetsToLNu_HT-200To400","WJetsToLNu_HT-400To600","WJetsToLNu_HT-600To800","WJetsToLNu_HT-800To1200","WJetsToLNu_HT-1200To2500","WJetsToLNu_HT-2500ToInf"],
+			r"Drell-Yan+Jets": ["DYJetsToLL_Pt-50To100", "DYJetsToLL_Pt-100To250", "DYJetsToLL_Pt-400To650", "DYJetsToLL_Pt-650ToInf"], 
+			"Di-Bosons": ["WZ2l2q","WZ1l1nu2q","ZZ2l2q", "WZ1l3nu", "WZ3l1nu", "VV2l2nu"], 
+			"Single Top": ["Tbar-tchan","T-tchan","Tbar-tW","T-tW"], 
+			"W+Jets": ["WJetsToLNu_HT-100To200","WJetsToLNu_HT-200To400","WJetsToLNu_HT-400To600","WJetsToLNu_HT-600To800","WJetsToLNu_HT-800To1200","WJetsToLNu_HT-1200To2500","WJetsToLNu_HT-2500ToInf"],
 			"W+Jets HT 100-200 GeV": ["WJetsToLNu_HT-100To200"],"W+Jets HT 200-400 GeV": ["WJetsToLNu_HT-200To400"],"W+Jets HT 400-600 GeV": ["WJetsToLNu_HT-400To600"],
 			"W+Jets HT 600-800 GeV": ["WJetsToLNu_HT-600To800"],"W+Jets HT 800-1200 GeV": ["WJetsToLNu_HT-800To1200"],
 			"W+Jets HT 1200-2500 GeV": ["WJetsToLNu_HT-1200To2500"], "W+Jets HT 2500-Inf GeV": ["WJetsToLNu_HT-2500ToInf"],
 			r"$ZZ \rightarrow 4l$" : ["ZZ4l"],
 			"QCD": ["QCD_HT50to100","QCD_HT100to200","QCD_HT200to300","QCD_HT300to500","QCD_HT500to700","QCD_HT700to1000","QCD_HT1000to1500","QCD_HT1500to2000","QCD_HT2000toInf"],
-			"Signal": ["Signal_2TeV"],
+			"Signal": ["Signal"],
 	}
 
 	all_sample_array = []
@@ -97,8 +94,8 @@ if __name__ == "__main__":
 
 	#Produce csv table
 	if (cutflow_csv_bool):
-		#table_keys = ["Sample","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]
-		table_keys = ["Sample","PreSkim","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]
+		table_keys = ["Sample","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]
+		#table_keys = ["Sample","PreSkim","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"]
 		table_array = []
 		var_dict = {
 				"SkimOnly": "n_Skim" ,"Trigger" : "n_Trigger", "LeadingBoostedTau": "n_LeadBoostedTau","SubleadingBoostedTau": "n_SubLeadBoostedTau",
@@ -109,23 +106,23 @@ if __name__ == "__main__":
 	#			"3rdLeadingBoostedTau": "w_3rdLeadBoostedTau","4thLeadingBoostedTau": "w_4thLeadBoostedTau","VisMassSelec": "w_VisMass","Higgs_dR" : "w_Higgs_dR"
 	#		}
 		#table_dict["Sample"] = ["Muon Data Set","HT Data Set", "Both Sets of Data"]
-		samples = ["TTToSemiLeptonic","TTTo2L2Nu","TTToHadronic","DYJetsToLL_M-4to50_HT-70to100","DYJetsToLL_M-4to50_HT-100to200","DYJetsToLL_M-4to50_HT-200to400",
+		samples_full = ["TTToSemiLeptonic","TTTo2L2Nu","TTToHadronic","DYJetsToLL_M-4to50_HT-70to100","DYJetsToLL_M-4to50_HT-100to200","DYJetsToLL_M-4to50_HT-200to400",
 				"DYJetsToLL_M-4to50_HT-400to600","DYJetsToLL_M-4to50_HT-600toInf","DYJetsToLL_M-50_HT-70to100","DYJetsToLL_M-50_HT-100to200","DYJetsToLL_M-50_HT-200to400",
 				"DYJetsToLL_M-50_HT-400to600","DYJetsToLL_M-50_HT-600to800","DYJetsToLL_M-50_HT-800to1200","DYJetsToLL_M-50_HT-1200to2500","DYJetsToLL_M-50_HT-2500toInf",
 				"ZZ4l","WZ2l2q","WZ1l1nu2q","ZZ2l2q", "WZ1l3nu", "VV2l2nu", "WWTo1L1Nu2Q", "WWTo4Q", "ZZTo4Q", "ZZTo2L2Nu", "ZZTo2Nu2Q","Tbar-tchan","T-tchan","Tbar-tW","T-tW",
 				"ST_s-channel_4f_leptonDecays", "ST_s-channel_4f_hadronicDecays","WJetsToLNu_HT-70To100","WJetsToLNu_HT-100To200","WJetsToLNu_HT-200To400","WJetsToLNu_HT-400To600",
 				"WJetsToLNu_HT-600To800","WJetsToLNu_HT-800To1200","WJetsToLNu_HT-1200To2500","WJetsToLNu_HT-2500ToInf","Signal_2TeV","Data_Mu","Data_HT"]
 
-		samples = ["ZZ4l", "Signal_2TeV"]
+		samples = ["ZZ4l", "Signal"]
        
-		with open("../numEvents_2018_With2TeVSignal_JSON.json") as json_file:
-			pre_skim_dict = json.load(json_file)
+	#	with open("../numEvents_2018_With2TeVSignal_JSON.json") as json_file:
+	#		pre_skim_dict = json.load(json_file)
 		#pre_skim_dict = json.loads("../numEvents_JSON.json")
 		#print(pre_skim_dict)
 		
 		for sample in samples:
-			#table_dict = dict.fromkeys(["Sample","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"])
-			table_dict = dict.fromkeys(["Sample","PreSkim","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"])
+			table_dict = dict.fromkeys(["Sample","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"])
+			#table_dict = dict.fromkeys(["Sample","PreSkim","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"])
 			table_dict["Sample"] = sample
 			#print(pre_skim_dict[sample])
 			#all_labels = list(var_dict.keys())
@@ -134,13 +131,6 @@ if __name__ == "__main__":
 			for key in all_labels[1:]:
 				if (key == "PreSkim"):
 					table_dict[key] = pre_skim_dict[sample]
-					#Produce Skimming Samples
-					fig,ax = plt.subplots()
-					ax.set_title(sample)
-					#coffea_input[sample]["MVA_Skim"][0::4j].plot1d(ax=ax)
-					#plt.savefig("UL_MVA_" + sample + "_Distribution.png")
-					coffea_input[sample]["DBT_Skim"][0::4j].plot1d(ax=ax)
-					plt.savefig("UL_DBT_" + sample + "_Distribution.png")
 				else:
 					table_dict[key] = coffea_input[sample][var_dict[key]]
 			table_array.append(table_dict)

@@ -240,8 +240,8 @@ if __name__ == "__main__":
 	
     #Arrays of MVA files
 	skimmed_MVA_Loc = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/MC_MVA/"
-	ZZ4l_MVA = glob.glob(skimmed_MVA_Loc + "ZZTo4L_01September26_1737_skim_MVASkimming/singleFileSkimForSubmission-NANO_NANO_*.root")
-	Signal_HH_2TeV_MVA = glob.glob(skimmed_MVA_Loc + "2TeVSignal_4Tau_01September26_1639_skim_MVASkimming/singleFileSkimForSubmission-NANO_NANO_*.root")
+	ZZ4l_MVA = glob.glob(skimmed_MVA_Loc + "ZZTo4L_10September26_1505_skim_MVASkimming_p7_FullyUpdated/singleFileSkimForSubmission-NANO_NANO_*.root")
+	Signal_HH_2TeV_MVA = glob.glob(skimmed_MVA_Loc + "2TeVSignal_4Tau_10September26_1514_skim_MVASkimming_p7_FullyUpdated/singleFileSkimForSubmission-NANO_NANO_*.root")
 
 
 	file_dict_MVA = {
@@ -410,7 +410,7 @@ if __name__ == "__main__":
 			print("About to run processor")
 			start_time = time.time()
 			if (run_on_condor):
-				print(f"https://cms02.hep.wisc.edu:8009/user/{os.environ['USER']}/{cluster.dashboard_link}")
+				print(f"https://cms01.hep.wisc.edu:8009/user/{os.environ['USER']}/{cluster.dashboard_link}")
 			fourtau_out = runner(file_dict, treename="Events", processor_instance=AnalysisProcessor.Analysis4TauProcessor(sumWEvents_Dict = sumWEvents_Dict, nBoostedTaus = n_taus, Trigger_Code = trigger_bit, Tau_WP = wp, use_DBT = True)) #Modified for NanoAOD (changd treename)
 			end_time = time.time()
 			time_running = end_time-start_time
@@ -419,8 +419,8 @@ if __name__ == "__main__":
 			#Save coffea file
 			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_tightWP_p95_Signal_" + trigger_bit_dict[trigger_bit]	+ "_Test.coffea")
 			
-			outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_WP_p" + str(wp)[2:] + "_Signal_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
-			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_FullMVASelec_Signal_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
+			outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_WP_p" + str(wp)[2:] + "_SignalZZ4l_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
+			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_MVA_p7_SignalZZ4l_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
 			
 			util.save(fourtau_out, outfile)
 			print(f"Saved output to {outfile}")	

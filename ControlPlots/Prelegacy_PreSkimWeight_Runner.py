@@ -16,7 +16,6 @@ import glob
 import json
 import argparse
 from Processors import Weight_CoffeaProcessor as PreSkim 
-from Processors import count_processor as EventCount
 import cloudpickle
 
 #X509 function (for HTC)
@@ -257,7 +256,6 @@ if __name__ == "__main__":
 		)
 		#Pass modules to HTC
 		cloudpickle.register_pickle_by_value(PreSkim)
-		cloudpickle.register_pickle_by_value(EventCount)
 
 	else: #Iterative runner
 		runner = processor.Runner(executor = processor.IterativeExecutor(), schema=BaseSchema)
@@ -266,7 +264,6 @@ if __name__ == "__main__":
 
 	start_time = time.time()
 	fourtau_out = runner(file_dict, treename="Runs", processor_instance=PreSkim.CountingProcessor()) 
-	#fourtau_out = runner(file_dict, treename="Events", processor_instance=EventCount.CountingProcessor()) 
 	end_time = time.time()
 	
 	time_running = end_time-start_time

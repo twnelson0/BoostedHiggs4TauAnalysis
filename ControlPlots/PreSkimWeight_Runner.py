@@ -16,7 +16,6 @@ import glob
 import json
 import argparse
 from Processors import Weight_CoffeaProcessor as PreSkim 
-from Processors import count_processor as EventCount
 import cloudpickle
 
 #X509 function (for HTC)
@@ -113,8 +112,10 @@ if __name__ == "__main__":
 	QCD_HT1000To1500 = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT1000to1500_23April26_0536_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	QCD_HT1500To2000 = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT1500to2000_23April26_0539_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	QCD_HT2000ToInf = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT2000toInf_23April26_0541_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	ZZ4l_2018_UnSKimmed = glob.glob(UnSkimmed_MC_Loc_2018 + "ZZTo4L_TuneCP5_13TeV_powheg_pythia8/ZZTo4L_TuneCP5_13TeV_powheg_pythia8/231225_152835/*/*.root")
-	ZZ4l_2016APV_UnSKimmed = glob.glob(UnSkimmed_MC_Loc_2016APV + "ZZTo4L_TuneCP5_13TeV_powheg_pythia8/ZZTo4L_TuneCP5_13TeV_powheg_pythia8/231125_215911/0000/*.root")
+	Signal_HH_2TeV = glob.glob(Skimmed_4tau_loc_MC + "2TeVSignal_4Tau_18August26_1525_skim_NewSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	
+	#ZZ4l_2018_UnSKimmed = glob.glob(UnSkimmed_MC_Loc_2018 + "ZZTo4L_TuneCP5_13TeV_powheg_pythia8/ZZTo4L_TuneCP5_13TeV_powheg_pythia8/231225_152835/*/*.root")
+	#ZZ4l_2016APV_UnSKimmed = glob.glob(UnSkimmed_MC_Loc_2016APV + "ZZTo4L_TuneCP5_13TeV_powheg_pythia8/ZZTo4L_TuneCP5_13TeV_powheg_pythia8/231125_215911/0000/*.root")
 
 
 	file_dict_data_test = {
@@ -173,11 +174,12 @@ if __name__ == "__main__":
 			"QCD_HT1000To1500": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT1000To1500],
 			"QCD_HT1500To2000": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT1500To2000],
 			"QCD_HT2000ToInf": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT2000ToInf],
+			"Signal_2TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_2TeV],
 			#"Data_Mu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(SingleMuA_2018A, np.append(SingleMuA_2018B, np.append(SingleMuA_2018C,SingleMuA_2018D)))]
-			"Data_MuA": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in SingleMu_2018A],
-			"Data_MuB": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in SingleMu_2018B],
-			"Data_MuC": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in SingleMu_2018C],
-			"Data_MuD": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in SingleMu_2018D]
+		#	"Data_MuA": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in SingleMu_2018A],
+		#	"Data_MuB": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in SingleMu_2018B],
+		#	"Data_MuC": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in SingleMu_2018C],
+		#	"Data_MuD": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in SingleMu_2018D]
 		}
 	
 	file_dict_QCD = {
@@ -192,16 +194,20 @@ if __name__ == "__main__":
 			"QCD_HT2000ToInf": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT2000ToInf],
 			}
 	
-	file_dict_debug = {
+	#file_dict_debug = {
 			#"ZZ4l": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZ4l_2018_UnSKimmed],
-			"ZZ4l": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZ4l_2016APV_UnSKimmed],
+			#"ZZ4l": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZ4l_2016APV_UnSKimmed],
 			#"ZZTo2L2Nu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZTo2L2Nu_2018][:2]
-		}
-	
-	for process in file_dict_debug.keys():
-		print(process + "Files Tesed on:")
-		for file in file_dict_debug[process]:
-			print(file)
+		#}
+    
+	file_dict_debug = {
+            "ZZ4l_Test": ["root://cmsxrootd.hep.wisc.edu//store/user/gparida/HHbbtt/Full_Production_CMSSW_13_0_13_Nov24_23/2018/MC/ZZTo4L_TuneCP5_13TeV_powheg_pythia8/ZZTo4L_TuneCP5_13TeV_powheg_pythia8/231225_152835/0000/NANO_NANO_401.root","root://cmsxrootd.hep.wisc.edu//store/user/gparida/HHbbtt/Full_Production_CMSSW_13_0_13_Nov24_23/2018/MC/ZZTo4L_TuneCP5_13TeV_powheg_pythia8/ZZTo4L_TuneCP5_13TeV_powheg_pythia8/231225_152835/0000/NANO_NANO_502.root"]
+	}
+
+#	for process in file_dict_debug.keys():
+#		print(process + "Files Tesed on:")
+#		for file in file_dict_debug[process]:
+#			print(file)
 
 	#Set file dictionary and list of backgrounds prior to running processor
 	#file_dict = file_dict_full
@@ -242,8 +248,6 @@ if __name__ == "__main__":
 	)
 	cluster.adapt(minimum=1, maximum=500)
 
-
-
 	
 	if (run_on_condor):
 		print("Run on Condor")
@@ -257,7 +261,6 @@ if __name__ == "__main__":
 		)
 		#Pass modules to HTC
 		cloudpickle.register_pickle_by_value(PreSkim)
-		cloudpickle.register_pickle_by_value(EventCount)
 
 	else: #Iterative runner
 		runner = processor.Runner(executor = processor.IterativeExecutor(), schema=BaseSchema)
@@ -266,7 +269,6 @@ if __name__ == "__main__":
 
 	start_time = time.time()
 	fourtau_out = runner(file_dict, treename="Runs", processor_instance=PreSkim.CountingProcessor()) 
-	#fourtau_out = runner(file_dict, treename="Events", processor_instance=EventCount.CountingProcessor()) 
 	end_time = time.time()
 	
 	time_running = end_time-start_time
@@ -286,7 +288,8 @@ if __name__ == "__main__":
 #		json.dump(sumWEvents_Dict, fp)
 	
 	#with open("numEvents_2018_WithQCD_WithData_JSON.json", "w") as fp:
-	with open("numEvents_2016APV_ZZ4lUnSkimmed_JSON.json", "w") as fp:
-	#with open("numEvents_2018_QCDOnly_JSON.json", "w") as fp:
+	#with open("numEvents_2016APV_ZZ4lUnSkimmed_JSON.json", "w") as fp:
+	#with open("numEvents_2018_With2TeVSignal_JSON.json", "w") as fp:
+	with open("numEvents_UnSkimmedTest.json", "w") as fp:
 		json.dump(numEvents_Dict, fp)
 

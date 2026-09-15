@@ -630,12 +630,18 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			#############
 			n_Trigger = 0
 			if (self.ApplyTrigger):
+				#Apply Muon quality criteria
+				id_cond = np.bitwise_or(muon.IDSelec,2) != 0
+				d0_cond = np.abs(muon.D0) < 0.045
+				dz_cond = np.abs(muon.Dz) < 0.2
+				good_muon_cond = id_cond & d0_cond & dz_cond
+				muon = muon[good_muon_cond]
 				if (self.isData):
 					if ("Data_Mu" == dataset and self.Mu_Trigger):
 					#	print("Applying Single Muon Trigger (Muon Data)")
 					#	print("Event Count before Trigger+Selections: %d"%ak.num(event_level.HT,axis=0))
 						#HLT Trigger(s)
-						trigger_cond = np.bitwise_and(event_level.Mu_Trigger,(1 << 21) == (1 << 21))#event_level.Mu_Trigger
+						trigger_cond = np.bitwise_and(event_level.Mu_Trigger,(1 << 21)) == (1 << 21)#event_level.Mu_Trigger
 			
 						boostedtau = boostedtau[trigger_cond]
 						AK8Jet = AK8Jet[trigger_cond]
@@ -655,9 +661,9 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 
 						#Combined pT eta and ID selection
 						mu_selec_Mask = (
-								(muon.pt > 52) &
-								(abs(muon.eta) < 2.4) &
-								(muon.IDSelec) 
+								(muon.pt > 52) 
+								#(abs(muon.eta) < 2.4) &
+								#(muon.IDSelec) 
 						)
 						mu_selec_cond = ak.any(mu_selec_Mask,axis=1)
 						
@@ -676,7 +682,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					#	print("Applying JetHT Trigger (Data JetHT)")
 					#	print("Event Count before Trigger+Selections: %d"%ak.num(event_level.HT,axis=0))
 						#HLT Trigger(s)
-						HTMETMHT_TriggerCond = np.bitwise_and(event_level.METHTMHT_Trigger,(1 << 39) == (1 << 39))
+						HTMETMHT_TriggerCond = np.bitwise_and(event_level.METHTMHT_Trigger,(1 << 39)) == (1 << 39)
 						boostedtau = boostedtau[HTMETMHT_TriggerCond]
 						AK8Jet = AK8Jet[HTMETMHT_TriggerCond]
 						Jet = Jet[HTMETMHT_TriggerCond]
@@ -708,7 +714,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					mu_trigger_event_count = 0
 
 					#trigger_cond_mu = event_level.Mu_Trigger
-					trigger_cond_mu = np.bitwise_and(event_level.Mu_Trigger,(1 << 21) == (1 << 21)) #This is not being applied correctly
+					trigger_cond_mu = np.bitwise_and(event_level.Mu_Trigger,(1 << 21)) == (1 << 21) #This is not being applied correctly
 				#	print(trigger_cond_mu)
 			
 					if (self.Mu_Trigger):
@@ -732,9 +738,9 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 							
 						#Combined pT eta and ID selection
 						mu_selec_Mask = (
-								(muon_mu.pt > 52) &
-								(abs(muon_mu.eta) < 2.4) &
-								(muon_mu.IDSelec)
+								(muon_mu.pt > 52) 
+								#(abs(muon_mu.eta) < 2.4) &
+								#(muon_mu.IDSelec)
 							)
 						mu_selec_cond = ak.any(mu_selec_Mask,axis=1)
 						
@@ -752,9 +758,9 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 
 					#Fail Single Muon trigger and pass Jet HT Trigger
 					if (self.Mu_Trigger):
-						HT_TriggerCond = np.bitwise_not(np.bitwise_and(event_level.Mu_Trigger,(1 << 21) == (1 << 21))) & (np.bitwise_and(event_level.METHTMHT_Trigger,(1 << 39) == (1 << 39)))
+						HT_TriggerCond = np.bitwise_not(np.bitwise_and(event_level.Mu_Trigger,(1 << 21)) == (1 << 21)) & (np.bitwise_and(event_level.METHTMHT_Trigger,(1 << 39)) == (1 << 39))
 					else:
-						HT_TriggerCond = np.bitwise_and(event_level.METHTMHT_Trigger,(1 << 39) == (1 << 39))
+						HT_TriggerCond = np.bitwise_and(event_level.METHTMHT_Trigger,(1 << 39)) == (1 << 39)
 
 					if (self.HT_Trigger):
 						boostedtau_HT = boostedtau[HT_TriggerCond]
