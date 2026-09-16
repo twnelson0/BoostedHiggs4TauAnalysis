@@ -16,10 +16,6 @@ The code contained in the directory `TriggerEff/` is used to produce trigger eff
 The processor can either be run offline or online.
 To run the processor on HTC set the variable `run_on_condor` to `True` in the file `TriggerEff/Run_Trigger_Eff.py`.
 To run the processor offline set the variable `run_on_condor` to `False`. 
-~~To run the processor offline a python virtual environment must be setup on the AF due to versioning and package issues.
-The instructions to set up the virtual environment provided in the **Installation/Setup** section will be sufficient to run the trigger efficiency processor offline.
-To run the trigger efficiency processor (online or offline) simply run `python3 Run_Trigger_Eff.py` in the directory `TriggerEff`.
-The virtual environment set up in the **Installation/Setup** section will also be sufficient to run the plotting script.~~
 To produce the trigger turn on curves navigate to the directory `TriggerEff/Output_2018` and run the command `python3 Produce_TriggerTurnOnPlots.py -f "Your_Output_File.coffea"`.
 The argument `"Your_Output_File.coffea"` will be a coffea file produced by the processor in the directory `Output_2018`.
 
@@ -59,13 +55,16 @@ This argument is used to control the corrections applied and it must be in agree
 The argument `nBoostedTaus` tells the processor how many boosted taus to select, this number should always be 4, and if unspecified it will default to 4.
 
 The argument `Trigger_Code` controls what trigger(s) are applied by the processor.
-The specifics of this argument are discussed in the section *Trigger Modification*.
+The specifics of this argument are discussed in the section [Trigger Modification](#Trigger Modification).
 
 Finally I will discuss the arguments `use_DBT` and `Tau_WP` together. 
 The argument `use_DBT` is a Boolean that controls whether to select boosted taus using the MVA or deep boosted tau (DBT) isolation variable, if left unspecified this argument defaults to `True`. 
 If `use_DBT` is set to `False` than the MVA isolation variable is used to select the boosted taus, the value of the MVA selection used is hard coded to 0.0.
 If `use_DBT` is set to `True` then the DBT isolation variable is used to select the boosted taus.
 The value of the DBT that the boosted taus must pass is controlled by the floating point argument `Tau_WP`, if a value for `Tau_WP` is not passed to the processor then `Tau_WP` defaults to 0.95.
+
+One final note; by default the runner will submit analysis jobs to HTC.
+If a user wishes to run offline/interactively they should look at the [Running Offline](#Running Offline) section for additional instructions.
 
 ##### Trigger Modification
 The control plot producing script allows the user to run on either one or a combination of the triggers (`Mu50` and `PFHT500_PFMHT100_PFMET100`) and their associated offline selections used in this analysis.
@@ -92,13 +91,12 @@ The runner and processor for the prelegacy samples are similar to the runner and
 The first difference is the input files are assumed to be specific skimmed prelegacy miniAODs.
 Second difference is how the number of events prior to skimming are obtained, here these are pulled directly from the skimmed miniAOD files themselves at run time and passed into the processor.
 Third are the arguments the processor takes, for the prelegacy processor these arguments are `sumWEvents_Dict`, `nBoostedTaus`, `Trigger_Code`, and `year`.
-These arguments are identical to their UL counter parts (see the section *Coffea Processor Instructions*).
+These arguments are identical to their UL counter parts (see the section [Coffea Processor Instructions](#Coffea Processor Instructions)).
 
 #### Plot Producer
 To produce the control plots from the Coffea output navigate to the output directory and run the plotting script `PlotProducer.py`. 
 The script `PlotProducer.py` requires 3 arguments to be specified: `-f` denotes the input Coffea file, `-n` denotes the number of boosted taus of interest in the analysis (at the moment this should always be 4), and finally `-r` denotes the control region of interest (see control region table for list of valid inputs).
-One final note; these instructions will submit jobs to HTC.
-If a user wishes to run offline/interactively they should look at the "Running Offline" section for additional instructions.
+
 
 **Control Region Arguments**
 | `-r`  | Region  |
