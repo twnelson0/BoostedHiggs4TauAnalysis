@@ -891,7 +891,6 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			ndof_cond = event_level.PV_ndof > 4
 			PVz_cond = np.abs(event_level.PV_z) < 24
 			PVr_cond = np.sqrt(event_level.PV_x**2 + event_level.PV_y**2) < 2
-			#PV_Cond = np.bitwise_and(ndof_cond,np.bitwise_and(PVz_cond,PVr_cond))
 			PV_Cond = ndof_cond & PVz_cond & PVr_cond
 			
 			boostedtau = boostedtau[PV_Cond]
@@ -1655,4 +1654,3 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 
 	def postprocess(self, accumulator):
 		return accumulator
-		#pass
