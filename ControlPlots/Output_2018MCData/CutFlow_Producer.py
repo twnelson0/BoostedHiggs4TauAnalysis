@@ -117,11 +117,14 @@ if __name__ == "__main__":
 				"WJetsToLNu_HT-600To800","WJetsToLNu_HT-800To1200","WJetsToLNu_HT-1200To2500","WJetsToLNu_HT-2500ToInf","Signal_2TeV","Data_Mu","Data_HT"]
 
 		samples = ["ZZ4l", "Signal_2TeV"]
+		#samples = ["ZZ4l"]
        
 		with open("../numEvents_2018_With2TeVSignal_JSON.json") as json_file:
 			pre_skim_dict = json.load(json_file)
 		#pre_skim_dict = json.loads("../numEvents_JSON.json")
 		#print(pre_skim_dict)
+
+		cut_hist_dict = {"SkimOnly": "_Skim", "Trigger": "_Trigger", "LeadingBoostedTau": "_LeadTau", "SubleadingBoostedTau": "_SubleadTau", "3rdLeadingBoostedTau": "_ThirdleadTau", "4thLeadingBoostedTau": "_FourthleadTau"}
 		
 		for sample in samples:
 			#table_dict = dict.fromkeys(["Sample","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"])
@@ -134,14 +137,17 @@ if __name__ == "__main__":
 			for key in all_labels[1:]:
 				if (key == "PreSkim"):
 					table_dict[key] = pre_skim_dict[sample]
-					#Produce Skimming Samples
-					fig,ax = plt.subplots()
-					ax.set_title(sample)
-					#coffea_input[sample]["MVA_Skim"][0::4j].plot1d(ax=ax)
-					#plt.savefig("UL_MVA_" + sample + "_Distribution.png")
-					coffea_input[sample]["DBT_Skim"][0::4j].plot1d(ax=ax)
-					plt.savefig("UL_DBT_" + sample + "_Distribution.png")
 				else:
+					#Produce Skimming Samples
+					if (key in list(cut_hist_dict.keys())):
+						fig,ax = plt.subplots()
+						ax.set_title(sample + " " + key)
+						#iso_var = "DBT"
+						iso_var = "MVA"
+						#coffea_input[sample][][0::4j].plot1d(ax=ax)
+						#plt.savefig("UL_MVA_" + sample + "_Distribution.png")
+						coffea_input[sample][iso_var + cut_hist_dict[key]][0::4j].plot1d(ax=ax)
+						plt.savefig("UL_" + iso_var  + "_" + key + "_" + sample + "_Distribution.png")
 					table_dict[key] = coffea_input[sample][var_dict[key]]
 			table_array.append(table_dict)
 

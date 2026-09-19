@@ -57,7 +57,7 @@ def move_X509():
 
 if __name__ == "__main__":
 	#Condor related stuff
-	run_on_condor = True 
+	run_on_condor = True
 	os.environ["CONDOR_CONFIG"] = "/etc/condor/condor_config"
 	
 	if (run_on_condor):
@@ -242,6 +242,9 @@ if __name__ == "__main__":
 	skimmed_MVA_Loc = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/MC_MVA/"
 	ZZ4l_MVA = glob.glob(skimmed_MVA_Loc + "ZZTo4L_10September26_1505_skim_MVASkimming_p7_FullyUpdated/singleFileSkimForSubmission-NANO_NANO_*.root")
 	Signal_HH_2TeV_MVA = glob.glob(skimmed_MVA_Loc + "2TeVSignal_4Tau_10September26_1514_skim_MVASkimming_p7_FullyUpdated/singleFileSkimForSubmission-NANO_NANO_*.root")
+#	TTToSemiLeptonic_MVA = glob.glob(skimmed_MVA_Loc + "/singleFileSkimForSubmission-NANO_NANO_*.root")
+#	TTTo2L2Nu_MVA = glob.glob(skimmed_MVA_Loc + "/singleFileSkimForSubmission-NANO_NANO_*.root")
+#	TTToHadronic_MVA = glob.glob(skimmed_MVA_Loc + "/singleFileSkimForSubmission-NANO_NANO_*.root")
 
 
 	file_dict_MVA = {
@@ -378,7 +381,9 @@ if __name__ == "__main__":
 
 	file_dict_prob = {
 			#"ZZTo2Nu2Q": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/MC/ZZTo2Nu2Q_04March26_0510_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_63.root"],
-			"DYJetsToLL_M-50_HT-70to100": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/MC/DYJetsToLL_M-50_HT-70to100_12December25_1556_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_174.root"]
+			#"DYJetsToLL_M-50_HT-70to100": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/MC/DYJetsToLL_M-50_HT-70to100_12December25_1556_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_174.root"]
+			#"ZZ4l": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/MC/ZZTo4L_26August25_0757_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_12.root"],
+			"ZZ4l": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/MC/ZZTo4L_26August25_0757_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_" + str(x) + ".root" for x in range(12,15)]
 	}
 	
 	#Set file dictionary and list of backgrounds prior to running processor
@@ -386,6 +391,7 @@ if __name__ == "__main__":
 	#file_dict = file_dict_full
 	#file_dict = file_dict_MVA
 	file_dict = file_dict_DBT
+	#file_dict = file_dict_prob
 	
 	#file_dict = file_dict_test
 	#file_dict = file_dict_data_mc_mix
@@ -401,7 +407,7 @@ if __name__ == "__main__":
 	
 	trigger_bit_dict = {0:"NoTrigger",1:"SingleMuonTrigger",2:"HTMETMHTTrigger",3:"BothTriggers"}
 	#WP_Array = np.linspace(start=0.85,stop=0.95,num=11) 
-	WP_Array = [0.95]
+	WP_Array = [0.85]
 	trigger_bit = 3
 
 	for n_taus in range(4,5):
@@ -417,10 +423,10 @@ if __name__ == "__main__":
 			print("It takes about %.1f s to run the coffea processor with %d boosted tau selections"%(time_running,n_taus))
 			
 			#Save coffea file
-			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_tightWP_p95_Signal_" + trigger_bit_dict[trigger_bit]	+ "_Test.coffea")
+			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_tightWP_p95_Signal_" + trigger_bit_dict[trigger_bit] + "_Test.coffea")
 			
 			outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_WP_p" + str(wp)[2:] + "_SignalZZ4l_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
-			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_MVA_p7_SignalZZ4l_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
+			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_MVA_p7_SignalZZ4l_" + trigger_bit_dict[trigger_bit] + "_Coffea2026.coffea")
 			
 			util.save(fourtau_out, outfile)
 			print(f"Saved output to {outfile}")	

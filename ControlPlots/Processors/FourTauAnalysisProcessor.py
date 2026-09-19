@@ -478,6 +478,18 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			h_DBTVar = hist.Hist.new.Regular(100,0,1, label=r"boostedTau_rawDeepTau2018v2p7VSjet", overflow = False).Double()
 			h_MVAVar = hist.Hist.new.Regular(100,-1,1, label=r"boostedTau_rawMVAoldDM2017v2", overflow = False).Double()
 
+			#Add MVA and DBT Histgorams produced at each tau cut
+			h_DBTVar_Trigger = hist.Hist.new.Regular(100,0,1, label=r"boostedTau_rawDeepTau2018v2p7VSjet", overflow = False).Double()
+			h_MVAVar_Trigger = hist.Hist.new.Regular(100,-1,1, label=r"boostedTau_rawMVAoldDM2017v2", overflow = False).Double()
+			h_DBTVar_LeadTau = hist.Hist.new.Regular(100,0,1, label=r"boostedTau_rawDeepTau2018v2p7VSjet", overflow = False).Double()
+			h_MVAVar_LeadTau = hist.Hist.new.Regular(100,-1,1, label=r"boostedTau_rawMVAoldDM2017v2", overflow = False).Double()
+			h_DBTVar_SubleadTau = hist.Hist.new.Regular(100,0,1, label=r"boostedTau_rawDeepTau2018v2p7VSjet", overflow = False).Double()
+			h_MVAVar_SubleadTau = hist.Hist.new.Regular(100,-1,1, label=r"boostedTau_rawMVAoldDM2017v2", overflow = False).Double()
+			h_DBTVar_ThirdleadTau = hist.Hist.new.Regular(100,0,1, label=r"boostedTau_rawDeepTau2018v2p7VSjet", overflow = False).Double()
+			h_MVAVar_ThirdleadTau = hist.Hist.new.Regular(100,-1,1, label=r"boostedTau_rawMVAoldDM2017v2", overflow = False).Double()
+			h_DBTVar_FourthleadTau = hist.Hist.new.Regular(100,0,1, label=r"boostedTau_rawDeepTau2018v2p7VSjet", overflow = False).Double()
+			h_MVAVar_FourthleadTau = hist.Hist.new.Regular(100,-1,1, label=r"boostedTau_rawMVAoldDM2017v2", overflow = False).Double()
+
 
 			#di-boosted tau delta Rs
 			h_leading_boostedtau_deltaR = hist.Hist.new.Regular(10,0,5, label = r"Leading boosted $\tau$ pair $\Delta$R",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
@@ -614,6 +626,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				n_electron_Skim = ak.sum(ak.num(GenPart[abs(GenPart.id) == 11].id,axis=1))
 				n_muon_Skim = ak.sum(ak.num(GenPart[abs(GenPart.id) == 13].id,axis=1))
 			h_CutFlow.fill("SkimOnly",weight=n_Skim)
+
 
 			#Fill the MVA and the DBT histograms
 			h_DBTVar.fill(ak.ravel(boostedtau.DBT))
@@ -854,6 +867,9 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					n_electron_Trigger = ak.sum(ak.num(GenPart[abs(GenPart.id) == 11].id,axis=1))
 					n_muon_Trigger = ak.sum(ak.num(GenPart[abs(GenPart.id) == 13].id,axis=1))
 				h_CutFlow.fill("Trigger",weight=n_Trigger)
+			
+				h_DBTVar_Trigger.fill(ak.ravel(boostedtau.DBT))
+				h_MVAVar_Trigger.fill(ak.ravel(boostedtau.MVA))
 
 			#Force muon selection to check if that is the cause of the imbalance
 			if (not(self.ApplyTrigger)):
@@ -957,6 +973,9 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					n_muon_LeadBoostedTau = ak.sum(ak.num(GenPart[abs(GenPart.id) == 13].id,axis=1))
 				h_CutFlow.fill("LeadingBoostedTau",weight=n_LeadBoostedTau)
 				
+				h_DBTVar_LeadTau.fill(ak.ravel(boostedtau.DBT))
+				h_MVAVar_LeadTau.fill(ak.ravel(boostedtau.MVA))
+				
 				#Impose selections on Subleading boosted tau
 				if (self.nBoostedTau_Selec > 1):
 					#Require events have at least 2 boosted tau
@@ -990,6 +1009,9 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						n_muon_SubLeadBoostedTau = ak.sum(ak.num(GenPart[abs(GenPart.id) == 13].id,axis=1))
 					h_CutFlow.fill("SubleadingBoostedTau",weight=n_SubLeadBoostedTau)
 				
+					h_DBTVar_SubleadTau.fill(ak.ravel(boostedtau.DBT))
+					h_MVAVar_SubleadTau.fill(ak.ravel(boostedtau.MVA))
+				
 				#Impose selections on third-leading boosted tau
 				if (self.nBoostedTau_Selec > 2):
 					#Require events have at least 2 boosted tau
@@ -1022,6 +1044,8 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						n_electron_3rdLeadBoostedTau = ak.sum(ak.num(GenPart[abs(GenPart.id) == 11].id,axis=1))
 						n_muon_3rdLeadBoostedTau = ak.sum(ak.num(GenPart[abs(GenPart.id) == 13].id,axis=1))
 					h_CutFlow.fill("3rdLeadingBoostedTau",weight=n_3rdLeadBoostedTau)
+					h_DBTVar_ThirdleadTau.fill(ak.ravel(boostedtau.DBT))
+					h_MVAVar_ThirdleadTau.fill(ak.ravel(boostedtau.MVA))
 				
 				#Impose selections on fourth-leading boosted tau
 				if (self.nBoostedTau_Selec > 3):
@@ -1055,6 +1079,8 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						n_electron_4thLeadBoostedTau = ak.sum(ak.num(GenPart[abs(GenPart.id) == 11].id,axis=1))
 						n_muon_4thLeadBoostedTau = ak.sum(ak.num(GenPart[abs(GenPart.id) == 13].id,axis=1))
 					h_CutFlow.fill("4thLeadingBoostedTau",weight=n_4thLeadBoostedTau)
+					h_DBTVar_FourthleadTau.fill(ak.ravel(boostedtau.DBT))
+					h_MVAVar_FourthleadTau.fill(ak.ravel(boostedtau.MVA))
 			
 			#############
 			#Find 2 valid tau pairings
@@ -1562,6 +1588,17 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					#MVA and DBT Histograms
 					"DBT_Skim": h_DBTVar,
 					"MVA_Skim": h_MVAVar,
+					
+					"DBT_Trigger": h_DBTVar_Trigger,
+					"MVA_Trigger": h_MVAVar_Trigger,
+					"DBT_LeadTau": h_DBTVar_LeadTau,
+					"MVA_LeadTau": h_MVAVar_LeadTau,
+					"DBT_SubleadTau": h_DBTVar_SubleadTau,
+					"MVA_SubleadTau": h_MVAVar_SubleadTau,
+					"DBT_ThirdleadTau": h_DBTVar_ThirdleadTau,
+					"MVA_ThirdleadTau": h_MVAVar_ThirdleadTau,
+					"DBT_FourthleadTau": h_DBTVar_FourthleadTau,
+					"MVA_FourthleadTau": h_MVAVar_FourthleadTau,
 					
 					#Boosted Tau kineamtic distirubtions
 					"boostedtau_pt_Trigg": h_boostedtau_pT_Trigger,
