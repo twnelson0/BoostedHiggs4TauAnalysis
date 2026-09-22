@@ -5,8 +5,6 @@ Updated analysis repo for the Boosted Higgs to 4 Tau analysis
 This code is designed to run on the Wisconsin Analysis Facility.
 Specifically this code can run on the Coffea2026 images.
 Assuming you are running on the Wisconsin Analysis Facility on one of the Coffea2026 images it should work "out of the box" with no issues.
-Note that at the moment condor dashboards are spawned by several of the runners and they assume the user is on `cms01`, if a user is on `cms02` the urls to the dashboards shown will not be correct. 
-These urls can be manually be corrected by either replacing `cms01` with `cms02` in the web url printed in the terminal window or by manually changing `cms01` to `cms02` in the runner scripts themselves.
 
 ## Running Instructions
 

@@ -22,19 +22,6 @@ import itertools
 
 #Plot style variables defined
 hep.style.use(hep.style.CMS)
-#cmap = mpl.colormaps['PiYG'] 
-#cmap = mpl.colormaps['plasma'] 
-cmap = mpl.colormaps['hsv'] 
-
-#Collection of color maps
-cmap0 = mpl.colormaps['Reds']
-cmap1 = mpl.colormaps['Greens']
-cmap2 = mpl.colormaps['Blues']
-cmap3 = mpl.colormaps['Oranges']
-cmap4 = mpl.colormaps['Greys']
-cmap5 = mpl.colormaps['Purples']
-cmap_array = [cmap0,cmap1,cmap2,cmap3,cmap4,cmap5]
-
 TABLEAU_COLORS = ['blue','orange','green','red','purple','brown','pink','gray','olive','cyan']
 
 #Control Region dictionary
@@ -99,7 +86,7 @@ if __name__ == "__main__":
 	background_list_fullQCD = [r"$t\bar{t}$", r"Drell-Yan+Jets", "Di-Bosons", "Single Top", "W+Jets", r"$ZZ \rightarrow 4l$","QCD"]
 	background_list_test = [r"$ZZ \rightarrow 4l$"]
 	background_list_none = []
-	background_list = background_list_test
+	background_list = background_list_full
 	background_plot_names = {r"$t\bar{t}$" : "_ttbar_", r"$t\bar{t}$ Hadronic" : "_ttbarHadronic_", r"$t\bar{t}$ Semileptonic" : "_ttbarSemilepton_",
 			r"$t\bar{t}$ 2L2Nu" : "_ttbar2L2Nu_", r"Drell-Yan+Jets": "_DYJets_", "Di-Bosons" : "_DiBosons_", "Single Top": "_SingleTop_", "QCD" : "_QCD_", 
 			"W+Jets" : "_WJets_", r"$ZZ \rightarrow 4l$" : "_ZZ4l_", r"$ZZ \rightarrow 4l$ Test": "_ZZ4lTest_", r"$ZZ \rightarrow 4l$ Control": "_ZZ4lControl_",
@@ -174,44 +161,44 @@ if __name__ == "__main__":
 	coffea_input = util.load(coffea_file)
 
 	#Print the abount of data
-	print("=============================================")
-	#print("Number of data events after all selections: %d"%(coffea_input["Data_Mu"]["Event_Count"] + coffea_input["Data_HT"]["Event_Count"]))
-	print("=============================================")
-	print("=============================================")
-	#print("Number of data events after 4tau selection: %d"%(coffea_input["Data_Mu"]["n_4thLeadBoostedTau"] + coffea_input["Data_HT"]["n_4thLeadBoostedTau"]))
-	print("=============================================")
-	print("=============================================")
-	#print("Number of data events after visable mass selection: %d"%(coffea_input["Data_Mu"]["n_VisMass"] + coffea_input["Data_HT"]["n_VisMass"]))
-	print("=============================================")
-	print("=============================================")
-	#print("Number of data events after topology selection: %d"%(coffea_input["Data_Mu"]["n_Higgs_dR"] + coffea_input["Data_HT"]["n_Higgs_dR"]))
-	print("=============================================")
-	
-	print("=============================================")
-	#print("Number of muon data events after all selections: %d"%(coffea_input["Data_Mu"]["Event_Count"]))
-	print("=============================================")
-	print("=============================================")
-	#print("Number of Muon data events after 4tau selection: %d"%(coffea_input["Data_Mu"]["n_4thLeadBoostedTau"]))
-	print("=============================================")
-	print("=============================================")
-	#print("Number of Muon data events after visable mass selection: %d"%(coffea_input["Data_Mu"]["n_VisMass"]))
-	print("=============================================")
-	print("=============================================")
-	#print("Number of Muon data events after topology selection: %d"%(coffea_input["Data_Mu"]["n_Higgs_dR"]))
-	print("=============================================")
-    
-	print("=============================================")
-	#print("Number of JetHT data events after all selections: %d"%(coffea_input["Data_HT"]["Event_Count"]))
-	print("=============================================")
-	print("=============================================")
-	#print("Number of JetHT data events after 4tau selection: %d"%(coffea_input["Data_HT"]["n_4thLeadBoostedTau"]))
-	print("=============================================")
-	print("=============================================")
-	#print("Number of JetHT data events after visable mass selection: %d"%(coffea_input["Data_HT"]["n_VisMass"]))
-	print("=============================================")
-	print("=============================================")
-	#print("Number of JetHT data events after topology selection: %d"%(coffea_input["Data_HT"]["n_Higgs_dR"]))
-	print("=============================================")
+#	print("=============================================")
+#	print("Number of data events after all selections: %d"%(coffea_input["Data_Mu"]["Event_Count"] + coffea_input["Data_HT"]["Event_Count"]))
+#	print("=============================================")
+#	print("=============================================")
+#	print("Number of data events after 4tau selection: %d"%(coffea_input["Data_Mu"]["n_4thLeadBoostedTau"] + coffea_input["Data_HT"]["n_4thLeadBoostedTau"]))
+#	print("=============================================")
+#	print("=============================================")
+#	print("Number of data events after visable mass selection: %d"%(coffea_input["Data_Mu"]["n_VisMass"] + coffea_input["Data_HT"]["n_VisMass"]))
+#	print("=============================================")
+#	print("=============================================")
+#	print("Number of data events after topology selection: %d"%(coffea_input["Data_Mu"]["n_Higgs_dR"] + coffea_input["Data_HT"]["n_Higgs_dR"]))
+#	print("=============================================")
+#	
+#	print("=============================================")
+#	print("Number of muon data events after all selections: %d"%(coffea_input["Data_Mu"]["Event_Count"]))
+#	print("=============================================")
+#	print("=============================================")
+#	print("Number of Muon data events after 4tau selection: %d"%(coffea_input["Data_Mu"]["n_4thLeadBoostedTau"]))
+#	print("=============================================")
+#	print("=============================================")
+#	print("Number of Muon data events after visable mass selection: %d"%(coffea_input["Data_Mu"]["n_VisMass"]))
+#	print("=============================================")
+#	print("=============================================")
+#	print("Number of Muon data events after topology selection: %d"%(coffea_input["Data_Mu"]["n_Higgs_dR"]))
+#	print("=============================================")
+#    
+#	print("=============================================")
+#	print("Number of JetHT data events after all selections: %d"%(coffea_input["Data_HT"]["Event_Count"]))
+#	print("=============================================")
+#	print("=============================================")
+#	print("Number of JetHT data events after 4tau selection: %d"%(coffea_input["Data_HT"]["n_4thLeadBoostedTau"]))
+#	print("=============================================")
+#	print("=============================================")
+#	print("Number of JetHT data events after visable mass selection: %d"%(coffea_input["Data_HT"]["n_VisMass"]))
+#	print("=============================================")
+#	print("=============================================")
+#	print("Number of JetHT data events after topology selection: %d"%(coffea_input["Data_HT"]["n_Higgs_dR"]))
+#	print("=============================================")
 
 	#print("Number of events prior to selections: %d"%coffea_input["Data_Mu"]["n_Skim"])
 	#print("Number of events after Trigger selection: %d"%(coffea_input["Data_Mu"]["n_Trigger"]+coffea_input["Data_HT"]["n_Trigger"]))
@@ -271,12 +258,8 @@ if __name__ == "__main__":
 		temp_hist_dict = dict.fromkeys(background_list) # create dictionary of histograms for each background type
 				
 		for background_type in background_list: #When combining samples into larger categories need to restore this logic
-		#for dummy_indx in range(1): #Do this for plotting all samples (Not combined)
-			#print("Background type %s"%background_type)
 			background_array = []
-			background_signal_array = []
 			backgrounds = background_dict[background_type]
-			#backgrounds = background_list #only for plotting all samples
 
 						
 			#Loop over all backgrounds
@@ -341,11 +324,9 @@ if __name__ == "__main__":
 
 		for background in background_list:
 			background_array.append(background_stack[background]) #Is this line fucking up your scaling??
-			#background_signal_array.append(background_stack[background])
 			#print("Background: " + background)
 			#print("Sum of stacked histogram: %f"%background_stack[background].sum())
 		#print(type(coffea_input["Signal_2TeV"][hist_name]))
-		#background_signal_array.append(coffea_input["Signal_2TeV"][hist_name])
 		
 		#MPLHEP ratio plot
 		if (hist_name == "Leadingmuon_eta_Trigg"):
@@ -353,40 +334,26 @@ if __name__ == "__main__":
 		else:
 			axis_label = coffea_input["ZZ4l"][hist_name][{"region": args.ControlRegion}].axes[0].label
 		
-		#background_signal_list = background_list
-		#print(len(background_signal_list))
-		#print(len(TABLEAU_COLORS))
-		#background_signal_list.append("Signal 2 TeV")
-
-		#data_mc_axis = plt.axis(markersize = 10,xlabel = axis_label)
-		
-		#fig, ax_main, ax_comp = hep.comp.data_model(
-		fig, ax_main = plt.subplots() 
-		hep.histplot(
-			#data_hist = coffea_input["Data_Mu"][hist_name][{"region": args.ControlRegion}] + coffea_input["Data_HT"][hist_name][{"region": args.ControlRegion}],  
-            #stacked_components = background_array[:len(background_array)-1],
-            H = background_array,
-            #stacked_labels = background_list[:len(background_list)-1],
-            label = background_list,
-			#stacked_colors = TABLEAU_COLORS[:len(background_list)-1],
-			color = TABLEAU_COLORS[0],
-			#xlabel = axis_label,
-			#stacked_kwargs = {"markersize": 10}, #Crashes
-			#unstacked_kwargs_list = [{"makersize": 100}], #Does fuck all
-			#ax_main = data_mx_axis,
-			#model_uncertainty=True,
-			#comparison = "ratio",
-            #markersize = 20,
+		fig, ax_main, ax_comp = hep.comp.data_model(
+			data_hist = coffea_input["Data_Mu"][hist_name][{"region": args.ControlRegion}] + coffea_input["Data_HT"][hist_name][{"region": args.ControlRegion}],  
+			stacked_components = background_array[:len(background_array)-1],
+			stacked_labels = background_list[:len(background_list)-1],
+			stacked_colors = TABLEAU_COLORS[:len(background_list)-1],
+			xlabel = axis_label,
+			model_uncertainty=True,
+			comparison = "ratio",
+			markersize = 20,
 			flow = "sum",
-
-
 		)
 		xlabel = ax_main.set_xlabel(axis_label)
-		#ax_main(markersize = 10) #Make the data points thicker
+		
 		#Stupid solution to make the points thicker (draw a copy of the data ontop of the previously produced ratio plot with thicker points)
-		#hep.histplot(coffea_input["Data_Mu"][hist_name][{"region": args.ControlRegion}] + coffea_input["Data_HT"][hist_name][{"region": args.ControlRegion}], ax=ax_main, histtype="errorbar",markersize=20, yerr=True, color = "k") 
+		hep.histplot(coffea_input["Data_Mu"][hist_name][{"region": args.ControlRegion}] + coffea_input["Data_HT"][hist_name][{"region": args.ControlRegion}], ax=ax_main, histtype="errorbar",markersize=20, yerr=True, color = "k") 
+		
 		#Add signal
 		hep.histplot(background_array[len(background_array)-1], ax=ax_main, color = 'cyan', linewidth = 3.2, label = background_list[len(background_list)-1], histtype = "step")
+	    
+		#Text, scaling and saving the plot
 		ax_main.legend(fontsize = 14)
 		hep.yscale_legend(ax_main)
 		hep.cms.label(data=True, ax = ax_main, text = "2018 Data Preliminary")	

@@ -139,15 +139,15 @@ if __name__ == "__main__":
 					table_dict[key] = pre_skim_dict[sample]
 				else:
 					#Produce Skimming Samples
-					if (key in list(cut_hist_dict.keys())):
-						fig,ax = plt.subplots()
-						ax.set_title(sample + " " + key)
-						#iso_var = "DBT"
-						iso_var = "MVA"
-						#coffea_input[sample][][0::4j].plot1d(ax=ax)
-						#plt.savefig("UL_MVA_" + sample + "_Distribution.png")
-						coffea_input[sample][iso_var + cut_hist_dict[key]][0::4j].plot1d(ax=ax)
-						plt.savefig("UL_" + iso_var  + "_" + key + "_" + sample + "_Distribution.png")
+				#	if (key in list(cut_hist_dict.keys())):
+				#		fig,ax = plt.subplots()
+				#		ax.set_title(sample + " " + key)
+				#		#iso_var = "DBT"
+				#		iso_var = "MVA"
+				#		#coffea_input[sample][][0::4j].plot1d(ax=ax)
+				#		#plt.savefig("UL_MVA_" + sample + "_Distribution.png")
+				#		coffea_input[sample][iso_var + cut_hist_dict[key]][0::4j].plot1d(ax=ax)
+				#		plt.savefig("UL_" + iso_var  + "_" + key + "_" + sample + "_Distribution.png")
 					table_dict[key] = coffea_input[sample][var_dict[key]]
 			table_array.append(table_dict)
 

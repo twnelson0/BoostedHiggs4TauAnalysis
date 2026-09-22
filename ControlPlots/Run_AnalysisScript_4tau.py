@@ -5,6 +5,8 @@ from hist import intervals
 import matplotlib.pyplot as plt
 import numpy as np
 import mplhep as hep
+import coffea
+import socket
 from coffea import processor, nanoevents
 from coffea.nanoevents import BaseSchema
 from coffea import util
@@ -22,7 +24,6 @@ import glob
 import json
 from Processors import FourTauAnalysisProcessor as AnalysisProcessor
 import Corrections
-#import Data
 import cowtools.jobqueue
 import cloudpickle
 import argparse
@@ -83,7 +84,7 @@ if __name__ == "__main__":
 					"when_to_transfer_ouput": "ON_EXIT_OR_EVICT",
 					"transfer_executable": "false",
 					"Requirements": "HasSingularityJobStart",
-					"container_image": "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/coffeateam/coffea-dask-almalinux9:2026.4.0-py3.12",
+					"container_image": "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/coffeateam/coffea-dask-almalinux9:" + coffea.__version__ + "-py3.12",
 					"InitialDir": f'/scratch/{os.environ["USER"]}',
 					'transfer_input_files': f'{os.environ["PWD"]}, {_x509_path}',
 
@@ -416,7 +417,7 @@ if __name__ == "__main__":
 			print("About to run processor")
 			start_time = time.time()
 			if (run_on_condor):
-				print(f"https://cms01.hep.wisc.edu:8009/user/{os.environ['USER']}/{cluster.dashboard_link}")
+				print(f"https://{socket.gethostname()}:8009/user/{os.environ['USER']}/{cluster.dashboard_link}")
 			fourtau_out = runner(file_dict, treename="Events", processor_instance=AnalysisProcessor.Analysis4TauProcessor(sumWEvents_Dict = sumWEvents_Dict, nBoostedTaus = n_taus, Trigger_Code = trigger_bit, Tau_WP = wp, use_DBT = True)) #Modified for NanoAOD (changd treename)
 			end_time = time.time()
 			time_running = end_time-start_time
@@ -425,8 +426,10 @@ if __name__ == "__main__":
 			#Save coffea file
 			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_tightWP_p95_Signal_" + trigger_bit_dict[trigger_bit] + "_Test.coffea")
 			
+			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_WP_p" + str(wp)[2:] + "_FullDataMC_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
 			outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_WP_p" + str(wp)[2:] + "_SignalZZ4l_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
 			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_MVA_p7_SignalZZ4l_" + trigger_bit_dict[trigger_bit] + "_Coffea2026.coffea")
+			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_MVA_p7_FullDataMC_" + trigger_bit_dict[trigger_bit] + "_Coffea2026.coffea")
 			
 			util.save(fourtau_out, outfile)
 			print(f"Saved output to {outfile}")	

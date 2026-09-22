@@ -317,6 +317,8 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					"iso": events.boostedTau_idDeepTau2018v2p7VSjet,
 					"MVA": events.boostedTau_rawMVAoldDM2017v2,
 					"DBT": events.boostedTau_rawDeepTau2018v2p7VSjet,
+                    "DBT_bit": events.boostedTau_idDeepTau2018v2p7VSjet,
+                    "MVA_bit": events.boostedTau_idMVAoldDM2017v2,
 					"decay": events.boostedTau_idDecayModeOldDMs,
 				},
 				with_name="BoostedTauArray",
@@ -682,12 +684,12 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					#	print("Event Count before Trigger+Selections: %d"%ak.num(event_level.HT,axis=0))
 						#HLT Trigger(s)
 						trigger_cond_METHTMHT = event_level.METHTMHT_Trigger
-						boostedtau = boostedtau[trigger_cond_HETHTMHT]
-						AK8Jet = AK8Jet[trigger_cond_HETHTMHT]
-						Jet = Jet[trigger_cond_HETHTMHT]
-						electron = electron[trigger_cond_HETHTMHT]
-						muon = muon[trigger_cond_HETHTMHT]
-						event_level = event_level[trigger_cond_HETHTMHT]
+						boostedtau = boostedtau[trigger_cond_METHTMHT]
+						AK8Jet = AK8Jet[trigger_cond_METHTMHT]
+						Jet = Jet[trigger_cond_METHTMHT]
+						electron = electron[trigger_cond_METHTMHT]
+						muon = muon[trigger_cond_METHTMHT]
+						event_level = event_level[trigger_cond_METHTMHT]
 
 						#Offline Cuts
 						HT_Cond = event_level.HT > 550
@@ -932,9 +934,10 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				pT_Cond = boostedtau.pt > 30
 				eta_Cond = np.abs(boostedtau.eta) < 2.3
 				decayMode_Cond = boostedtau.decay >= 0.5
-				#DBT_Iso_Cond = boostedtau.DBT >= 0.95 #0.85
-				DBT_Iso_Cond = boostedtau.DBT >= self.tauWP #0.85
-				MVA_Iso_Cond = boostedtau.MVA >= 0.0
+				DBT_Iso_Cond = boostedtau.DBT >= self.tauWP #Using Raw Score
+				MVA_Iso_Cond = boostedtau.MVA >= 0.0 #Using Raw Score
+			#	DBT_Iso_Cond = boostedtau.DBT_bit >= 2
+			#	MVA_Iso_Cond = boostedtau.MVA_bit >= 2
 				
 				if (self.useDBT):
 					boostedtau_selec_cond = pT_Cond & eta_Cond & decayMode_Cond & DBT_Iso_Cond
