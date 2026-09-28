@@ -38,6 +38,7 @@ if __name__ == "__main__":
 	print("Running on file " + args.File)
 
 	cutflow_csv_bool = True
+	iso_var_plots = True
 
 	coffea_file = args.File
 	Output_File = args.OutputFile
@@ -116,7 +117,15 @@ if __name__ == "__main__":
 				"ST_s-channel_4f_leptonDecays", "ST_s-channel_4f_hadronicDecays","WJetsToLNu_HT-70To100","WJetsToLNu_HT-100To200","WJetsToLNu_HT-200To400","WJetsToLNu_HT-400To600",
 				"WJetsToLNu_HT-600To800","WJetsToLNu_HT-800To1200","WJetsToLNu_HT-1200To2500","WJetsToLNu_HT-2500ToInf","Signal_2TeV","Data_Mu","Data_HT"]
 
-		samples = ["ZZ4l", "Signal_2TeV"]
+		#samples = ["ZZ4l", "Signal_2TeV"]
+		samples_DY_Only = ["DYJetsToLL_M-4to50_HT-70to100","DYJetsToLL_M-4to50_HT-100to200","DYJetsToLL_M-4to50_HT-200to400",
+				"DYJetsToLL_M-4to50_HT-400to600","DYJetsToLL_M-4to50_HT-600toInf","DYJetsToLL_M-50_HT-70to100","DYJetsToLL_M-50_HT-100to200","DYJetsToLL_M-50_HT-200to400",
+				"DYJetsToLL_M-50_HT-400to600","DYJetsToLL_M-50_HT-600to800","DYJetsToLL_M-50_HT-800to1200","DYJetsToLL_M-50_HT-1200to2500","DYJetsToLL_M-50_HT-2500toInf"]
+		#samples = ["ZZ4l", "Signal_2TeV","TTToSemiLeptonic","TTTo2L2Nu","TTToHadronic"]
+		samples = ["ZZ4l", "TTToSemiLeptonic","TTTo2L2Nu","TTToHadronic"]
+		samples_ST = ["Tbar-tchan","T-tchan","Tbar-tW","T-tW","ST_s-channel_4f_leptonDecays", "ST_s-channel_4f_hadronicDecays"]
+		samples = samples + samples_DY_Only
+		#samples = samples_ST
 		#samples = ["ZZ4l"]
        
 		with open("../numEvents_2018_With2TeVSignal_JSON.json") as json_file:
@@ -124,11 +133,13 @@ if __name__ == "__main__":
 		#pre_skim_dict = json.loads("../numEvents_JSON.json")
 		#print(pre_skim_dict)
 
-		cut_hist_dict = {"SkimOnly": "_Skim", "Trigger": "_Trigger", "LeadingBoostedTau": "_LeadTau", "SubleadingBoostedTau": "_SubleadTau", "3rdLeadingBoostedTau": "_ThirdleadTau", "4thLeadingBoostedTau": "_FourthleadTau"}
+		#cut_hist_dict = {"SkimOnly": "_Skim", "Trigger": "_Trigger", "LeadingBoostedTau": "_LeadTau", "SubleadingBoostedTau": "_SubleadTau", "3rdLeadingBoostedTau": "_ThirdleadTau", "4thLeadingBoostedTau": "_FourthleadTau"}
+		cut_hist_dict = {"LeadingBoostedTau": "_LeadTau", "SubleadingBoostedTau": "_SubleadTau", "3rdLeadingBoostedTau": "_ThirdleadTau", "4thLeadingBoostedTau": "_FourthleadTau"}
+		#cut_hist_dict = {"SkimOnly": "_Skim"}
 		
 		for sample in samples:
-			#table_dict = dict.fromkeys(["Sample","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"])
-			table_dict = dict.fromkeys(["Sample","PreSkim","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"])
+			table_dict = dict.fromkeys(["Sample","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"])
+			#table_dict = dict.fromkeys(["Sample","PreSkim","SkimOnly","Trigger", "LeadingBoostedTau","SubleadingBoostedTau","3rdLeadingBoostedTau","4thLeadingBoostedTau","VisMassSelec","Higgs_dR"])
 			table_dict["Sample"] = sample
 			#print(pre_skim_dict[sample])
 			#all_labels = list(var_dict.keys())
@@ -139,15 +150,16 @@ if __name__ == "__main__":
 					table_dict[key] = pre_skim_dict[sample]
 				else:
 					#Produce Skimming Samples
-				#	if (key in list(cut_hist_dict.keys())):
-				#		fig,ax = plt.subplots()
-				#		ax.set_title(sample + " " + key)
-				#		#iso_var = "DBT"
-				#		iso_var = "MVA"
-				#		#coffea_input[sample][][0::4j].plot1d(ax=ax)
-				#		#plt.savefig("UL_MVA_" + sample + "_Distribution.png")
-				#		coffea_input[sample][iso_var + cut_hist_dict[key]][0::4j].plot1d(ax=ax)
-				#		plt.savefig("UL_" + iso_var  + "_" + key + "_" + sample + "_Distribution.png")
+					if (key in list(cut_hist_dict.keys()) and iso_var_plots):
+						fig,ax = plt.subplots()
+						ax.set_title(sample + " " + key)
+						#iso_var = "DBT"
+						iso_var = "MVA"
+						#coffea_input[sample][][0::4j].plot1d(ax=ax)
+						#coffea_input[sample][iso_var + cut_hist_dict[key]][0::4j].plot1d(ax=ax) #Rebin by a factor of 1/4
+						coffea_input[sample][iso_var + cut_hist_dict[key]].plot1d(ax=ax)
+						plt.savefig("UL_" + iso_var  + "_" + key + "_" + sample + "_Distribution.png")
+						plt.close()
 					table_dict[key] = coffea_input[sample][var_dict[key]]
 			table_array.append(table_dict)
 

@@ -50,7 +50,7 @@ TT_Had_BR = 0.4544
 lumi_table_data = {"MC Sample":[], "Luminosity":[], "Cross Section (pb)":[], "Number of Events":[], "Calculated Weight":[]}
 
 #Dictionary of cross sections 
-xSection_Dictionary = {"Signal": 0.000001, #Chosen to make plots readable
+xSection_Dictionary = {"Signal": 0.0000001, #Chosen to make plots readable
 						"TTTo2L2Nu": 87.5595, "TTToSemiLeptonic": 365.2482, "TTToHadronic": 381.0923,
 						
 						#DiBoson Background
@@ -222,7 +222,7 @@ def four_mass(part_arr): #Four Particle mass assuming each event has 4 particles
 		(part_arr[0].Pz + part_arr[1].Pz + part_arr[2].Pz + part_arr[3].Pz)**2)
 
 class Analysis4TauProcessor(processor.ProcessorABC):
-	def __init__(self, sumWEvents_Dict, nBoostedTaus = 4, Trigger_Code = 3, Tau_WP = 0.95, use_DBT = True, year = "2018"): #Additional arguements can be added later
+	def __init__(self, sumWEvents_Dict, use_DBT, nBoostedTaus = 4, Trigger_Code = 3, Tau_WP = 0.90, year = "2018"): #Additional arguements can be added later
 		#Initial variables
 		self.isData = False #Default assumption is MC
 		self.nBoostedTau_Selec = nBoostedTaus #Number of tau selections
@@ -481,6 +481,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			h_MVAVar = hist.Hist.new.Regular(100,-1,1, label=r"boostedTau_rawMVAoldDM2017v2", overflow = False).Double()
 
 			#Add MVA and DBT Histgorams produced at each tau cut
+			h_DBTVar_PreTrigger = hist.Hist.new.Regular(100,0,1, label=r"boostedTau_rawDeepTau2018v2p7VSjet", overflow = False).Double()
 			h_DBTVar_Trigger = hist.Hist.new.Regular(100,0,1, label=r"boostedTau_rawDeepTau2018v2p7VSjet", overflow = False).Double()
 			h_MVAVar_Trigger = hist.Hist.new.Regular(100,-1,1, label=r"boostedTau_rawMVAoldDM2017v2", overflow = False).Double()
 			h_DBTVar_LeadTau = hist.Hist.new.Regular(100,0,1, label=r"boostedTau_rawDeepTau2018v2p7VSjet", overflow = False).Double()
@@ -935,12 +936,10 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				eta_Cond = np.abs(boostedtau.eta) < 2.3
 				decayMode_Cond = boostedtau.decay >= 0.5
 				DBT_Iso_Cond = boostedtau.DBT >= self.tauWP #Using Raw Score
-				MVA_Iso_Cond = boostedtau.MVA >= 0.0 #Using Raw Score
-			#	DBT_Iso_Cond = boostedtau.DBT_bit >= 2
-			#	MVA_Iso_Cond = boostedtau.MVA_bit >= 2
+				MVA_Iso_Cond = boostedtau.MVA >= self.tauWP #Using Raw Score
 				
 				if (self.useDBT):
-					boostedtau_selec_cond = pT_Cond & eta_Cond & decayMode_Cond & DBT_Iso_Cond
+					boostedtau_selec_cond = pT_Cond & eta_Cond & decayMode_Cond #& DBT_Iso_Cond
 				else:
 					boostedtau_selec_cond = pT_Cond & eta_Cond & decayMode_Cond & MVA_Iso_Cond
 				boostedtau = boostedtau[boostedtau_selec_cond] #Apply selections to all individual taus
@@ -976,8 +975,6 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					n_muon_LeadBoostedTau = ak.sum(ak.num(GenPart[abs(GenPart.id) == 13].id,axis=1))
 				h_CutFlow.fill("LeadingBoostedTau",weight=n_LeadBoostedTau)
 				
-				h_DBTVar_LeadTau.fill(ak.ravel(boostedtau.DBT))
-				h_MVAVar_LeadTau.fill(ak.ravel(boostedtau.MVA))
 				
 				#Impose selections on Subleading boosted tau
 				if (self.nBoostedTau_Selec > 1):
@@ -1012,9 +1009,6 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						n_muon_SubLeadBoostedTau = ak.sum(ak.num(GenPart[abs(GenPart.id) == 13].id,axis=1))
 					h_CutFlow.fill("SubleadingBoostedTau",weight=n_SubLeadBoostedTau)
 				
-					h_DBTVar_SubleadTau.fill(ak.ravel(boostedtau.DBT))
-					h_MVAVar_SubleadTau.fill(ak.ravel(boostedtau.MVA))
-				
 				#Impose selections on third-leading boosted tau
 				if (self.nBoostedTau_Selec > 2):
 					#Require events have at least 2 boosted tau
@@ -1047,8 +1041,6 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						n_electron_3rdLeadBoostedTau = ak.sum(ak.num(GenPart[abs(GenPart.id) == 11].id,axis=1))
 						n_muon_3rdLeadBoostedTau = ak.sum(ak.num(GenPart[abs(GenPart.id) == 13].id,axis=1))
 					h_CutFlow.fill("3rdLeadingBoostedTau",weight=n_3rdLeadBoostedTau)
-					h_DBTVar_ThirdleadTau.fill(ak.ravel(boostedtau.DBT))
-					h_MVAVar_ThirdleadTau.fill(ak.ravel(boostedtau.MVA))
 				
 				#Impose selections on fourth-leading boosted tau
 				if (self.nBoostedTau_Selec > 3):
@@ -1082,8 +1074,17 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						n_electron_4thLeadBoostedTau = ak.sum(ak.num(GenPart[abs(GenPart.id) == 11].id,axis=1))
 						n_muon_4thLeadBoostedTau = ak.sum(ak.num(GenPart[abs(GenPart.id) == 13].id,axis=1))
 					h_CutFlow.fill("4thLeadingBoostedTau",weight=n_4thLeadBoostedTau)
-					h_DBTVar_FourthleadTau.fill(ak.ravel(boostedtau.DBT))
-					h_MVAVar_FourthleadTau.fill(ak.ravel(boostedtau.MVA))
+
+			#Obtain the DBT distributions
+			h_DBTVar_LeadTau.fill(ak.ravel(boostedtau[:,0].DBT))
+			h_DBTVar_SubleadTau.fill(ak.ravel(boostedtau[:,1].DBT))
+			h_DBTVar_ThirdleadTau.fill(ak.ravel(boostedtau[:,2].DBT))
+			h_DBTVar_FourthleadTau.fill(ak.ravel(boostedtau[:,3].DBT))
+			
+			h_MVAVar_LeadTau.fill(ak.ravel(boostedtau[:,0].MVA))
+			h_MVAVar_SubleadTau.fill(ak.ravel(boostedtau[:,1].MVA))
+			h_MVAVar_ThirdleadTau.fill(ak.ravel(boostedtau[:,2].MVA))
+			h_MVAVar_FourthleadTau.fill(ak.ravel(boostedtau[:,3].MVA))
 			
 			#############
 			#Find 2 valid tau pairings

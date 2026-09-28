@@ -56,10 +56,11 @@ The argument `Trigger_Code` controls what trigger(s) are applied by the processo
 The specifics of this argument are discussed in the section [Trigger Modification](#Trigger Modification).
 
 Finally I will discuss the arguments `use_DBT` and `Tau_WP` together. 
-The argument `use_DBT` is a Boolean that controls whether to select boosted taus using the MVA or deep boosted tau (DBT) isolation variable, if left unspecified this argument defaults to `True`. 
-If `use_DBT` is set to `False` than the MVA isolation variable is used to select the boosted taus, the value of the MVA selection used is hard coded to 0.0.
+The argument `use_DBT` is a Boolean that controls whether to select boosted taus using the MVA or deep boosted tau (DBT) isolation variable. 
+If `use_DBT` is set to `False` than the MVA isolation variable is used to select the boosted taus.
 If `use_DBT` is set to `True` then the DBT isolation variable is used to select the boosted taus.
-The value of the DBT that the boosted taus must pass is controlled by the floating point argument `Tau_WP`, if a value for `Tau_WP` is not passed to the processor then `Tau_WP` defaults to 0.95.
+The value of the isolation variable (either DBT or MVA) that the boosted taus must pass is controlled by the floating point argument `Tau_WP`.
+IFf a value for `Tau_WP` is not passed to the processor then `Tau_WP` defaults to 0.90.
 
 One final note; by default the runner will submit analysis jobs to HTC.
 If a user wishes to run offline/interactively they should look at the [Running Offline](#Running Offline) section for additional instructions.
