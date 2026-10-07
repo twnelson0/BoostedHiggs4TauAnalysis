@@ -1,0 +1,144 @@
+p85
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p85_Signal_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+['TTToSemiLeptonic', 'TTTo2L2Nu', 'TTToHadronic']
+['DYJetsToLL_M-4to50_HT-70to100', 'DYJetsToLL_M-4to50_HT-100to200', 'DYJetsToLL_M-4to50_HT-200to400', 'DYJetsToLL_M-4to50_HT-400to600', 'DYJetsToLL_M-4to50_HT-600toInf', 'DYJetsToLL_M-50_HT-70to100', 'DYJetsToLL_M-50_HT-100to200', 'DYJetsToLL_M-50_HT-200to400', 'DYJetsToLL_M-50_HT-400to600', 'DYJetsToLL_M-50_HT-600to800', 'DYJetsToLL_M-50_HT-800to1200', 'DYJetsToLL_M-50_HT-1200to2500', 'DYJetsToLL_M-50_HT-2500toInf']
+['WZ2l2q', 'WZ1l1nu2q', 'ZZ2l2q', 'WZ1l3nu', 'VV2l2nu', 'WWTo1L1Nu2Q', 'WWTo4Q', 'ZZTo4Q', 'ZZTo2L2Nu', 'ZZTo2Nu2Q']
+['Tbar-tchan', 'T-tchan', 'Tbar-tW', 'T-tW', 'ST_s-channel_4f_leptonDecays', 'ST_s-channel_4f_hadronicDecays']
+['WJetsToLNu_HT-70To100', 'WJetsToLNu_HT-100To200', 'WJetsToLNu_HT-200To400', 'WJetsToLNu_HT-400To600', 'WJetsToLNu_HT-600To800', 'WJetsToLNu_HT-800To1200', 'WJetsToLNu_HT-1200To2500', 'WJetsToLNu_HT-2500ToInf']
+['ZZ4l']
+['Signal_2TeV']
+For sample Signal_2TeV Selection efficiency is: 
+0.539
+p86
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p86_Signal_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+['TTToSemiLeptonic', 'TTTo2L2Nu', 'TTToHadronic']
+['DYJetsToLL_M-4to50_HT-70to100', 'DYJetsToLL_M-4to50_HT-100to200', 'DYJetsToLL_M-4to50_HT-200to400', 'DYJetsToLL_M-4to50_HT-400to600', 'DYJetsToLL_M-4to50_HT-600toInf', 'DYJetsToLL_M-50_HT-70to100', 'DYJetsToLL_M-50_HT-100to200', 'DYJetsToLL_M-50_HT-200to400', 'DYJetsToLL_M-50_HT-400to600', 'DYJetsToLL_M-50_HT-600to800', 'DYJetsToLL_M-50_HT-800to1200', 'DYJetsToLL_M-50_HT-1200to2500', 'DYJetsToLL_M-50_HT-2500toInf']
+['WZ2l2q', 'WZ1l1nu2q', 'ZZ2l2q', 'WZ1l3nu', 'VV2l2nu', 'WWTo1L1Nu2Q', 'WWTo4Q', 'ZZTo4Q', 'ZZTo2L2Nu', 'ZZTo2Nu2Q']
+['Tbar-tchan', 'T-tchan', 'Tbar-tW', 'T-tW', 'ST_s-channel_4f_leptonDecays', 'ST_s-channel_4f_hadronicDecays']
+['WJetsToLNu_HT-70To100', 'WJetsToLNu_HT-100To200', 'WJetsToLNu_HT-200To400', 'WJetsToLNu_HT-400To600', 'WJetsToLNu_HT-600To800', 'WJetsToLNu_HT-800To1200', 'WJetsToLNu_HT-1200To2500', 'WJetsToLNu_HT-2500ToInf']
+['ZZ4l']
+['Signal_2TeV']
+For sample Signal_2TeV Selection efficiency is: 
+0.538
+p87
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p87_Signal_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+['TTToSemiLeptonic', 'TTTo2L2Nu', 'TTToHadronic']
+['DYJetsToLL_M-4to50_HT-70to100', 'DYJetsToLL_M-4to50_HT-100to200', 'DYJetsToLL_M-4to50_HT-200to400', 'DYJetsToLL_M-4to50_HT-400to600', 'DYJetsToLL_M-4to50_HT-600toInf', 'DYJetsToLL_M-50_HT-70to100', 'DYJetsToLL_M-50_HT-100to200', 'DYJetsToLL_M-50_HT-200to400', 'DYJetsToLL_M-50_HT-400to600', 'DYJetsToLL_M-50_HT-600to800', 'DYJetsToLL_M-50_HT-800to1200', 'DYJetsToLL_M-50_HT-1200to2500', 'DYJetsToLL_M-50_HT-2500toInf']
+['WZ2l2q', 'WZ1l1nu2q', 'ZZ2l2q', 'WZ1l3nu', 'VV2l2nu', 'WWTo1L1Nu2Q', 'WWTo4Q', 'ZZTo4Q', 'ZZTo2L2Nu', 'ZZTo2Nu2Q']
+['Tbar-tchan', 'T-tchan', 'Tbar-tW', 'T-tW', 'ST_s-channel_4f_leptonDecays', 'ST_s-channel_4f_hadronicDecays']
+['WJetsToLNu_HT-70To100', 'WJetsToLNu_HT-100To200', 'WJetsToLNu_HT-200To400', 'WJetsToLNu_HT-400To600', 'WJetsToLNu_HT-600To800', 'WJetsToLNu_HT-800To1200', 'WJetsToLNu_HT-1200To2500', 'WJetsToLNu_HT-2500ToInf']
+['ZZ4l']
+['Signal_2TeV']
+For sample Signal_2TeV Selection efficiency is: 
+0.538
+p88
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p88_Signal_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+['TTToSemiLeptonic', 'TTTo2L2Nu', 'TTToHadronic']
+['DYJetsToLL_M-4to50_HT-70to100', 'DYJetsToLL_M-4to50_HT-100to200', 'DYJetsToLL_M-4to50_HT-200to400', 'DYJetsToLL_M-4to50_HT-400to600', 'DYJetsToLL_M-4to50_HT-600toInf', 'DYJetsToLL_M-50_HT-70to100', 'DYJetsToLL_M-50_HT-100to200', 'DYJetsToLL_M-50_HT-200to400', 'DYJetsToLL_M-50_HT-400to600', 'DYJetsToLL_M-50_HT-600to800', 'DYJetsToLL_M-50_HT-800to1200', 'DYJetsToLL_M-50_HT-1200to2500', 'DYJetsToLL_M-50_HT-2500toInf']
+['WZ2l2q', 'WZ1l1nu2q', 'ZZ2l2q', 'WZ1l3nu', 'VV2l2nu', 'WWTo1L1Nu2Q', 'WWTo4Q', 'ZZTo4Q', 'ZZTo2L2Nu', 'ZZTo2Nu2Q']
+['Tbar-tchan', 'T-tchan', 'Tbar-tW', 'T-tW', 'ST_s-channel_4f_leptonDecays', 'ST_s-channel_4f_hadronicDecays']
+['WJetsToLNu_HT-70To100', 'WJetsToLNu_HT-100To200', 'WJetsToLNu_HT-200To400', 'WJetsToLNu_HT-400To600', 'WJetsToLNu_HT-600To800', 'WJetsToLNu_HT-800To1200', 'WJetsToLNu_HT-1200To2500', 'WJetsToLNu_HT-2500ToInf']
+['ZZ4l']
+['Signal_2TeV']
+For sample Signal_2TeV Selection efficiency is: 
+0.527
+p89
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p89_Signal_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+['TTToSemiLeptonic', 'TTTo2L2Nu', 'TTToHadronic']
+['DYJetsToLL_M-4to50_HT-70to100', 'DYJetsToLL_M-4to50_HT-100to200', 'DYJetsToLL_M-4to50_HT-200to400', 'DYJetsToLL_M-4to50_HT-400to600', 'DYJetsToLL_M-4to50_HT-600toInf', 'DYJetsToLL_M-50_HT-70to100', 'DYJetsToLL_M-50_HT-100to200', 'DYJetsToLL_M-50_HT-200to400', 'DYJetsToLL_M-50_HT-400to600', 'DYJetsToLL_M-50_HT-600to800', 'DYJetsToLL_M-50_HT-800to1200', 'DYJetsToLL_M-50_HT-1200to2500', 'DYJetsToLL_M-50_HT-2500toInf']
+['WZ2l2q', 'WZ1l1nu2q', 'ZZ2l2q', 'WZ1l3nu', 'VV2l2nu', 'WWTo1L1Nu2Q', 'WWTo4Q', 'ZZTo4Q', 'ZZTo2L2Nu', 'ZZTo2Nu2Q']
+['Tbar-tchan', 'T-tchan', 'Tbar-tW', 'T-tW', 'ST_s-channel_4f_leptonDecays', 'ST_s-channel_4f_hadronicDecays']
+['WJetsToLNu_HT-70To100', 'WJetsToLNu_HT-100To200', 'WJetsToLNu_HT-200To400', 'WJetsToLNu_HT-400To600', 'WJetsToLNu_HT-600To800', 'WJetsToLNu_HT-800To1200', 'WJetsToLNu_HT-1200To2500', 'WJetsToLNu_HT-2500ToInf']
+['ZZ4l']
+['Signal_2TeV']
+For sample Signal_2TeV Selection efficiency is: 
+0.527
+p9
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p9_Signal_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+['TTToSemiLeptonic', 'TTTo2L2Nu', 'TTToHadronic']
+['DYJetsToLL_M-4to50_HT-70to100', 'DYJetsToLL_M-4to50_HT-100to200', 'DYJetsToLL_M-4to50_HT-200to400', 'DYJetsToLL_M-4to50_HT-400to600', 'DYJetsToLL_M-4to50_HT-600toInf', 'DYJetsToLL_M-50_HT-70to100', 'DYJetsToLL_M-50_HT-100to200', 'DYJetsToLL_M-50_HT-200to400', 'DYJetsToLL_M-50_HT-400to600', 'DYJetsToLL_M-50_HT-600to800', 'DYJetsToLL_M-50_HT-800to1200', 'DYJetsToLL_M-50_HT-1200to2500', 'DYJetsToLL_M-50_HT-2500toInf']
+['WZ2l2q', 'WZ1l1nu2q', 'ZZ2l2q', 'WZ1l3nu', 'VV2l2nu', 'WWTo1L1Nu2Q', 'WWTo4Q', 'ZZTo4Q', 'ZZTo2L2Nu', 'ZZTo2Nu2Q']
+['Tbar-tchan', 'T-tchan', 'Tbar-tW', 'T-tW', 'ST_s-channel_4f_leptonDecays', 'ST_s-channel_4f_hadronicDecays']
+['WJetsToLNu_HT-70To100', 'WJetsToLNu_HT-100To200', 'WJetsToLNu_HT-200To400', 'WJetsToLNu_HT-400To600', 'WJetsToLNu_HT-600To800', 'WJetsToLNu_HT-800To1200', 'WJetsToLNu_HT-1200To2500', 'WJetsToLNu_HT-2500ToInf']
+['ZZ4l']
+['Signal_2TeV']
+For sample Signal_2TeV Selection efficiency is: 
+0.516
+p91
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p91_Signal_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+['TTToSemiLeptonic', 'TTTo2L2Nu', 'TTToHadronic']
+['DYJetsToLL_M-4to50_HT-70to100', 'DYJetsToLL_M-4to50_HT-100to200', 'DYJetsToLL_M-4to50_HT-200to400', 'DYJetsToLL_M-4to50_HT-400to600', 'DYJetsToLL_M-4to50_HT-600toInf', 'DYJetsToLL_M-50_HT-70to100', 'DYJetsToLL_M-50_HT-100to200', 'DYJetsToLL_M-50_HT-200to400', 'DYJetsToLL_M-50_HT-400to600', 'DYJetsToLL_M-50_HT-600to800', 'DYJetsToLL_M-50_HT-800to1200', 'DYJetsToLL_M-50_HT-1200to2500', 'DYJetsToLL_M-50_HT-2500toInf']
+['WZ2l2q', 'WZ1l1nu2q', 'ZZ2l2q', 'WZ1l3nu', 'VV2l2nu', 'WWTo1L1Nu2Q', 'WWTo4Q', 'ZZTo4Q', 'ZZTo2L2Nu', 'ZZTo2Nu2Q']
+['Tbar-tchan', 'T-tchan', 'Tbar-tW', 'T-tW', 'ST_s-channel_4f_leptonDecays', 'ST_s-channel_4f_hadronicDecays']
+['WJetsToLNu_HT-70To100', 'WJetsToLNu_HT-100To200', 'WJetsToLNu_HT-200To400', 'WJetsToLNu_HT-400To600', 'WJetsToLNu_HT-600To800', 'WJetsToLNu_HT-800To1200', 'WJetsToLNu_HT-1200To2500', 'WJetsToLNu_HT-2500ToInf']
+['ZZ4l']
+['Signal_2TeV']
+For sample Signal_2TeV Selection efficiency is: 
+0.495
+p92
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p92_Signal_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+['TTToSemiLeptonic', 'TTTo2L2Nu', 'TTToHadronic']
+['DYJetsToLL_M-4to50_HT-70to100', 'DYJetsToLL_M-4to50_HT-100to200', 'DYJetsToLL_M-4to50_HT-200to400', 'DYJetsToLL_M-4to50_HT-400to600', 'DYJetsToLL_M-4to50_HT-600toInf', 'DYJetsToLL_M-50_HT-70to100', 'DYJetsToLL_M-50_HT-100to200', 'DYJetsToLL_M-50_HT-200to400', 'DYJetsToLL_M-50_HT-400to600', 'DYJetsToLL_M-50_HT-600to800', 'DYJetsToLL_M-50_HT-800to1200', 'DYJetsToLL_M-50_HT-1200to2500', 'DYJetsToLL_M-50_HT-2500toInf']
+['WZ2l2q', 'WZ1l1nu2q', 'ZZ2l2q', 'WZ1l3nu', 'VV2l2nu', 'WWTo1L1Nu2Q', 'WWTo4Q', 'ZZTo4Q', 'ZZTo2L2Nu', 'ZZTo2Nu2Q']
+['Tbar-tchan', 'T-tchan', 'Tbar-tW', 'T-tW', 'ST_s-channel_4f_leptonDecays', 'ST_s-channel_4f_hadronicDecays']
+['WJetsToLNu_HT-70To100', 'WJetsToLNu_HT-100To200', 'WJetsToLNu_HT-200To400', 'WJetsToLNu_HT-400To600', 'WJetsToLNu_HT-600To800', 'WJetsToLNu_HT-800To1200', 'WJetsToLNu_HT-1200To2500', 'WJetsToLNu_HT-2500ToInf']
+['ZZ4l']
+['Signal_2TeV']
+For sample Signal_2TeV Selection efficiency is: 
+0.494
+p93
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p93_Signal_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+['TTToSemiLeptonic', 'TTTo2L2Nu', 'TTToHadronic']
+['DYJetsToLL_M-4to50_HT-70to100', 'DYJetsToLL_M-4to50_HT-100to200', 'DYJetsToLL_M-4to50_HT-200to400', 'DYJetsToLL_M-4to50_HT-400to600', 'DYJetsToLL_M-4to50_HT-600toInf', 'DYJetsToLL_M-50_HT-70to100', 'DYJetsToLL_M-50_HT-100to200', 'DYJetsToLL_M-50_HT-200to400', 'DYJetsToLL_M-50_HT-400to600', 'DYJetsToLL_M-50_HT-600to800', 'DYJetsToLL_M-50_HT-800to1200', 'DYJetsToLL_M-50_HT-1200to2500', 'DYJetsToLL_M-50_HT-2500toInf']
+['WZ2l2q', 'WZ1l1nu2q', 'ZZ2l2q', 'WZ1l3nu', 'VV2l2nu', 'WWTo1L1Nu2Q', 'WWTo4Q', 'ZZTo4Q', 'ZZTo2L2Nu', 'ZZTo2Nu2Q']
+['Tbar-tchan', 'T-tchan', 'Tbar-tW', 'T-tW', 'ST_s-channel_4f_leptonDecays', 'ST_s-channel_4f_hadronicDecays']
+['WJetsToLNu_HT-70To100', 'WJetsToLNu_HT-100To200', 'WJetsToLNu_HT-200To400', 'WJetsToLNu_HT-400To600', 'WJetsToLNu_HT-600To800', 'WJetsToLNu_HT-800To1200', 'WJetsToLNu_HT-1200To2500', 'WJetsToLNu_HT-2500ToInf']
+['ZZ4l']
+['Signal_2TeV']
+For sample Signal_2TeV Selection efficiency is: 
+0.472
+p94
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p94_Signal_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+['TTToSemiLeptonic', 'TTTo2L2Nu', 'TTToHadronic']
+['DYJetsToLL_M-4to50_HT-70to100', 'DYJetsToLL_M-4to50_HT-100to200', 'DYJetsToLL_M-4to50_HT-200to400', 'DYJetsToLL_M-4to50_HT-400to600', 'DYJetsToLL_M-4to50_HT-600toInf', 'DYJetsToLL_M-50_HT-70to100', 'DYJetsToLL_M-50_HT-100to200', 'DYJetsToLL_M-50_HT-200to400', 'DYJetsToLL_M-50_HT-400to600', 'DYJetsToLL_M-50_HT-600to800', 'DYJetsToLL_M-50_HT-800to1200', 'DYJetsToLL_M-50_HT-1200to2500', 'DYJetsToLL_M-50_HT-2500toInf']
+['WZ2l2q', 'WZ1l1nu2q', 'ZZ2l2q', 'WZ1l3nu', 'VV2l2nu', 'WWTo1L1Nu2Q', 'WWTo4Q', 'ZZTo4Q', 'ZZTo2L2Nu', 'ZZTo2Nu2Q']
+['Tbar-tchan', 'T-tchan', 'Tbar-tW', 'T-tW', 'ST_s-channel_4f_leptonDecays', 'ST_s-channel_4f_hadronicDecays']
+['WJetsToLNu_HT-70To100', 'WJetsToLNu_HT-100To200', 'WJetsToLNu_HT-200To400', 'WJetsToLNu_HT-400To600', 'WJetsToLNu_HT-600To800', 'WJetsToLNu_HT-800To1200', 'WJetsToLNu_HT-1200To2500', 'WJetsToLNu_HT-2500ToInf']
+['ZZ4l']
+['Signal_2TeV']
+For sample Signal_2TeV Selection efficiency is: 
+0.450
+p95
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p95_Signal_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+['TTToSemiLeptonic', 'TTTo2L2Nu', 'TTToHadronic']
+['DYJetsToLL_M-4to50_HT-70to100', 'DYJetsToLL_M-4to50_HT-100to200', 'DYJetsToLL_M-4to50_HT-200to400', 'DYJetsToLL_M-4to50_HT-400to600', 'DYJetsToLL_M-4to50_HT-600toInf', 'DYJetsToLL_M-50_HT-70to100', 'DYJetsToLL_M-50_HT-100to200', 'DYJetsToLL_M-50_HT-200to400', 'DYJetsToLL_M-50_HT-400to600', 'DYJetsToLL_M-50_HT-600to800', 'DYJetsToLL_M-50_HT-800to1200', 'DYJetsToLL_M-50_HT-1200to2500', 'DYJetsToLL_M-50_HT-2500toInf']
+['WZ2l2q', 'WZ1l1nu2q', 'ZZ2l2q', 'WZ1l3nu', 'VV2l2nu', 'WWTo1L1Nu2Q', 'WWTo4Q', 'ZZTo4Q', 'ZZTo2L2Nu', 'ZZTo2Nu2Q']
+['Tbar-tchan', 'T-tchan', 'Tbar-tW', 'T-tW', 'ST_s-channel_4f_leptonDecays', 'ST_s-channel_4f_hadronicDecays']
+['WJetsToLNu_HT-70To100', 'WJetsToLNu_HT-100To200', 'WJetsToLNu_HT-200To400', 'WJetsToLNu_HT-400To600', 'WJetsToLNu_HT-600To800', 'WJetsToLNu_HT-800To1200', 'WJetsToLNu_HT-1200To2500', 'WJetsToLNu_HT-2500ToInf']
+['ZZ4l']
+['Signal_2TeV']
+For sample Signal_2TeV Selection efficiency is: 
+0.416
+p96
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p96_Signal_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+['TTToSemiLeptonic', 'TTTo2L2Nu', 'TTToHadronic']
+['DYJetsToLL_M-4to50_HT-70to100', 'DYJetsToLL_M-4to50_HT-100to200', 'DYJetsToLL_M-4to50_HT-200to400', 'DYJetsToLL_M-4to50_HT-400to600', 'DYJetsToLL_M-4to50_HT-600toInf', 'DYJetsToLL_M-50_HT-70to100', 'DYJetsToLL_M-50_HT-100to200', 'DYJetsToLL_M-50_HT-200to400', 'DYJetsToLL_M-50_HT-400to600', 'DYJetsToLL_M-50_HT-600to800', 'DYJetsToLL_M-50_HT-800to1200', 'DYJetsToLL_M-50_HT-1200to2500', 'DYJetsToLL_M-50_HT-2500toInf']
+['WZ2l2q', 'WZ1l1nu2q', 'ZZ2l2q', 'WZ1l3nu', 'VV2l2nu', 'WWTo1L1Nu2Q', 'WWTo4Q', 'ZZTo4Q', 'ZZTo2L2Nu', 'ZZTo2Nu2Q']
+['Tbar-tchan', 'T-tchan', 'Tbar-tW', 'T-tW', 'ST_s-channel_4f_leptonDecays', 'ST_s-channel_4f_hadronicDecays']
+['WJetsToLNu_HT-70To100', 'WJetsToLNu_HT-100To200', 'WJetsToLNu_HT-200To400', 'WJetsToLNu_HT-400To600', 'WJetsToLNu_HT-600To800', 'WJetsToLNu_HT-800To1200', 'WJetsToLNu_HT-1200To2500', 'WJetsToLNu_HT-2500ToInf']
+['ZZ4l']
+['Signal_2TeV']
+For sample Signal_2TeV Selection efficiency is: 
+0.381

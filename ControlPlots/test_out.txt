@@ -1,0 +1,467 @@
+Run Iteratively
+About to run processor
+Preprocessing 100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 25/25 [ 0:00:20 < 0:00:00 | 1.2 file/s ]
+!!!=====Dataset=====!!!!
+<class 'str'>
+ZZ4l
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 2
+No BJets
+!!!=====Dataset=====!!!!
+<class 'str'>
+ZZ4l
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 56
+Debugging Leading dR
+Debugging Sub-Leading dR
+==================Metadata Crap==================
+b4560492-ad54-11f1-9cb6-2c446980beef
+0
+56
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!!=====Dataset=====!!!!
+<class 'str'>
+ZZ4l
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 54
+Debugging Leading dR
+Debugging Sub-Leading dR
+==================Metadata Crap==================
+b4577746-ad54-11f1-b0a4-ec456980beef
+0
+54
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!!=====Dataset=====!!!!
+<class 'str'>
+ZZ4l
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 60
+Debugging Leading dR
+Debugging Sub-Leading dR
+==================Metadata Crap==================
+a2c9d576-ad56-11f1-8aa2-77456980beef
+0
+60
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!!=====Dataset=====!!!!
+<class 'str'>
+ZZ4l
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 61
+Debugging Leading dR
+Debugging Sub-Leading dR
+==================Metadata Crap==================
+ac24ee3a-ad56-11f1-bb37-92456980beef
+0
+61
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!!=====Dataset=====!!!!
+<class 'str'>
+ZZ4l
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 70
+Debugging Leading dR
+Debugging Sub-Leading dR
+==================Metadata Crap==================
+a0f91072-ad56-11f1-9760-ec456980beef
+0
+70
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!!=====Dataset=====!!!!
+<class 'str'>
+ZZ4l
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 22
+Debugging Leading dR
+Debugging Sub-Leading dR
+==================Metadata Crap==================
+a0ff14d6-ad56-11f1-befc-e7456980beef
+0
+22
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!!=====Dataset=====!!!!
+<class 'str'>
+ZZ4l
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 78
+Debugging Leading dR
+Debugging Sub-Leading dR
+==================Metadata Crap==================
+a2c53408-ad56-11f1-87d2-81456980beef
+0
+78
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!!=====Dataset=====!!!!
+<class 'str'>
+ZZ4l
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 57
+Debugging Leading dR
+Debugging Sub-Leading dR
+==================Metadata Crap==================
+a1665966-ad56-11f1-99dd-b0456980beef
+0
+57
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!!=====Dataset=====!!!!
+<class 'str'>
+ZZ4l
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 76
+Debugging Leading dR
+Debugging Sub-Leading dR
+==================Metadata Crap==================
+a29834da-ad56-11f1-8b86-8a456980beef
+0
+76
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!!=====Dataset=====!!!!
+<class 'str'>
+ZZ4l
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 59
+Debugging Leading dR
+Debugging Sub-Leading dR
+==================Metadata Crap==================
+a1411908-ad56-11f1-ae32-ce456980beef
+0
+59
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!!=====Dataset=====!!!!
+<class 'str'>
+ZZ4l
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 74
+Debugging Leading dR
+Debugging Sub-Leading dR
+==================Metadata Crap==================
+a35fdc60-ad56-11f1-a712-97456980beef
+0
+74
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!!=====Dataset=====!!!!
+<class 'str'>
+ZZ4l
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 58
+Debugging Leading dR
+Debugging Sub-Leading dR
+==================Metadata Crap==================
+a2525816-ad56-11f1-9e15-e1456980beef
+0
+58
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!!=====Dataset=====!!!!
+<class 'str'>
+ZZ4l
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 74
+Debugging Leading dR
+Debugging Sub-Leading dR
+==================Metadata Crap==================
+bc159800-ad54-11f1-acdf-e7456980beef
+0
+74
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!!=====Dataset=====!!!!
+<class 'str'>
+ZZ4l
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 52
+Debugging Leading dR
+Debugging Sub-Leading dR
+==================Metadata Crap==================
+a34b7b6c-ad56-11f1-85f4-c7456980beef
+0
+52
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!!=====Dataset=====!!!!
+<class 'str'>
+ZZ4l
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 64
+Debugging Leading dR
+Debugging Sub-Leading dR
+==================Metadata Crap==================
+a3ecd69c-ad56-11f1-a4d0-69456980beef
+0
+64
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!!=====Dataset=====!!!!
+<class 'str'>
+ZZ4l
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 56
+Debugging Leading dR
+Debugging Sub-Leading dR
+==================Metadata Crap==================
+a992f0fe-ad56-11f1-b4a5-e4456980beef
+0
+56
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!!=====Dataset=====!!!!
+<class 'str'>
+ZZ4l
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 72
+Debugging Leading dR
+Debugging Sub-Leading dR
+==================Metadata Crap==================
+a3be6c44-ad56-11f1-b3c2-6f456980beef
+0
+72
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!!=====Dataset=====!!!!
+<class 'str'>
+ZZ4l
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 73
+Debugging Leading dR
+Debugging Sub-Leading dR
+==================Metadata Crap==================
+a323b032-ad56-11f1-b0ab-bd456980beef
+0
+73
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!!=====Dataset=====!!!!
+<class 'str'>
+ZZ4l
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 64
+Debugging Leading dR
+Debugging Sub-Leading dR
+==================Metadata Crap==================
+a439cc2c-ad56-11f1-aefa-bb456980beef
+0
+64
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!!=====Dataset=====!!!!
+<class 'str'>
+ZZ4l
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 64
+Debugging Leading dR
+Debugging Sub-Leading dR
+==================Metadata Crap==================
+a2799192-ad56-11f1-ac97-6a456980beef
+0
+64
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!!=====Dataset=====!!!!
+<class 'str'>
+ZZ4l
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 53
+Debugging Leading dR
+Debugging Sub-Leading dR
+==================Metadata Crap==================
+a401884e-ad56-11f1-b351-b7456980beef
+0
+53
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!!=====Dataset=====!!!!
+<class 'str'>
+ZZ4l
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 51
+Debugging Leading dR
+Debugging Sub-Leading dR
+==================Metadata Crap==================
+a43b2090-ad56-11f1-ad61-cf456980beef
+0
+51
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!!=====Dataset=====!!!!
+<class 'str'>
+ZZ4l
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 36
+Debugging Leading dR
+Debugging Sub-Leading dR
+==================Metadata Crap==================
+a62836ea-ad56-11f1-8b93-d7456980beef
+0
+36
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!!=====Dataset=====!!!!
+<class 'str'>
+ZZ4l
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 56
+Debugging Leading dR
+Debugging Sub-Leading dR
+==================Metadata Crap==================
+b22a6d16-ad54-11f1-8a52-32446980beef
+0
+56
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+Processing 100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 25/25 [ 0:00:51 < 0:00:00 | 0.5 chunk/s ]
+It takes about 72.4 s to run the coffea processor with 4 boosted tau selections

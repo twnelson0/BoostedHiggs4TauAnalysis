@@ -53,14 +53,16 @@ if __name__ == "__main__":
 
 	#Dictionaries and arrays with information on plot constrution, naming and samples
 	four_tau_hist_list = [
-			"boostedtau_pt_Trigg","boostedtau_eta_Trigg","boostedtau_phi_Trigg",
-			"electron_pt_Trigg","electron_eta_Trigg","electron_phi_Trigg",
-			"muon_pt_Trigg","muon_eta_Trigg","muon_phi_Trigg", #"Leadingmuon_pt_Trigg",#"Leadingmuon_eta_Trigg",
-			"Jet_pt_Trigg","Jet_eta_Trigg","Jet_phi_Trigg",
-			"AK8Jet_pt_Trigg","AK8Jet_eta_Trigg","AK8Jet_phi_Trigg","nAK8Jet_Trigg",
-			"MET","HT","MHT", #, "Mini_Cutflow", "Mini_NMinus1"
-			"ZMult", "bJetMult",
-			"LeadingPair_dR", "NextLeadingPair_dR", "FourTauMass"
+		#	"boostedtau_pt_Trigg","boostedtau_eta_Trigg","boostedtau_phi_Trigg",
+		#	"electron_pt_Trigg","electron_eta_Trigg","electron_phi_Trigg",
+		#	"muon_pt_Trigg","muon_eta_Trigg","muon_phi_Trigg", #"Leadingmuon_pt_Trigg",#"Leadingmuon_eta_Trigg",
+		#	"Jet_pt_Trigg","Jet_eta_Trigg","Jet_phi_Trigg",
+		#	"AK8Jet_pt_Trigg","AK8Jet_eta_Trigg","AK8Jet_phi_Trigg","nAK8Jet_Trigg",
+		#	"MET","HT","MHT", #, "Mini_Cutflow", "Mini_NMinus1"
+		#	"ZMult", "bJetMult",
+		#	"LeadingPair_dR", "NextLeadingPair_dR", "FourTauMass",
+			"DBT_FullDist", "DBT_Dist"
+			#"MVA_FullDist", "MVA_Dist"
 			]
 
 	#Additional boosted tau distributions to pull based on boosted tau requirements
@@ -83,10 +85,10 @@ if __name__ == "__main__":
 	
 	#background_list_full = [r"$t\bar{t}$", r"Drell-Yan+Jets", "Di-Bosons", "Single Top", "W+Jets", r"$ZZ \rightarrow 4l$"]
 	background_list_full = [r"$t\bar{t}$", r"Drell-Yan+Jets", "Di-Bosons", "Single Top", "W+Jets", r"$ZZ \rightarrow 4l$","Signal 2 TeV"]
-	background_list_fullQCD = [r"$t\bar{t}$", r"Drell-Yan+Jets", "Di-Bosons", "Single Top", "W+Jets", r"$ZZ \rightarrow 4l$","QCD"]
+	background_list_fullQCD = [r"$t\bar{t}$", r"Drell-Yan+Jets", "Di-Bosons", "Single Top", "W+Jets", r"$ZZ \rightarrow 4l$","QCD","Signal 2 TeV"]
 	background_list_test = [r"$ZZ \rightarrow 4l$"]
 	background_list_none = []
-	background_list = background_list_full
+	background_list = background_list_fullQCD
 	background_plot_names = {r"$t\bar{t}$" : "_ttbar_", r"$t\bar{t}$ Hadronic" : "_ttbarHadronic_", r"$t\bar{t}$ Semileptonic" : "_ttbarSemilepton_",
 			r"$t\bar{t}$ 2L2Nu" : "_ttbar2L2Nu_", r"Drell-Yan+Jets": "_DYJets_", "Di-Bosons" : "_DiBosons_", "Single Top": "_SingleTop_", "QCD" : "_QCD_", 
 			"W+Jets" : "_WJets_", r"$ZZ \rightarrow 4l$" : "_ZZ4l_", r"$ZZ \rightarrow 4l$ Test": "_ZZ4lTest_", r"$ZZ \rightarrow 4l$ Control": "_ZZ4lControl_",
@@ -100,7 +102,8 @@ if __name__ == "__main__":
 			r"Drell-Yan+Jets": ["DYJetsToLL_M-4to50_HT-70to100","DYJetsToLL_M-4to50_HT-100to200","DYJetsToLL_M-4to50_HT-200to400","DYJetsToLL_M-4to50_HT-400to600",
 			"DYJetsToLL_M-4to50_HT-600toInf","DYJetsToLL_M-50_HT-70to100","DYJetsToLL_M-50_HT-100to200","DYJetsToLL_M-50_HT-200to400",
 			"DYJetsToLL_M-50_HT-400to600","DYJetsToLL_M-50_HT-600to800","DYJetsToLL_M-50_HT-800to1200","DYJetsToLL_M-50_HT-1200to2500","DYJetsToLL_M-50_HT-2500toInf"], 
-			"Di-Bosons": ["WZ2l2q","WZ1l1nu2q","ZZ2l2q", "WZ1l3nu", "VV2l2nu", "WWTo1L1Nu2Q", "WWTo4Q", "ZZTo4Q", "ZZTo2L2Nu", "ZZTo2Nu2Q"], 
+			#"Di-Bosons": ["WZ2l2q","WZ1l1nu2q","ZZ2l2q", "WZ1l3nu", "VV2l2nu", "WWTo1L1Nu2Q", "WWTo4Q", "ZZTo4Q", "ZZTo2L2Nu", "ZZTo2Nu2Q"], 
+			"Di-Bosons": ["WZ2l2q","ZZ2l2q", "WZ1l3nu", "VV2l2nu", "WWTo4Q", "ZZTo4Q", "ZZTo2L2Nu", "ZZTo2Nu2Q"], 
 			"Single Top": ["Tbar-tchan","T-tchan","Tbar-tW","T-tW","ST_s-channel_4f_leptonDecays", "ST_s-channel_4f_hadronicDecays"], 
 			"W+Jets": ["WJetsToLNu_HT-70To100","WJetsToLNu_HT-100To200","WJetsToLNu_HT-200To400","WJetsToLNu_HT-400To600","WJetsToLNu_HT-600To800","WJetsToLNu_HT-800To1200","WJetsToLNu_HT-1200To2500","WJetsToLNu_HT-2500ToInf"],
 			"W+Jets HT 100-200 GeV": ["WJetsToLNu_HT-100To200"],"W+Jets HT 200-400 GeV": ["WJetsToLNu_HT-200To400"],"W+Jets HT 400-600 GeV": ["WJetsToLNu_HT-400To600"],
@@ -154,6 +157,10 @@ if __name__ == "__main__":
         "LeadingPair_dR": "LeadDiTau_DeltaR_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
         "NextLeadingPair_dR": "NextLeadDiTau_DeltaR_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
         "FourTauMass": "FourTauMass_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
+		"DBT_FullDist": "Raw_DBT_Distribution_Full" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
+		"MVA_FullDist": "Raw_MVA_Distribution_Full" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
+		"DBT_Dist": "Raw_DBT_Distribution" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
+		"MVA_Dist": "Raw_MVA_Distribution" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
 	}
 
 
@@ -292,9 +299,9 @@ if __name__ == "__main__":
 						
 				if (hist_name != "Electron_tau_dR_Arr" and hist_name != "Muon_tau_dR_Arr"):
 					if (background == backgrounds[0]):
-						crnt_hist = coffea_input[background][hist_name][{"region": args.ControlRegion}]
+						crnt_hist = coffea_input[background][hist_name][{"region": args.ControlRegion}][0::10j]
 					else:
-						crnt_hist += coffea_input[background][hist_name][{"region": args.ControlRegion}]
+						crnt_hist += coffea_input[background][hist_name][{"region": args.ControlRegion}][0::10j]
 					if (background == backgrounds[-1]):
 						temp_hist_dict[background_type] = crnt_hist #Try to fix stacking bug
 					
@@ -335,7 +342,7 @@ if __name__ == "__main__":
 			axis_label = coffea_input["ZZ4l"][hist_name][{"region": args.ControlRegion}].axes[0].label
 		
 		fig, ax_main, ax_comp = hep.comp.data_model(
-			data_hist = coffea_input["Data_Mu"][hist_name][{"region": args.ControlRegion}] + coffea_input["Data_HT"][hist_name][{"region": args.ControlRegion}],  
+			data_hist = coffea_input["Data_Mu"][hist_name][{"region": args.ControlRegion}][0::10j] + coffea_input["Data_HT"][hist_name][{"region": args.ControlRegion}][0::10j],  
 			stacked_components = background_array[:len(background_array)-1],
 			stacked_labels = background_list[:len(background_list)-1],
 			stacked_colors = TABLEAU_COLORS[:len(background_list)-1],
@@ -348,7 +355,7 @@ if __name__ == "__main__":
 		xlabel = ax_main.set_xlabel(axis_label)
 		
 		#Stupid solution to make the points thicker (draw a copy of the data ontop of the previously produced ratio plot with thicker points)
-		hep.histplot(coffea_input["Data_Mu"][hist_name][{"region": args.ControlRegion}] + coffea_input["Data_HT"][hist_name][{"region": args.ControlRegion}], ax=ax_main, histtype="errorbar",markersize=20, yerr=True, color = "k") 
+		hep.histplot(coffea_input["Data_Mu"][hist_name][{"region": args.ControlRegion}][0::10j] + coffea_input["Data_HT"][hist_name][{"region": args.ControlRegion}][0::10j], ax=ax_main, histtype="errorbar",markersize=20, yerr=True, color = "k") 
 		
 		#Add signal
 		hep.histplot(background_array[len(background_array)-1], ax=ax_main, color = 'cyan', linewidth = 3.2, label = background_list[len(background_list)-1], histtype = "step")

@@ -58,7 +58,7 @@ def move_X509():
 
 if __name__ == "__main__":
 	#Condor related stuff
-	run_on_condor = True
+	run_on_condor = True 
 	os.environ["CONDOR_CONFIG"] = "/etc/condor/condor_config"
 	
 	if (run_on_condor):
@@ -125,15 +125,13 @@ if __name__ == "__main__":
 		runner = processor.Runner(executor = processor.IterativeExecutor(), schema=BaseSchema)
 
 	#Diretory for files
-	Skimmed_4tau_base_MC = "root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/MC/"
-	Skimmed_4tau_base_MC_DBT = "root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/MC_DBT_Skims/"
-	Skimmed_4tau_base_Data = "root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/Data/"
-	Skimmed_4tau_base_Data_DBT = "root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/Data/DBT_Skims/"
+	Skimmed_4tau_loc_MC_DBT = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/MC_DBT_Skims/"
+	Skimmed_4tau_loc_Data_DBT = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/Data/DBT_Skims/"
 	Skimmed_4tau_loc_Data = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/Data/"
 	Skimmed_4tau_loc_MC = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/MC/"
 
 	#Make full arrays of single Muon data
-    SingleMu_2018A = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018A_27September26_1644_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 
+	SingleMu_2018A = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018A_27September26_1644_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 
 	SingleMu_2018B = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018B_27September26_1627_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 
 	SingleMu_2018C = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018C_27September26_1637_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 
 	SingleMu_2018D = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018D_27September26_1704_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 	
@@ -143,14 +141,14 @@ if __name__ == "__main__":
 	JetHT_2018D = glob.glob(Skimmed_4tau_loc_Data + "JetHT_Run2018D_26September26_2035_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 
 	
     #Make full arrays of single Muon data
-	SingleMu_2018A_DBT = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018A_15January26_0751_skim_Jan26Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 
-	SingleMu_2018B_DBT = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018B_15January26_0731_skim_Jan26Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 
-	SingleMu_2018C_DBT = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018C_15January26_0740_skim_Jan26Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 
-	SingleMu_2018D_DBT = glob.glob(Skimmed_4tau_loc_Data + "SingleMu_Run2018D_15January26_0815_skim_Jan26Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 	
-	JetHT_2018A_DBT = glob.glob(Skimmed_4tau_loc_Data + "JetHT_Run2018A_13January26_1203_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root") 
-	JetHT_2018B_DBT = glob.glob(Skimmed_4tau_loc_Data + "JetHT_Run2018B_13January26_1228_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root") 
-	JetHT_2018C_DBT = glob.glob(Skimmed_4tau_loc_Data + "JetHT_Run2018C_13January26_1240_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root") 
-	JetHT_2018D_DBT = glob.glob(Skimmed_4tau_loc_Data + "JetHT_Run2018D_13January26_1130_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root") 
+	SingleMu_2018A_DBT = glob.glob(Skimmed_4tau_loc_Data_DBT + "SingleMu_Run2018A_15January26_0751_skim_Jan26Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 
+	SingleMu_2018B_DBT = glob.glob(Skimmed_4tau_loc_Data_DBT + "SingleMu_Run2018B_15January26_0731_skim_Jan26Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 
+	SingleMu_2018C_DBT = glob.glob(Skimmed_4tau_loc_Data_DBT + "SingleMu_Run2018C_15January26_0740_skim_Jan26Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 
+	SingleMu_2018D_DBT = glob.glob(Skimmed_4tau_loc_Data_DBT + "SingleMu_Run2018D_15January26_0815_skim_Jan26Skim/singleFileSkimForSubmission-NANO_NANO_*.root") 	
+	JetHT_2018A_DBT = glob.glob(Skimmed_4tau_loc_Data_DBT + "JetHT_Run2018A_13January26_1203_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root") 
+	JetHT_2018B_DBT = glob.glob(Skimmed_4tau_loc_Data_DBT + "JetHT_Run2018B_13January26_1228_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root") 
+	JetHT_2018C_DBT = glob.glob(Skimmed_4tau_loc_Data_DBT + "JetHT_Run2018C_13January26_1240_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root") 
+	JetHT_2018D_DBT = glob.glob(Skimmed_4tau_loc_Data_DBT + "JetHT_Run2018D_13January26_1130_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root") 
 
 
 	#Single MuonA debugging production
@@ -165,71 +163,70 @@ if __name__ == "__main__":
 	ZZ4L_2018_Offline_SingleFile = glob.glob(Skimmed_4tau_loc_MC + "ZZTo4L_26August25_0757_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_12.root")
 
 	#Make full arrays of backgrounds (DBT Skimmed)
-	TTToSemiLeptonic_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "TTToSemiLeptonic_35August25_0448_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	TTTo2L2Nu_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "TTTo2L2Nu_26August25_0719_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	TTToHadronic_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "TTToHadronic_25October25_0813_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	ZZ4L_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "ZZTo4L_26August25_0757_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	ZZTo2L2Nu_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "ZZTo2L2Nu_04March26_0503_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	ZZTo2L2Q_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "ZZTo2Q2L_26August25_1034_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	ZZTo2Nu2Q_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "ZZTo2Nu2Q_04March26_0510_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	ZZTo4Q_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "ZZTo4Q_04March26_0505_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	VV2l2nu_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "WWTo2L2Nu_26August25_1040_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	WWTo1L1Nu2Q_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "WWTo2L2Nu_26August25_1040_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	WWTo4Q_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "WWTo4Q_04March26_0512_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	WZ1l3nu_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "WZTo1L3Nu_4f_26August25_1016_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	ZZ2l2q_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "ZZTo2Q2L_26August25_1034_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	WZ2l2q_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "WZTo2L2Q_26August25_0926_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	WZ1l1nu2q_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "WZTo1L1Nu2Q_26August25_0840_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	DYJetsToLL_M4to50_HT70to100_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "DYJetsToLL_M-4to50_HT-70to100_12December25_1606_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	DYJetsToLL_M4to50_HT100to200_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "DYJetsToLL_M-4to50_HT-100to200_12December25_1604_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	DYJetsToLL_M4to50_HT200to400_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "DYJetsToLL_M-4to50_HT-200to400_12December25_1544_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	DYJetsToLL_M4to50_HT400to600_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "DYJetsToLL_M-4to50_HT-400to600_12December25_1552_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	DYJetsToLL_M4to50_HT600toInf_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "DYJetsToLL_M-4to50_HT-600toInf_12December25_1608_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	DYJetsToLL_M50_HT70to100_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "DYJetsToLL_M-50_HT-70to100_12December25_1556_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	DYJetsToLL_M50_HT100to200_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "DYJetsToLL_M-50_HT-100to200_12December25_1548_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	DYJetsToLL_M50_HT200to400_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "DYJetsToLL_M-50_HT-200to400_12December25_1559_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	DYJetsToLL_M50_HT400to600_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "DYJetsToLL_M-50_HT-400to600_12December25_1546_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	DYJetsToLL_M50_HT600to800_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "DYJetsToLL_M-50_HT-600to800_12December25_1555_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	DYJetsToLL_M50_HT800to1200_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "DYJetsToLL_M-50_HT-800to1200_12December25_1602_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	DYJetsToLL_M50_HT1200to2500_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "DYJetsToLL_M-50_HT-1200to2500_12December25_1547_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	DYJetsToLL_M50_HT2500toInf_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "DYJetsToLL_M-50_HT-2500toInf_12December25_1554_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	Ttchan_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "ST_t-channel_top_4f_InclusiveDecays_26August25_0843_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	Tbartchan_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "ST_t-channel_antitop_4f_InclusiveDecays_26August25_0821_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	TtW_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "ST_tW_top_5f_inclusiveDecays_26August25_0753_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	TbartW_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "ST_tW_antitop_5f_inclusiveDecays_26August25_1030_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	ST_schannel_4f_hadronicDecays_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "ST_s-channel_4f_hadronicDecays_04March26_0506_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	ST_schannel_4f_leptonDecays_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "ST_s-channel_4f_leptonDecays_04March26_0507_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	WJetsToLNu_HT70To100_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "WJetsToLNu_HT-70To100_04March26_0515_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	WJetsToLNu_HT100To200_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "WJetsToLNu_HT-100To200_26August25_0810_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	WJetsToLNu_HT200To400_2018_DBT = glob.glob(Skimmed_4tau_loc_MC + "WJetsToLNu_HT-200To400_26August25_0709_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	WJetsToLNu_HT400To600_2018_DBT = np.append(glob.glob(Skimmed_4tau_loc_MC + "WJetsToLNu_HT-400To600_26August25_1014_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root"),
-		glob.glob(Skimmed_4tau_loc_MC + "WJetsToLNu_HT-400To600_OtherPart_26August25_1032_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root"))
-	WJetsToLNu_HT600To800_2018_DBT = np.append(glob.glob(Skimmed_4tau_loc_MC + "WJetsToLNu_HT-600To800_26August25_0755_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root"),
-		glob.glob(Skimmed_4tau_loc_MC + "WJetsToLNu_HT-600To800_OtherPart_26August25_0752_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root"))
-	WJetsToLNu_HT800To1200_2018_DBT = np.append(glob.glob(Skimmed_4tau_loc_MC + "WJetsToLNu_HT-800To1200_26August25_0708_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root"),
-		glob.glob(Skimmed_4tau_loc_MC + "WJetsToLNu_HT-800To1200_OtherPart_26August25_0925_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root"))
-	WJetsToLNu_HT1200To2500_2018_DBT = np.append(glob.glob(Skimmed_4tau_loc_MC + "WJetsToLNu_HT-120)0To2500_26August25_1016_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root"),
-		glob.glob(Skimmed_4tau_loc_MC + "WJetsToLNu_HT-1200To2500_OtherPart_26August25_1041_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root"))
-	WJetsToLNu_HT2500ToInf_2018_DBT = np.append(glob.glob(Skimmed_4tau_loc_MC + "WJetsToLNu_HT-2500ToInf_26August25_1047_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root"),
-		glob.glob(Skimmed_4tau_loc_MC + "WJetsToLNu_HT-2500ToInf_OtherPart_26August25_1043_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root"))
-	QCD_HT50To100_DBT = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT50to100_23April26_0525_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	QCD_HT100To200_DBT = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT100to200_23April26_0519_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	QCD_HT200To300_DBT = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT200to300_23April26_0542_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	QCD_HT300To500_DBT = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT300to500_23April26_0555_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	QCD_HT500To700_DBT = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT500to700_23April26_0512_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	QCD_HT700To1000_DBT = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT700to1000_23April26_0528_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	QCD_HT1000To1500_DBT = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT1000to1500_23April26_0536_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	QCD_HT1500To2000_DBT = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT1500to2000_23April26_0539_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	QCD_HT2000ToInf_DBT = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT2000toInf_23April26_0541_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	Signal_HH_2TeV_DBT = glob.glob(Skimmed_4tau_loc_MC + "2TeVSignal_4Tau_18August26_1525_skim_NewSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	TTToSemiLeptonic_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "TTToSemiLeptonic_35August25_0448_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	TTTo2L2Nu_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "TTTo2L2Nu_26August25_0719_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	TTToHadronic_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "TTToHadronic_25October25_0813_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	ZZ4L_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "ZZTo4L_26August25_0757_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	ZZTo2L2Nu_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "ZZTo2L2Nu_04March26_0503_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	ZZTo2L2Q_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "ZZTo2Q2L_26August25_1034_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	ZZTo2Nu2Q_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "ZZTo2Nu2Q_04March26_0510_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	ZZTo4Q_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "ZZTo4Q_04March26_0505_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	VV2l2nu_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "WWTo2L2Nu_26August25_1040_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	#WWTo1L1Nu2Q_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "WWTo2L2Nu_26August25_1040_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	WWTo4Q_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "WWTo4Q_04March26_0512_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	WZ1l3nu_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "WZTo1L3Nu_4f_26August25_1016_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	ZZ2l2q_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "ZZTo2Q2L_26August25_1034_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	WZ2l2q_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "WZTo2L2Q_26August25_0926_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	WZ1l1nu2q_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "WZTo1L1Nu2Q_26August25_0840_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	DYJetsToLL_M4to50_HT70to100_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "DYJetsToLL_M-4to50_HT-70to100_12December25_1606_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	DYJetsToLL_M4to50_HT100to200_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "DYJetsToLL_M-4to50_HT-100to200_12December25_1604_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	DYJetsToLL_M4to50_HT200to400_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "DYJetsToLL_M-4to50_HT-200to400_12December25_1544_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	DYJetsToLL_M4to50_HT400to600_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "DYJetsToLL_M-4to50_HT-400to600_12December25_1552_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	DYJetsToLL_M4to50_HT600toInf_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "DYJetsToLL_M-4to50_HT-600toInf_12December25_1608_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	DYJetsToLL_M50_HT70to100_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "DYJetsToLL_M-50_HT-70to100_12December25_1556_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	DYJetsToLL_M50_HT100to200_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "DYJetsToLL_M-50_HT-100to200_12December25_1548_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	DYJetsToLL_M50_HT200to400_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "DYJetsToLL_M-50_HT-200to400_12December25_1559_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	DYJetsToLL_M50_HT400to600_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "DYJetsToLL_M-50_HT-400to600_12December25_1546_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	DYJetsToLL_M50_HT600to800_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "DYJetsToLL_M-50_HT-600to800_12December25_1555_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	DYJetsToLL_M50_HT800to1200_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "DYJetsToLL_M-50_HT-800to1200_12December25_1602_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	DYJetsToLL_M50_HT1200to2500_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "DYJetsToLL_M-50_HT-1200to2500_12December25_1547_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	DYJetsToLL_M50_HT2500toInf_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "DYJetsToLL_M-50_HT-2500toInf_12December25_1554_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	Ttchan_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "ST_t-channel_top_4f_InclusiveDecays_26August25_0843_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	Tbartchan_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "ST_t-channel_antitop_4f_InclusiveDecays_26August25_0821_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	TtW_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "ST_tW_top_5f_inclusiveDecays_26August25_0753_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	TbartW_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "ST_tW_antitop_5f_inclusiveDecays_26August25_1030_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	ST_schannel_4f_hadronicDecays_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "ST_s-channel_4f_hadronicDecays_04March26_0506_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	ST_schannel_4f_leptonDecays_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "ST_s-channel_4f_leptonDecays_04March26_0507_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	WJetsToLNu_HT70To100_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "WJetsToLNu_HT-70To100_04March26_0515_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	WJetsToLNu_HT100To200_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "WJetsToLNu_HT-100To200_26August25_0810_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	WJetsToLNu_HT200To400_2018_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "WJetsToLNu_HT-200To400_26August25_0709_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	WJetsToLNu_HT400To600_2018_DBT = np.append(glob.glob(Skimmed_4tau_loc_MC_DBT + "WJetsToLNu_HT-400To600_26August25_1014_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root"),
+		glob.glob(Skimmed_4tau_loc_MC_DBT + "WJetsToLNu_HT-400To600_OtherPart_26August25_1032_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root"))
+	WJetsToLNu_HT600To800_2018_DBT = np.append(glob.glob(Skimmed_4tau_loc_MC_DBT + "WJetsToLNu_HT-600To800_26August25_0755_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root"),
+		glob.glob(Skimmed_4tau_loc_MC_DBT + "WJetsToLNu_HT-600To800_OtherPart_26August25_0752_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root"))
+	WJetsToLNu_HT800To1200_2018_DBT = np.append(glob.glob(Skimmed_4tau_loc_MC_DBT + "WJetsToLNu_HT-800To1200_26August25_0708_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root"),
+		glob.glob(Skimmed_4tau_loc_MC_DBT + "WJetsToLNu_HT-800To1200_OtherPart_26August25_0925_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root"))
+	WJetsToLNu_HT1200To2500_2018_DBT = np.append(glob.glob(Skimmed_4tau_loc_MC_DBT + "WJetsToLNu_HT-120)0To2500_26August25_1016_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root"),
+		glob.glob(Skimmed_4tau_loc_MC_DBT + "WJetsToLNu_HT-1200To2500_OtherPart_26August25_1041_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root"))
+	WJetsToLNu_HT2500ToInf_2018_DBT = np.append(glob.glob(Skimmed_4tau_loc_MC_DBT + "WJetsToLNu_HT-2500ToInf_26August25_1047_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root"),
+		glob.glob(Skimmed_4tau_loc_MC_DBT + "WJetsToLNu_HT-2500ToInf_OtherPart_26August25_1043_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_*.root"))
+	QCD_HT50To100_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "QCD_HT50to100_23April26_0525_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	QCD_HT100To200_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "QCD_HT100to200_23April26_0519_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	QCD_HT200To300_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "QCD_HT200to300_23April26_0542_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	QCD_HT300To500_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "QCD_HT300to500_23April26_0555_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	QCD_HT500To700_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "QCD_HT500to700_23April26_0512_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	QCD_HT700To1000_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "QCD_HT700to1000_23April26_0528_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	QCD_HT1000To1500_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "QCD_HT1000to1500_23April26_0536_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	QCD_HT1500To2000_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "QCD_HT1500to2000_23April26_0539_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	QCD_HT2000ToInf_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "QCD_HT2000toInf_23April26_0541_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	Signal_HH_2TeV_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "2TeVSignal_4Tau_18August26_1525_skim_NewSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	
     #Make full arrays of backgrounds
-	TTToSemiLeptonic_2018 = glob.glob(Skimmed_4tau_loc_MC + "/singleFileSkimForSubmission-NANO_NANO_*.root")
-	TTTo2L2Nu_2018 = glob.glob(Skimmed_4tau_loc_MC + "/singleFileSkimForSubmission-NANO_NANO_*.root")
-	TTToHadronic_2018 = glob.glob(Skimmed_4tau_loc_MC + "/singleFileSkimForSubmission-NANO_NANO_*.root")
-	ZZ4L_2018 = glob.glob(Skimmed_4tau_loc_MC + "/singleFileSkimForSubmission-NANO_NANO_*.root")
+	TTToSemiLeptonic_2018 = glob.glob(Skimmed_4tau_loc_MC + "TTToSemiLeptonic_25September26_2027_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	TTTo2L2Nu_2018 = glob.glob(Skimmed_4tau_loc_MC + "TTTo2L2Nu_25September26_1821_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	TTToHadronic_2018 = glob.glob(Skimmed_4tau_loc_MC + "TTToHadronic_25September26_1719_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	ZZ4L_2018 = glob.glob(Skimmed_4tau_loc_MC + "ZZTo4L_25September26_1919_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	ZZTo2L2Nu_2018 = glob.glob(Skimmed_4tau_loc_MC + "ZZTo2L2Nu_25September26_1908_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	ZZTo2L2Q_2018 = glob.glob(Skimmed_4tau_loc_MC + "ZZTo2Q2L_25September26_2116_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	ZZTo2Nu2Q_2018 = glob.glob(Skimmed_4tau_loc_MC + "ZZTo2Nu2Q_25September26_2115_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	ZZTo4Q_2018 = glob.glob(Skimmed_4tau_loc_MC + "ZZTo4Q_25September26_2113_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	VV2l2nu_2018 = glob.glob(Skimmed_4tau_loc_MC + "WWTo2L2Nu_25September26_2132_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
@@ -237,7 +234,7 @@ if __name__ == "__main__":
 	WWTo4Q_2018 = glob.glob(Skimmed_4tau_loc_MC + "WWTo4Q_25September26_1928_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	WZ1l3nu_2018 = glob.glob(Skimmed_4tau_loc_MC + "WZTo1L3Nu_4f_25September26_2058_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	WZ3l1nu_2018 = glob.glob(Skimmed_4tau_loc_MC + "WZTo3L1Nu_4f_25September26_2114_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root") #New
-	#ZZ2l2q_2018 = glob.glob(Skimmed_4tau_loc_MC + "/singleFileSkimForSubmission-NANO_NANO_*.root")
+	ZZ2l2q_2018 = glob.glob(Skimmed_4tau_loc_MC + "ZZTo2Q2L_25September26_2116_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	WZ2l2q_2018 = glob.glob(Skimmed_4tau_loc_MC + "WZTo2L2Q_25September26_2148_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	WZ1l1nu2q_2018 = glob.glob(Skimmed_4tau_loc_MC + "WZTo1L1Nu2Q_25September26_2002_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	DYJetsToLL_M4to50_HT70to100_2018 = glob.glob(Skimmed_4tau_loc_MC + "DYJetsToLL_M-4to50_HT-70to100_25September26_2025_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
@@ -314,13 +311,18 @@ if __name__ == "__main__":
 
 
 	file_dict_MVA = {
-		"ZZ4l": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZ4l_MVA],
+		#"ZZ4l": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZ4l_MVA],
+        #"ZZ4l": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZ4l_MVA[:25]],
+        #"ZZ4l": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/MC_MVA/ZZTo4L_10September26_1505_skim_MVASkimming_p7_FullyUpdated/singleFileSkimForSubmission-NANO_NANO_10.root"],
 		"Signal_2TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_2TeV_MVA]
 	}
 	
 	file_dict_DBT = {
-		"ZZ4l": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZ4L_2018],
-		"Signal_2TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_2TeV]
+		#"ZZ4l": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZ4L_2018_DBT],
+        "TTToSemiLeptonic": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in TTToSemiLeptonic_2018[:500]],
+		"TTToHadronic": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in TTToHadronic_2018_DBT[:500]],
+		"TTTo2L2Nu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in TTTo2L2Nu_2018_DBT[:500]],
+		#"Signal_2TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_2TeV_DBT]
 	}
 
 	file_dict_data_test = {
@@ -332,8 +334,62 @@ if __name__ == "__main__":
 		#"Data_Mu": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/SkimDebugging/SingleMu_Run2018A_24March26_0937_skim_NullSkimming/singleFileSkimForSubmission-NANO_NANO_402.root"] #Run a single file offline
 	}
 
+	file_dict_full_DBT = {
+			"TTToSemiLeptonic": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in TTToSemiLeptonic_2018_DBT],
+			"TTTo2L2Nu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in TTTo2L2Nu_2018_DBT],
+			"TTToHadronic": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in TTToHadronic_2018_DBT],
+			"ZZ4l": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZ4L_2018_DBT],
+			"ZZTo2L2Nu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZTo2L2Nu_2018_DBT],
+			"ZZTo2Nu2Q": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZTo2Nu2Q_2018_DBT],
+			"VV2l2nu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in VV2l2nu_2018_DBT],
+			"ZZTo4Q" : ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZTo4Q_2018_DBT],
+			"WWTo4Q": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WWTo4Q_2018_DBT],
+			"WZ1l3nu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WZ1l3nu_2018_DBT],
+			"ZZ2l2q": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZ2l2q_2018_DBT],
+			"WZ2l2q": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WZ2l2q_2018_DBT],
+			"WZ1l1nu2q" : ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WZ1l1nu2q_2018_DBT],
+			"DYJetsToLL_M-4to50_HT-70to100": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJetsToLL_M4to50_HT70to100_2018_DBT],
+			"DYJetsToLL_M-4to50_HT-100to200": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJetsToLL_M4to50_HT100to200_2018_DBT],
+			"DYJetsToLL_M-4to50_HT-200to400": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJetsToLL_M4to50_HT200to400_2018_DBT],
+			"DYJetsToLL_M-4to50_HT-400to600": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJetsToLL_M4to50_HT400to600_2018_DBT],
+			"DYJetsToLL_M-4to50_HT-600toInf":["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJetsToLL_M4to50_HT600toInf_2018_DBT],
+			"DYJetsToLL_M-50_HT-70to100": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJetsToLL_M50_HT70to100_2018_DBT],
+			"DYJetsToLL_M-50_HT-100to200": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJetsToLL_M50_HT100to200_2018_DBT],
+			"DYJetsToLL_M-50_HT-200to400": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJetsToLL_M50_HT200to400_2018_DBT],
+			"DYJetsToLL_M-50_HT-400to600": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJetsToLL_M50_HT400to600_2018_DBT],
+			"DYJetsToLL_M-50_HT-600to800": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJetsToLL_M50_HT600to800_2018_DBT],
+			"DYJetsToLL_M-50_HT-800to1200": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJetsToLL_M50_HT800to1200_2018_DBT],
+			"DYJetsToLL_M-50_HT-1200to2500": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJetsToLL_M50_HT1200to2500_2018_DBT],
+			"DYJetsToLL_M-50_HT-2500toInf": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in DYJetsToLL_M50_HT2500toInf_2018_DBT],
+			"T-tchan": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Ttchan_2018_DBT],
+			"Tbar-tchan": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Tbartchan_2018_DBT],
+			"T-tW": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in TtW_2018_DBT],
+			"Tbar-tW": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in TbartW_2018_DBT],
+			"ST_s-channel_4f_hadronicDecays": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ST_schannel_4f_hadronicDecays_2018_DBT],
+			"ST_s-channel_4f_leptonDecays": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ST_schannel_4f_leptonDecays_2018_DBT],
+			"WJetsToLNu_HT-70To100": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WJetsToLNu_HT70To100_2018_DBT],
+			"WJetsToLNu_HT-100To200": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WJetsToLNu_HT100To200_2018_DBT],
+			"WJetsToLNu_HT-200To400": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WJetsToLNu_HT200To400_2018_DBT],
+			"WJetsToLNu_HT-400To600": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WJetsToLNu_HT400To600_2018_DBT],
+			"WJetsToLNu_HT-600To800": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WJetsToLNu_HT600To800_2018_DBT],
+			"WJetsToLNu_HT-800To1200": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WJetsToLNu_HT800To1200_2018_DBT],
+			"WJetsToLNu_HT-1200To2500": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WJetsToLNu_HT1200To2500_2018_DBT],
+			"WJetsToLNu_HT-2500ToInf": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WJetsToLNu_HT2500ToInf_2018_DBT],
+			"QCD_HT50to100": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT50To100_DBT],
+			"QCD_HT100to200": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT100To200_DBT],
+			"QCD_HT200to300": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT200To300_DBT],
+			"QCD_HT300to500": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT300To500_DBT],
+			"QCD_HT500to700": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT500To700_DBT],
+			"QCD_HT700to1000": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT700To1000_DBT],
+			"QCD_HT1000to1500": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT1000To1500_DBT],
+			"QCD_HT1500to2000": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT1500To2000_DBT],
+			"QCD_HT2000toInf": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT2000ToInf_DBT],
+			"Data_Mu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(SingleMu_2018A_DBT, np.append(SingleMu_2018B_DBT, np.append(SingleMu_2018C_DBT,SingleMu_2018D_DBT)))],
+			"Data_HT": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(JetHT_2018A_DBT, np.append(JetHT_2018B_DBT, np.append(JetHT_2018C_DBT,JetHT_2018D_DBT)))],
+			"Signal_2TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_2TeV_DBT]
+		}
 
-	file_dict_full = {
+	file_dict_full_MVA = {
 			"TTToSemiLeptonic": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in TTToSemiLeptonic_2018],
 			"TTTo2L2Nu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in TTTo2L2Nu_2018],
 			"TTToHadronic": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in TTToHadronic_2018],
@@ -342,7 +398,6 @@ if __name__ == "__main__":
 			"ZZTo2Nu2Q": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZTo2Nu2Q_2018],
 			"VV2l2nu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in VV2l2nu_2018],
 			"ZZTo4Q" : ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZTo4Q_2018],
-			"WWTo1L1Nu2Q": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WWTo1L1Nu2Q_2018],
 			"WWTo4Q": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WWTo4Q_2018],
 			"WZ1l3nu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in WZ1l3nu_2018],
 			"ZZ2l2q": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZ2l2q_2018],
@@ -385,21 +440,17 @@ if __name__ == "__main__":
 			"QCD_HT1500to2000": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT1500To2000],
 			"QCD_HT2000toInf": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT2000ToInf],
 			"Data_Mu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(SingleMu_2018A, np.append(SingleMu_2018B, np.append(SingleMu_2018C,SingleMu_2018D)))],
-			#"Data_HT": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(JetHT_2018A, np.append(JetHT_2018B, np.append(JetHT_2018C,JetHT_2018D)))],
 			"Data_HT": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(JetHT_2018A, np.append(JetHT_2018B, np.append(JetHT_2018C,JetHT_2018D)))],
 			"Signal_2TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_2TeV]
 		}
 	
-	file_dict_prob = {
-			#"ZZTo2Nu2Q": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/MC/ZZTo2Nu2Q_04March26_0510_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_63.root"],
-			#"DYJetsToLL_M-50_HT-70to100": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/MC/DYJetsToLL_M-50_HT-70to100_12December25_1556_skim_Oldskim/singleFileSkimForSubmission-NANO_NANO_174.root"]
-			#"ZZ4l": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/MC/ZZTo4L_26August25_0757_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_12.root"],
-			"ZZ4l": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/MC/ZZTo4L_26August25_0757_skim_Newskim/singleFileSkimForSubmission-NANO_NANO_" + str(x) + ".root" for x in range(12,15)]
-	}
 	
 	#Set file dictionary and list of backgrounds prior to running processor
 	#file_dict = file_dict_data_test
-	file_dict = file_dict_full
+	
+	file_dict = file_dict_full_MVA
+	#file_dict = file_dict_full_DBT
+	
 	#file_dict = file_dict_MVA
 	#file_dict = file_dict_DBT
 	#file_dict = file_dict_prob
@@ -418,7 +469,9 @@ if __name__ == "__main__":
 	
 	trigger_bit_dict = {0:"NoTrigger",1:"SingleMuonTrigger",2:"HTMETMHTTrigger",3:"BothTriggers"}
 	#WP_Array = np.linspace(start=0.85,stop=0.95,num=11) 
-	WP_Array = [0.85]
+	#WP_Array = [0.92]
+	WP_Array = [0.0]
+	#WP_Array = [0.85,0.86,0.87,0.89,0.88,0.90,0.91,0.92,0.93,0.94,0.95,0.96]
 	trigger_bit = 3
 
 	for n_taus in range(4,5):
@@ -435,11 +488,10 @@ if __name__ == "__main__":
 			
 			#Save coffea file
 			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_tightWP_p95_Signal_" + trigger_bit_dict[trigger_bit] + "_Test.coffea")
-			
-			outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_NoSelecWP_p" + str(wp)[2:] + "_FullDataMC_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
-			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_WP_p" + str(wp)[2:] + "_SignalZZ4l_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
-			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_MVA_p7_SignalZZ4l_" + trigger_bit_dict[trigger_bit] + "_Coffea2026.coffea")
-			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_MVA_p7_FullDataMC_" + trigger_bit_dict[trigger_bit] + "_Coffea2026.coffea")
+			outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_MVAWP_p" + str(wp)[2:] + "_FullDataMC_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
+			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_DBTWP_p" + str(wp)[2:] + "_FullDataMC_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
+			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_MVAWP_p" + str(wp)[2:] + "_Signal_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
+			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_DBTWP_p" + str(wp)[2:] + "_Signal_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
 			
 			util.save(fourtau_out, outfile)
 			print(f"Saved output to {outfile}")	
