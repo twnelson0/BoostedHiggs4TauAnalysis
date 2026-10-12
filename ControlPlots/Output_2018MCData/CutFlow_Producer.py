@@ -39,7 +39,7 @@ if __name__ == "__main__":
 
 	cutflow_csv_bool = True
 	iso_var_plots = True
-	fine_grained = True
+	fine_grained = False
 
 	coffea_file = args.File
 	Output_File = args.OutputFile
@@ -62,9 +62,12 @@ if __name__ == "__main__":
 	
 	background_list_full = [r"$t\bar{t}$", r"Drell-Yan+Jets", "Di-Bosons", "Single Top", "W+Jets", r"$ZZ \rightarrow 4l$","Signal"]
 	background_list_fullQCD = [r"$t\bar{t}$", r"Drell-Yan+Jets", "Di-Bosons", "Single Top", "W+Jets", r"$ZZ \rightarrow 4l$","QCD"]
+	background_list_fullQCD_Signal = [r"$t\bar{t}$", r"Drell-Yan+Jets", "Di-Bosons", "Single Top", "W+Jets", r"$ZZ \rightarrow 4l$","QCD","Signal 1 TeV", "Signal 2 TeV", "Signal 3 TeV"]
 	background_list_test = [r"$ZZ \rightarrow 4l$"]
 	background_list_none = []
-	background_list = background_list_full
+	signal_list = ["Signal 1 TeV", "Signal 2 TeV", "Signal 3 TeV"]
+	#background_list = background_list_full
+	background_list = signal_list
 	background_plot_names = {r"$t\bar{t}$" : "_ttbar_", r"$t\bar{t}$ Hadronic" : "_ttbarHadronic_", r"$t\bar{t}$ Semileptonic" : "_ttbarSemilepton_",
 			r"$t\bar{t}$ 2L2Nu" : "_ttbar2L2Nu_", r"Drell-Yan+Jets": "_DYJets_", "Di-Bosons" : "_DiBosons_", "Single Top": "_SingleTop_", "QCD" : "_QCD_", 
 			"W+Jets" : "_WJets_", r"$ZZ \rightarrow 4l$" : "_ZZ4l_", r"$ZZ \rightarrow 4l$ Test": "_ZZ4lTest_", r"$ZZ \rightarrow 4l$ Control": "_ZZ4lControl_",
@@ -87,7 +90,10 @@ if __name__ == "__main__":
 		#	"W+Jets HT 1200-2500 GeV": ["WJetsToLNu_HT-1200To2500"], "W+Jets HT 2500-Inf GeV": ["WJetsToLNu_HT-2500ToInf"],
 			"ZZ-->4l" : ["ZZ4l"],
 			"QCD": ["QCD_HT50to100","QCD_HT100to200","QCD_HT200to300","QCD_HT300to500","QCD_HT500to700","QCD_HT700to1000","QCD_HT1000to1500","QCD_HT1500to2000","QCD_HT2000toInf"],
-			"Signal": ["Signal_2TeV"],
+			#"Signal": ["Signal_2TeV"],
+			"Signal 1 TeV": ["Signal_1TeV"],
+			"Signal 2 TeV": ["Signal_2TeV"],
+			"Signal 3 TeV": ["Signal_3TeV"],
 	}
 
 	all_sample_array = []
@@ -122,9 +128,9 @@ if __name__ == "__main__":
 				"ZZ4l","WZ2l2q","WZ1l1nu2q","ZZ2l2q", "WZ1l3nu", "VV2l2nu", "WWTo4Q", "ZZTo4Q", "ZZTo2L2Nu", "ZZTo2Nu2Q","Tbar-tchan","T-tchan","Tbar-tW","T-tW",
 				"ST_s-channel_4f_leptonDecays", "ST_s-channel_4f_hadronicDecays","WJetsToLNu_HT-70To100","WJetsToLNu_HT-100To200","WJetsToLNu_HT-200To400","WJetsToLNu_HT-400To600",
 				"WJetsToLNu_HT-600To800","WJetsToLNu_HT-800To1200","WJetsToLNu_HT-1200To2500","WJetsToLNu_HT-2500ToInf","QCD_HT50to100","QCD_HT100to200","QCD_HT200to300","QCD_HT300to500",
-				"QCD_HT500to700","QCD_HT700to1000","QCD_HT1000to1500","QCD_HT1500to2000","QCD_HT2000toInf"]
+				"QCD_HT500to700","QCD_HT700to1000","QCD_HT1000to1500","QCD_HT1500to2000","QCD_HT2000toInf","Signal_3TeV"]
 
-		#samples = ["Signal_2TeV"]
+		#samples = ["Signal_3TeV"]
 	#	samples_DY_Only = ["DYJetsToLL_M-4to50_HT-70to100","DYJetsToLL_M-4to50_HT-100to200","DYJetsToLL_M-4to50_HT-200to400",
 	#			"DYJetsToLL_M-4to50_HT-400to600","DYJetsToLL_M-4to50_HT-600toInf","DYJetsToLL_M-50_HT-70to100","DYJetsToLL_M-50_HT-100to200","DYJetsToLL_M-50_HT-200to400",
 	#			"DYJetsToLL_M-50_HT-400to600","DYJetsToLL_M-50_HT-600to800","DYJetsToLL_M-50_HT-800to1200","DYJetsToLL_M-50_HT-1200to2500","DYJetsToLL_M-50_HT-2500toInf"]

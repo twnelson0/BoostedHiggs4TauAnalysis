@@ -51,18 +51,20 @@ if __name__ == "__main__":
 
 	coffea_file = args.File
 
+	n_mass_points = 3 #Number of signal mass points (effects logic of how plots are produced)
+
 	#Dictionaries and arrays with information on plot constrution, naming and samples
 	four_tau_hist_list = [
-		#	"boostedtau_pt_Trigg","boostedtau_eta_Trigg","boostedtau_phi_Trigg",
-		#	"electron_pt_Trigg","electron_eta_Trigg","electron_phi_Trigg",
-		#	"muon_pt_Trigg","muon_eta_Trigg","muon_phi_Trigg", #"Leadingmuon_pt_Trigg",#"Leadingmuon_eta_Trigg",
-		#	"Jet_pt_Trigg","Jet_eta_Trigg","Jet_phi_Trigg",
-		#	"AK8Jet_pt_Trigg","AK8Jet_eta_Trigg","AK8Jet_phi_Trigg","nAK8Jet_Trigg",
-		#	"MET","HT","MHT", #, "Mini_Cutflow", "Mini_NMinus1"
-		#	"ZMult", "bJetMult",
-		#	"LeadingPair_dR", "NextLeadingPair_dR", "FourTauMass",
-			"DBT_FullDist", "DBT_Dist"
-			#"MVA_FullDist", "MVA_Dist"
+			"boostedtau_pt_Trigg","boostedtau_eta_Trigg","boostedtau_phi_Trigg",
+			"electron_pt_Trigg","electron_eta_Trigg","electron_phi_Trigg",
+			"muon_pt_Trigg","muon_eta_Trigg","muon_phi_Trigg", #"Leadingmuon_pt_Trigg",#"Leadingmuon_eta_Trigg",
+			"Jet_pt_Trigg","Jet_eta_Trigg","Jet_phi_Trigg",
+			"AK8Jet_pt_Trigg","AK8Jet_eta_Trigg","AK8Jet_phi_Trigg","nAK8Jet_Trigg",
+			"MET","HT","MHT", #, "Mini_Cutflow", "Mini_NMinus1"
+			"ZMult", "bJetMult",
+			"LeadingPair_dR", "NextLeadingPair_dR", "FourTauMass",
+			#"DBT_Dist",
+			"MVA_Dist"
 			]
 
 	#Additional boosted tau distributions to pull based on boosted tau requirements
@@ -85,10 +87,11 @@ if __name__ == "__main__":
 	
 	#background_list_full = [r"$t\bar{t}$", r"Drell-Yan+Jets", "Di-Bosons", "Single Top", "W+Jets", r"$ZZ \rightarrow 4l$"]
 	background_list_full = [r"$t\bar{t}$", r"Drell-Yan+Jets", "Di-Bosons", "Single Top", "W+Jets", r"$ZZ \rightarrow 4l$","Signal 2 TeV"]
-	background_list_fullQCD = [r"$t\bar{t}$", r"Drell-Yan+Jets", "Di-Bosons", "Single Top", "W+Jets", r"$ZZ \rightarrow 4l$","QCD","Signal 2 TeV"]
+	background_list_fullQCD = [r"$t\bar{t}$", r"Drell-Yan+Jets", "Di-Bosons", "Single Top", "W+Jets", r"$ZZ \rightarrow 4l$","QCD","Signal 3 TeV"]
+	background_list_fullQCD_AllMassPoints = [r"$t\bar{t}$", r"Drell-Yan+Jets", "Di-Bosons", "Single Top", "W+Jets", r"$ZZ \rightarrow 4l$","QCD","Signal 1 TeV","Signal 2 TeV","Signal 3 TeV"]
 	background_list_test = [r"$ZZ \rightarrow 4l$"]
 	background_list_none = []
-	background_list = background_list_fullQCD
+	background_list = background_list_fullQCD_AllMassPoints
 	background_plot_names = {r"$t\bar{t}$" : "_ttbar_", r"$t\bar{t}$ Hadronic" : "_ttbarHadronic_", r"$t\bar{t}$ Semileptonic" : "_ttbarSemilepton_",
 			r"$t\bar{t}$ 2L2Nu" : "_ttbar2L2Nu_", r"Drell-Yan+Jets": "_DYJets_", "Di-Bosons" : "_DiBosons_", "Single Top": "_SingleTop_", "QCD" : "_QCD_", 
 			"W+Jets" : "_WJets_", r"$ZZ \rightarrow 4l$" : "_ZZ4l_", r"$ZZ \rightarrow 4l$ Test": "_ZZ4lTest_", r"$ZZ \rightarrow 4l$ Control": "_ZZ4lControl_",
@@ -112,6 +115,8 @@ if __name__ == "__main__":
 			r"$ZZ \rightarrow 4l$" : ["ZZ4l"],
 			"QCD": ["QCD_HT50to100","QCD_HT100to200","QCD_HT200to300","QCD_HT300to500","QCD_HT500to700","QCD_HT700to1000","QCD_HT1000to1500","QCD_HT1500to2000","QCD_HT2000toInf"],
 			"Signal 2 TeV": ["Signal_2TeV"],
+			"Signal 3 TeV": ["Signal_3TeV"],
+			"Signal 1 TeV": ["Signal_1TeV"],
 	}
 
 	all_sample_array = []
@@ -261,6 +266,10 @@ if __name__ == "__main__":
 	#Prdouce histograms from the coffea file
 	for hist_name in four_tau_hist_list: #Loop over all histograms
 		print("Producing histogram " + hist_name)
+		if (hist_name == "DBT_Dist" or hist_name == "MVA_Dist"):
+			rebin_val = 10
+		else:
+			rebin_val = 1
 
 		temp_hist_dict = dict.fromkeys(background_list) # create dictionary of histograms for each background type
 				
@@ -297,13 +306,19 @@ if __name__ == "__main__":
 						plt.savefig("SingleBackground" + background_plot_names[background_type] + "Weight")
 						plt.close()
 						
-				if (hist_name != "Electron_tau_dR_Arr" and hist_name != "Muon_tau_dR_Arr"):
+				if (hist_name != "Electron_tau_dR_Arr" and hist_name != "Muon_tau_dR_Arr"):  #and hist_name != "DBT_Dist" and hist_name != "MVA_Dist"):
 					if (background == backgrounds[0]):
-						crnt_hist = coffea_input[background][hist_name][{"region": args.ControlRegion}][0::10j]
+						#if ((hist_name == "DBT_Dist" or hist_name == "MVA_Dist") and background == "Signal_3TeV"):
+						#	crnt_hist = coffea_input[background][hist_name][{"region": args.ControlRegion}][0::rebin_val*1j]*0.1
+						#else:
+						crnt_hist = coffea_input[background][hist_name][{"region": args.ControlRegion}][0::rebin_val*1j]
 					else:
-						crnt_hist += coffea_input[background][hist_name][{"region": args.ControlRegion}][0::10j]
+						#if ((hist_name == "DBT_Dist" or hist_name == "MVA_Dist") and background == "Signal_3TeV"):
+						#	crnt_hist = coffea_input[background][hist_name][{"region": args.ControlRegion}][0::rebin_val*1j]*0.1
+						#else:
+						crnt_hist += coffea_input[background][hist_name][{"region": args.ControlRegion}][0::rebin_val*1j]
 					if (background == backgrounds[-1]):
-						temp_hist_dict[background_type] = crnt_hist #Try to fix stacking bug
+						temp_hist_dict[background_type] = crnt_hist 
 					
 					#These are for plotting all samples only
 					#crnt_hist = coffea_input[background][hist_name][{"region": args.ControlRegion}]
@@ -342,10 +357,10 @@ if __name__ == "__main__":
 			axis_label = coffea_input["ZZ4l"][hist_name][{"region": args.ControlRegion}].axes[0].label
 		
 		fig, ax_main, ax_comp = hep.comp.data_model(
-			data_hist = coffea_input["Data_Mu"][hist_name][{"region": args.ControlRegion}][0::10j] + coffea_input["Data_HT"][hist_name][{"region": args.ControlRegion}][0::10j],  
-			stacked_components = background_array[:len(background_array)-1],
-			stacked_labels = background_list[:len(background_list)-1],
-			stacked_colors = TABLEAU_COLORS[:len(background_list)-1],
+			data_hist = coffea_input["Data_Mu"][hist_name][{"region": args.ControlRegion}][0::rebin_val*1j] + coffea_input["Data_HT"][hist_name][{"region": args.ControlRegion}][0::rebin_val*1j],  
+			stacked_components = background_array[:len(background_array)-n_mass_points],
+			stacked_labels = background_list[:len(background_list)-n_mass_points],
+			stacked_colors = TABLEAU_COLORS[:len(background_list)-n_mass_points],
 			xlabel = axis_label,
 			model_uncertainty=True,
 			comparison = "ratio",
@@ -355,10 +370,13 @@ if __name__ == "__main__":
 		xlabel = ax_main.set_xlabel(axis_label)
 		
 		#Stupid solution to make the points thicker (draw a copy of the data ontop of the previously produced ratio plot with thicker points)
-		hep.histplot(coffea_input["Data_Mu"][hist_name][{"region": args.ControlRegion}][0::10j] + coffea_input["Data_HT"][hist_name][{"region": args.ControlRegion}][0::10j], ax=ax_main, histtype="errorbar",markersize=20, yerr=True, color = "k") 
+		hep.histplot(coffea_input["Data_Mu"][hist_name][{"region": args.ControlRegion}][0::rebin_val*1j] + coffea_input["Data_HT"][hist_name][{"region": args.ControlRegion}][0::rebin_val*1j], ax=ax_main, histtype="errorbar",markersize=20, yerr=True, color = "k") 
 		
 		#Add signal
-		hep.histplot(background_array[len(background_array)-1], ax=ax_main, color = 'cyan', linewidth = 3.2, label = background_list[len(background_list)-1], histtype = "step")
+		color_list = ['cyan', 'red', 'purple']
+		for i_mass in range(n_mass_points):
+			indx_val = i_mass + 1
+			hep.histplot(background_array[len(background_array)-indx_val], ax=ax_main, color = color_list[i_mass], linewidth = 3.2, label = background_list[len(background_list)-indx_val], histtype = "step")
 	    
 		#Text, scaling and saving the plot
 		ax_main.legend(fontsize = 14)

@@ -1,0 +1,60 @@
+p85
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p85_Signal_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+For sample Signal_3TeV Selection efficiency is: 
+0.513
+p86
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p86_Signal_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+For sample Signal_3TeV Selection efficiency is: 
+0.510
+p87
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p87_Signal_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+For sample Signal_3TeV Selection efficiency is: 
+0.507
+p88
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p88_Signal_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+For sample Signal_3TeV Selection efficiency is: 
+0.504
+p89
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p89_Signal_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+For sample Signal_3TeV Selection efficiency is: 
+0.500
+p9
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p9_Signal_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+For sample Signal_3TeV Selection efficiency is: 
+0.495
+p91
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p91_Signal_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+For sample Signal_3TeV Selection efficiency is: 
+0.490
+p92
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p92_Signal_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+For sample Signal_3TeV Selection efficiency is: 
+0.483
+p93
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p93_Signal_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+For sample Signal_3TeV Selection efficiency is: 
+0.474
+p94
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p94_Signal_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+For sample Signal_3TeV Selection efficiency is: 
+0.461
+p95
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p95_Signal_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+For sample Signal_3TeV Selection efficiency is: 
+0.447
+p96
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p96_Signal_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+For sample Signal_3TeV Selection efficiency is: 
+0.428
