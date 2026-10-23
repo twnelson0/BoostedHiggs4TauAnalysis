@@ -1,0 +1,45 @@
+p931
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p931_Signal_WithChargeHist_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+For sample Signal_2TeV Selection efficiency is: 
+0.418
+p932
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p932_Signal_WithChargeHist_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+For sample Signal_2TeV Selection efficiency is: 
+0.416
+p933
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p933_Signal_WithChargeHist_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+For sample Signal_2TeV Selection efficiency is: 
+0.414
+p934
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p934_Signal_WithChargeHist_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+For sample Signal_2TeV Selection efficiency is: 
+0.413
+p935
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p935_Signal_WithChargeHist_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+For sample Signal_2TeV Selection efficiency is: 
+0.412
+p936
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p936_Signal_WithChargeHist_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+For sample Signal_2TeV Selection efficiency is: 
+0.410
+p937
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p937_Signal_WithChargeHist_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+For sample Signal_2TeV Selection efficiency is: 
+0.409
+p938
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p938_Signal_WithChargeHist_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+For sample Signal_2TeV Selection efficiency is: 
+0.405
+p939
+Running on file output_4_boosted_tau_selec_4TauSamples_DBTWP_p939_Signal_WithChargeHist_BothTriggers_Coffea2026.coffea
+Four Boosted taus required
+For sample Signal_2TeV Selection efficiency is: 
+0.404

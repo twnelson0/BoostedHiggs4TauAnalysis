@@ -58,7 +58,7 @@ def move_X509():
 
 if __name__ == "__main__":
 	#Condor related stuff
-	run_on_condor = True 
+	run_on_condor = True
 	os.environ["CONDOR_CONFIG"] = "/etc/condor/condor_config"
 	
 	if (run_on_condor):
@@ -219,7 +219,7 @@ if __name__ == "__main__":
 	QCD_HT1000To1500_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "QCD_HT1000to1500_23April26_0536_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	QCD_HT1500To2000_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "QCD_HT1500to2000_23April26_0539_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	QCD_HT2000ToInf_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "QCD_HT2000toInf_23April26_0541_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	Signal_HH_2TeV_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "2TeVSignal_4Tau_18August26_1525_skim_NewSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	Signal_HH_2TeV_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "2TeVSignal_4Tau_15October26_1136_skim_DBT_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	Signal_HH_3TeV_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "3TeVSignal_4Tau_08October26_1056_skim_DBT_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	Signal_HH_1TeV_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "1TeVSignal_4Tau_09October26_1549_skim_DBT_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	
@@ -280,7 +280,7 @@ if __name__ == "__main__":
 	QCD_HT1000To1500 = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT1000to1500_25September26_2111_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	QCD_HT1500To2000 = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT1500to2000_25September26_2147_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	QCD_HT2000ToInf = glob.glob(Skimmed_4tau_loc_MC + "QCD_HT2000toInf_25September26_2146_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	Signal_HH_2TeV = glob.glob(Skimmed_4tau_loc_MC + "2TeVSignal_4Tau_26September26_2027_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	Signal_HH_2TeV = glob.glob(Skimmed_4tau_loc_MC + "2TeVSignal_4Tau_15October26_1657_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	Signal_HH_3TeV = glob.glob(Skimmed_4tau_loc_MC + "3TeVSignal_4Tau_07October26_1816_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	Signal_HH_1TeV = glob.glob(Skimmed_4tau_loc_MC + "1TeVSignal_4Tau_09October26_1605_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
 
@@ -319,8 +319,8 @@ if __name__ == "__main__":
 		#"ZZ4l": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZ4l_MVA],
         #"ZZ4l": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZ4l_MVA[:25]],
         #"ZZ4l": ["root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Skimmed_Files/2018/MC_MVA/ZZTo4L_10September26_1505_skim_MVASkimming_p7_FullyUpdated/singleFileSkimForSubmission-NANO_NANO_10.root"],
-		#"Signal_2TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_2TeV_MVA]
-		"Signal_3TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_3TeV_MVA]
+		"Signal_2TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_2TeV]
+		#"Signal_3TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_3TeV_MVA]
 	}
 	
 	file_dict_DBT = {
@@ -328,8 +328,8 @@ if __name__ == "__main__":
     #   "TTToSemiLeptonic": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in TTToSemiLeptonic_2018[:500]],
 	#	"TTToHadronic": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in TTToHadronic_2018_DBT[:500]],
 	#	"TTTo2L2Nu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in TTTo2L2Nu_2018_DBT[:500]],
-		#"Signal_2TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_2TeV_DBT]
-		"Signal_3TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_3TeV_DBT]
+		"Signal_2TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_2TeV_DBT]
+		#"Signal_3TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_3TeV_DBT]
 	}
 
 	file_dict_data_test = {
@@ -459,8 +459,8 @@ if __name__ == "__main__":
 	#Set file dictionary and list of backgrounds prior to running processor
 	#file_dict = file_dict_data_test
 	
-	file_dict = file_dict_full_MVA
-	#file_dict = file_dict_full_DBT
+	#file_dict = file_dict_full_MVA
+	file_dict = file_dict_full_DBT
 	
 	#file_dict = file_dict_MVA
 	#file_dict = file_dict_DBT
@@ -481,22 +481,30 @@ if __name__ == "__main__":
 	trigger_bit_dict = {0:"NoTrigger",1:"SingleMuonTrigger",2:"HTMETMHTTrigger",3:"BothTriggers"}
 	#WP_Array = np.linspace(start=0.85,stop=0.95,num=11) 
 	#WP_Array = [0.92]
-	WP_Array = [0.0]
-	#WP_Array = [0.0,0.92]
-	#WP_Array = [0.85,0.86,0.87,0.89,0.88,0.90,0.91,0.92,0.93,0.94,0.95,0.96]
+	WP_Array = [0.0, 0.932]
+	#WP_Array = [0.932]
+	#WP_Array = [0.0,0.85,0.86,0.87,0.89,0.88,0.90,0.91,0.92,0.93,0.94,0.95,0.96]
+	#WP_Array = [0.931,0.932,0.933,0.934,0.935,0.936,0.937,0.938,0.939]
 	trigger_bit = 3
 
 	for n_taus in range(4,5):
 		#for trigger_bit in range(3,4):
 		for wp in WP_Array:
 			print("About to run processor")
+			#Set up parquet directory
+			dir_name = "ParquetFiles_" + str(time.gmtime()[0]) + "_" + str(time.gmtime()[1]) + "_" + str(time.gmtime()[2]) + "_" + str(time.gmtime()[3]) + str(time.gmtime()[4])
+			try:
+			    os.mkdir("/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/" + dir_name)
+			except FileExistError:
+				print("Directory alread exists")
+			
 			start_time = time.time()
 			if (run_on_condor):
 				print(f"https://{socket.gethostname()}:8009/user/{os.environ['USER']}/{cluster.dashboard_link}")
 			if (wp == 0.0):
-				fourtau_out = runner(file_dict_full_MVA, treename="Events", processor_instance=AnalysisProcessor.Analysis4TauProcessor(sumWEvents_Dict = sumWEvents_Dict, nBoostedTaus = n_taus, Trigger_Code = trigger_bit, Tau_WP = wp, use_DBT = False)) #Modified for NanoAOD (changd treename)
-			if (wp == 0.92):
-				fourtau_out = runner(file_dict_full_DBT, treename="Events", processor_instance=AnalysisProcessor.Analysis4TauProcessor(sumWEvents_Dict = sumWEvents_Dict, nBoostedTaus = n_taus, Trigger_Code = trigger_bit, Tau_WP = wp, use_DBT = True)) #Modified for NanoAOD (changd treename)
+				fourtau_out = runner(file_dict_full_MVA, treename="Events", processor_instance=AnalysisProcessor.Analysis4TauProcessor(sumWEvents_Dict = sumWEvents_Dict, nBoostedTaus = n_taus, Trigger_Code = trigger_bit, Tau_WP = wp, use_DBT = False, parquet_loc = dir_name)) #Modified for NanoAOD (changd treename)
+			if (wp != 0.0):
+				fourtau_out = runner(file_dict_full_DBT, treename="Events", processor_instance=AnalysisProcessor.Analysis4TauProcessor(sumWEvents_Dict = sumWEvents_Dict, nBoostedTaus = n_taus, Trigger_Code = trigger_bit, Tau_WP = wp, use_DBT = True, parquet_loc = dir_name)) #Modified for NanoAOD (changd treename)
 			end_time = time.time()
 			time_running = end_time-start_time
 			print("It takes about %.1f s to run the coffea processor with %d boosted tau selections"%(time_running,n_taus))
@@ -504,10 +512,13 @@ if __name__ == "__main__":
 			#Save coffea file
 			out_file = "Null_Null.coffea"
 			if (wp == 0.0):
-				outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_MVAWP_p" + str(wp)[2:] + "_FullDataMC_AllSignal_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
-			if (wp == 0.92):
-				outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_DBTWP_p" + str(wp)[2:] + "_FullDataMC_AllSignal_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
-			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_MVAWP_p" + str(wp)[2:] + "_Signal_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
+				outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_MVAWP_p" + str(wp)[2:] + "_FullDataMC_AllSignal_LoosePt_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026_Dup.coffea")
+				#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_MVAWP_p" + str(wp)[2:] + "_Signal_WithChargeHist_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
+			if (wp == 0.932):
+				outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_DBTWP_p" + str(wp)[2:] + "_FullDataMC_AllSignal_LoosePt_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026_Encore.coffea")
+				#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_DBTWP_p" + str(wp)[2:] + "_Signal_WithChargeHist_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
+			
+            #outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_MVAWP_p" + str(wp)[2:] + "_Signal_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
 			#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_DBTWP_p" + str(wp)[2:] + "_Signal_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
 			
 			util.save(fourtau_out, outfile)

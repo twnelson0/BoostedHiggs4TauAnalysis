@@ -58,7 +58,22 @@ def prepare_data():
     #samples = ['output_ZZ', 'out_2000']  ## eventually change this to 'output_ZZ_even', 'out_2000_even' 
     #samples = ['output_ZZ_odd', 'out_2000_odd']
     #samples = ["ZZ4l","Signal"]
-    samples = ["Signal_2TeV","TTTo2L2Nu","TTToSemiLeptonic"]
+    samples = ["Signal_1TeV","Signal_2TeV","Signal_3TeV","TTTo2L2Nu","TTToSemiLeptonic",#"TTToHadronic",
+			#"DYJetsToLL_M-4to50_HT-70to100",
+			#"DYJetsToLL_M-4to50_HT-100to200",
+			"DYJetsToLL_M-4to50_HT-200to400",
+			"DYJetsToLL_M-4to50_HT-400to600",
+			"DYJetsToLL_M-4to50_HT-600toInf",
+			#"DYJetsToLL_M-50_HT-70to100",
+			"DYJetsToLL_M-50_HT-100to200",
+			"DYJetsToLL_M-50_HT-200to400",
+			"DYJetsToLL_M-50_HT-400to600",
+			"DYJetsToLL_M-50_HT-600to800",
+			"DYJetsToLL_M-50_HT-800to1200",
+			"DYJetsToLL_M-50_HT-1200to2500",
+			"DYJetsToLL_M-50_HT-2500toInf",
+			"ZZ4l"
+			]
     #samples = ["Signal_2TeV","TTTo2L2Nu"]
     DataFrames = {} # define empty dictionary to hold dataframes
     Selection = {}    
@@ -74,7 +89,8 @@ def prepare_data():
     #Read training data from parquet files
     for s in samples:
         #file = pd.read_parquet(s + ".paquet",engine="pyarrow")
-        DataFrames[s] = pd.read_parquet("/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/New_Dir/" + s + ".parquet",engine="pyarrow")
+        #DataFrames[s] = pd.read_parquet("/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/New_Dir/" + s + ".parquet",engine="pyarrow")
+        DataFrames[s] = pd.read_parquet("/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/" + s + ".parquet",engine="pyarrow")
         #DataFrames[s] = pd.Series({var : DataFrames[s][var].to_numpy() for var in ML_inputs}) #Store everything as a pandas series (using a series may be causing problems)
         #DataFrames[s] = pd.DataFrame({var: DataFrames[s][var].to_list for var in ML_inputs})
         DataFrames[s] = DataFrames[s].iloc[0:8500]
@@ -106,9 +122,10 @@ def prepare_data():
             #if 'out_2000_odd' in s: # only signal MC should pass this
             if "Signal" in s:
             ## sort between even and odd 
-
+                print("Signal: " + s)
                 all_y.append(np.ones(DataFrames[s].shape[0])) # signal events are labelled with 1
             else:
+                print("Background: " + s)
                 all_y.append(np.full(DataFrames[s].shape[0],0)) # All backgrounds labelled with 0
 
     X = np.concatenate(all_MC) # concatenate the list of MC dataframes into a single 2D array of features, called X
@@ -200,7 +217,7 @@ def train_model(X_train, y_train, X_test, y_test, X_val, y_val):
     figRoc = pyplot.figure(figsize=(15, 15))
     ax = pyplot.gca()    
     pyplot.text(0.5, 1.05, "CMS Simulation (Work In Progress)      (13 TeV)", fontweight="bold", horizontalalignment='center',verticalalignment='center', transform=ax.transAxes, fontsize=28)
-    pyplot.plot(tpr_tf, 1-fpr_tf, linestyle='--',linewidth=8,color='blue', label='HH4tau vs ZZ - AUC:'+str(fauc_))
+    pyplot.plot(tpr_tf, 1-fpr_tf, linestyle='--',linewidth=8,color='blue', label='HH4tau vs Background - AUC:'+str(fauc_))
     #pyplot.plot([1, 0], [1, 0], linestyle='dotted', color='grey', label='Luck') # plot diagonal line
     pyplot.xlabel('Signal efficiency',fontsize=28)
     pyplot.ylabel('Background Rejection',fontsize=28)
@@ -209,7 +226,7 @@ def train_model(X_train, y_train, X_test, y_test, X_val, y_val):
     pyplot.savefig('ROC.png')
 
     # plot train-test comparisons
-    compare_train_test_binary(model,X_train,y_train,X_test,y_test,'HH4tau vs ZZ')
+    compare_train_test_binary(model,X_train,y_train,X_test,y_test,'HH4tau vs Backgrounds')
 
     # evaluate model
     loss, acc = model.evaluate(X_test, y_test, verbose=1,batch_size=1000)

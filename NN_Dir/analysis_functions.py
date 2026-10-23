@@ -173,8 +173,6 @@ def plot_input_features(X, y, idx_label, xlabel):
         bin_edges.append(bin_edge)
         bin_edge += 0.05*(highest_decision - lowest_decision) # increment
 
-    #if(xlabel=='mbb'):
-        #bin_edges = [0.,20.,40.,60.,80.,100.,120.,140.,160.,180.,200.,220.,240.,260.,280.,300.,320.,340.,360.,380.,400.,420.,440.,460.,480.,500.]
     if (xlabel=='vis_mass'):
         bin_edges = [0.,20.,40.,60.,80.,100.,120.,140.,160.,180.,200.,220.,240.,260.,280.,300.]
     if (xlabel=='vis_mass2'):
@@ -226,7 +224,7 @@ def plot_input_features(X, y, idx_label, xlabel):
     #plt.hist(decisions[0],bins=bin_edges,density=True,histtype='stepfilled',color='blue',label='Background- ZZ4l + ZZ2l2q',alpha=0.5)
     #plt.hist(decisions[0],bins=bin_edges,density=True,histtype='stepfilled',color='blue',label='Background- ZZ4l',alpha=0.5)
     #plt.hist(decisions[1],bins=bin_edges,density=True,histtype='stepfilled',color='orange',label='Signal-GluGluToRadionToHHTo4T_M-2000',alpha=0.5)
-    plt.hist(decisions[0],bins=bin_edges,density=True,histtype='stepfilled',color='blue',label=r'Background- $t\bar{t}$',alpha=0.5)
+    plt.hist(decisions[0],bins=bin_edges,density=True,histtype='stepfilled',color='blue',label=r'Backgrounds-DY + Jets, $t\bar{t}$, $ZZ \rightarrow 4l$',alpha=0.5)
     plt.hist(decisions[1],bins=bin_edges,density=True,histtype='stepfilled',color='red',label='Signal-GluGluToRadionToHHTo4T_M-2000',alpha=0.5)
     #plt.hist(decisions[2],bins=bin_edges,density=True,histtype='stepfilled',color='mediumpurple',label='ttcc',alpha=0.5)
     #plt.hist(decisions[3],bins=bin_edges,density=True,histtype='stepfilled',color='cadetblue',label='ttlf',alpha=0.5)

@@ -41,7 +41,7 @@ Once run a Coffea output file will be produced in the `Output_2018MCData` direct
 Currently the runner script takes on no command line arguments and is hard coded to run on 2018 MC + data.
 To change the files being run on the `file_dict` object within the runner script must be changed by the user prior to running.
 The runner calls the analysis processor (`ControlPlots/Processors/FourTauAnalysisProcessor.py`) and passes several arguments to the processor. 
-Those arguments are `sumWEvents_Dict`, `year`,`nBoostedTaus`, `Trigger_Code`,`Tau_WP`, and `use_DBT`. 
+Those arguments are `sumWEvents_Dict`, `year`,`nBoostedTaus`, `Trigger_Code`,`Tau_WP`, and `use_DBT`, `parquet_loc`. 
 
 The argument `sumWEvents_Dict` is a dictionary that maps each process to the corresponding sum of gen weights or number of events prior to skimming for the purpose of calculating the luminosity cross section weights. 
 In the runner the dictionary is read in from a `json` file on line 396, currently the runner is hard coded to read in the json file corresponding to genweights from 2018.
@@ -54,6 +54,10 @@ The argument `nBoostedTaus` tells the processor how many boosted taus to select,
 
 The argument `Trigger_Code` controls what trigger(s) are applied by the processor.
 The specifics of this argument are discussed in the section [Trigger Modification](#Trigger Modification).
+
+The argument `parquet_loc` determines where the parquet files are written out to.
+Currently this arguement determines the location within a specific hard coded location on hdfs directory the parquet files will be saved to.
+This will likely be changed to be more generalized.
 
 Finally I will discuss the arguments `use_DBT` and `Tau_WP` together. 
 The argument `use_DBT` is a Boolean that controls whether to select boosted taus using the MVA or deep boosted tau (DBT) isolation variable. 
@@ -108,6 +112,7 @@ The script `PlotProducer.py` requires 3 arguments to be specified: `-f` denotes 
 | `LooseTCR` | Loose Top Control Region |
 | `NotTCR` | Not Top Control Region |
 | `NotZCR` | Not Z Control Region | 
+| `Signal` | Signal Region | 
 
 
 #### Cutflow Table
@@ -118,6 +123,20 @@ The arguments required by this function are `-f` which denotes the name of the c
 
 ### Neural Network
 
+**Virtual Environment Set Up**
+Currently the neural network must be run on the login nodes. 
+This is because the virtual environment all neural network related code must be run on makes use of packages already installed on the login nodes.
+To create a virtual environment with the site packages on the login nodes run the following command:
+```
+virtualenv --system-site-packages NN_Env
+```
+From there additional packages must be installed from a requirements file using the following commands:
+```
+source NN_Env/bin/activate
+python3 -m pip install NN_Env_Requirements.txt
+```
+
 #### Training
+
 
 #### Running

@@ -1,0 +1,2237 @@
+Run Iteratively
+About to run processor
+Preprocessing 100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 97/97 [ 0:01:11 < 0:00:00 | 1.5 file/s ]
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 115
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+395cca60-c333-11f1-978d-c5b55c90beef
+0
+115
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 93
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+43f03822-c333-11f1-9df5-c2b45c90beef
+0
+93
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 92
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+4d7561e2-c333-11f1-91d0-c5b45c90beef
+0
+92
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 92
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+398c4c4a-c333-11f1-a439-c7b45c90beef
+0
+92
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 85
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+398e148a-c333-11f1-8070-c7b45c90beef
+0
+85
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 86
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+4538643e-c333-11f1-9f1c-c5b55c90beef
+0
+86
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 95
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+47e0ebb6-c333-11f1-9f57-c7b45c90beef
+0
+95
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 89
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+485e0a6a-c333-11f1-9c7c-c7b45c90beef
+0
+89
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 99
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+4d75b1ec-c333-11f1-ac0c-c5b45c90beef
+0
+99
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 92
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+4e68792c-c333-11f1-a23c-0103fea9beef
+0
+92
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 95
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+4bceb050-c333-11f1-bb07-c1b45c90beef
+0
+95
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 90
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+4bcf7684-c333-11f1-8207-c1b45c90beef
+0
+90
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 83
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+4d304224-c333-11f1-a5cd-e7456980beef
+0
+83
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 110
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+4ed056f0-c333-11f1-8cb6-cd456980beef
+0
+110
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 106
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+52356736-c333-11f1-8d77-cc456980beef
+0
+106
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 100
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+507319e8-c333-11f1-a9e5-2c446980beef
+0
+100
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 101
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+512d7bd0-c333-11f1-9b06-35446980beef
+0
+101
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 87
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+4f4298b4-c333-11f1-8224-b0456980beef
+0
+87
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 84
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+50c307a0-c333-11f1-a102-d3456980beef
+0
+84
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 87
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+5176e2a2-c333-11f1-b4d1-b7456980beef
+0
+87
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 103
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+50dcb628-c333-11f1-a35f-e6456980beef
+0
+103
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 89
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+534e39d6-c333-11f1-aa44-6b456980beef
+0
+89
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 99
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+4f834e2c-c333-11f1-af10-cf456980beef
+0
+99
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 98
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+56cd054c-c333-11f1-9300-c7b45c90beef
+0
+98
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 106
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+520415d2-c333-11f1-9f4f-7d456980beef
+0
+106
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 109
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+541a56a6-c333-11f1-9cf1-6d456980beef
+0
+109
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 115
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+5be3163e-c333-11f1-af16-8c456980beef
+0
+115
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 91
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+596840aa-c333-11f1-9175-a6456980beef
+0
+91
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 89
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+4ecb890e-c333-11f1-95a0-96456980beef
+0
+89
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 106
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+5063fa44-c333-11f1-a06b-aa456980beef
+0
+106
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 95
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+55fcb40a-c333-11f1-af67-dc456980beef
+0
+95
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 100
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+583e3cac-c333-11f1-aa6f-bb456980beef
+0
+100
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 87
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+4f579b6a-c333-11f1-a1e3-cd456980beef
+0
+87
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 96
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+50d4eccc-c333-11f1-94ce-d3456980beef
+0
+96
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 100
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+50df62b0-c333-11f1-804f-e6456980beef
+0
+100
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 99
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+5208a142-c333-11f1-a68b-7d456980beef
+0
+99
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 88
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+59683fb0-c333-11f1-926c-a6456980beef
+0
+88
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 90
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+52346dcc-c333-11f1-9801-cc456980beef
+0
+90
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 89
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+5348633a-c333-11f1-8e43-6b456980beef
+0
+89
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 83
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+521e7a44-c333-11f1-b574-96456980beef
+0
+83
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 93
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+504dd7e6-c333-11f1-9358-aa456980beef
+0
+93
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 100
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+50c7b9d0-c333-11f1-9201-d3456980beef
+0
+100
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 98
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+50df7818-c333-11f1-afe9-e6456980beef
+0
+98
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 94
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+53796ae8-c333-11f1-8e61-6b456980beef
+0
+94
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 90
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+51050dee-c333-11f1-b200-e6456980beef
+0
+90
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 102
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+56c4c10c-c333-11f1-8e0b-e4456980beef
+0
+102
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 108
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+55004bde-c333-11f1-9708-af456980beef
+0
+108
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 118
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+53079f1c-c333-11f1-9a77-ed456980beef
+0
+118
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 99
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+545725f4-c333-11f1-a501-ae456980beef
+0
+99
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 99
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+5364aba8-c333-11f1-9b4c-e5456980beef
+0
+99
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 107
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+5ba5b870-c333-11f1-b68f-c6456980beef
+0
+107
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 94
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+566c7a2e-c333-11f1-8500-ca456980beef
+0
+94
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 89
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+5457e278-c333-11f1-8ca6-d7456980beef
+0
+89
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 103
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+57f49f20-c333-11f1-b951-e8456980beef
+0
+103
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 89
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+5366cdb6-c333-11f1-ab68-d6456980beef
+0
+89
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 95
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+537d4dac-c333-11f1-a236-d0456980beef
+0
+95
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 94
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+57df99ae-c333-11f1-af0d-a0456980beef
+0
+94
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 94
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+54d1ed52-c333-11f1-8b17-e0456980beef
+0
+94
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 83
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+5554b5de-c333-11f1-9e17-71456980beef
+0
+83
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 97
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+5b51dcb4-c333-11f1-b59b-e3456980beef
+0
+97
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 105
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+56c7a23c-c333-11f1-9419-eb456980beef
+0
+105
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 99
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+5341680a-c333-11f1-8372-6b456980beef
+0
+99
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 91
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+56ca6be8-c333-11f1-aa7a-e4456980beef
+0
+91
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 83
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+55141b78-c333-11f1-bb26-af456980beef
+0
+83
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 105
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+545b8180-c333-11f1-a351-ae456980beef
+0
+105
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 107
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+535152e2-c333-11f1-951a-e5456980beef
+0
+107
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 99
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+5451435a-c333-11f1-b2ef-d7456980beef
+0
+99
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 100
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+583f8634-c333-11f1-bb16-bb456980beef
+0
+100
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 103
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+56c9b784-c333-11f1-94b8-e4456980beef
+0
+103
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 76
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+54f9938e-c333-11f1-9d1c-af456980beef
+0
+76
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 102
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+545937ae-c333-11f1-82e7-ae456980beef
+0
+102
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 94
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+56f45502-c333-11f1-9a3b-e4456980beef
+0
+94
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 84
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+552c34a6-c333-11f1-9b0d-af456980beef
+0
+84
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 93
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+545e1b98-c333-11f1-b4bd-ae456980beef
+0
+93
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 108
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+54f17140-c333-11f1-b641-af456980beef
+0
+108
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 105
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+5468dfba-c333-11f1-84ff-ae456980beef
+0
+105
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 96
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+57e0ba14-c333-11f1-9251-a0456980beef
+0
+96
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 92
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+54ee48da-c333-11f1-85c5-af456980beef
+0
+92
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 107
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+5b97b1f8-c333-11f1-9a8a-c6456980beef
+0
+107
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 95
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+74883962-c333-11f1-b0d7-0103fea9beef
+0
+95
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 104
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+59f6fa48-c333-11f1-873b-cd456980beef
+0
+104
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 99
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+5a404f04-c333-11f1-aca0-2c446980beef
+0
+99
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 99
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+5b2ddff8-c333-11f1-8eaf-b0456980beef
+0
+99
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 114
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+5b392a34-c333-11f1-8b59-aa456980beef
+0
+114
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 114
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+5c6595b4-c333-11f1-8fd3-cf456980beef
+0
+114
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 78
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+5e0e0aa4-c333-11f1-abfd-d3456980beef
+0
+78
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 78
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+5db6c262-c333-11f1-b2ef-e6456980beef
+0
+78
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 110
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+5dab5968-c333-11f1-b99e-e6456980beef
+0
+110
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 92
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+5ddd6e26-c333-11f1-8d31-aa456980beef
+0
+92
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 90
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+5da3df80-c333-11f1-a321-35446980beef
+0
+90
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 100
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+652361b8-c333-11f1-9632-cd456980beef
+0
+100
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 96
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+6501c404-c333-11f1-a744-2c446980beef
+0
+96
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 100
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+6528042a-c333-11f1-96d7-71456980beef
+0
+100
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 91
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+6692e46a-c333-11f1-9bda-cf456980beef
+0
+91
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 90
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+665b27c8-c333-11f1-ac9e-35446980beef
+0
+90
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 101
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+6b39e2de-c333-11f1-a2b8-c5b55c90beef
+0
+101
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+!!!=====Dataset=====!!!!
+<class 'str'>
+Signal_3TeV
+About to Apply both sets of triggers to MC
+Event Count before Trigger+Selections: 84
+!!Testing Di-Higgs Delta R after applying selection (in theory)!!
+!!Looking at the old higgs object dR again!!
+!!Calculation of dR using only vector objects and methods (that I didn't write)!!
+=====Second Check=====
+==================Metadata Crap==================
+6b200e5e-c333-11f1-acc4-c2b45c90beef
+0
+84
+!!==================Region==================!!
+All
+!!==================Region==================!!
+ZCR
+!!==================Region==================!!
+TCR
+!!==================Region==================!!
+FakeCR
+!!==================Region==================!!
+Signal
+Processing 100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 97/97 [ 0:04:12 < 0:00:00 | 0.4 chunk/s ]
+It takes about 323.8 s to run the coffea processor with 4 boosted tau selections
+Saved output to /mnt/ceph/home/twnelson/Analysis/BoostedTau/ControlPlots/Coffea_26Porting/BoostedHiggs4TauAnalysis/ControlPlots/Output_2018MCData/output_4_boosted_tau_selec_4TauSamples_DBTWP_p92_Signal_WithChargeHist_BothTriggers_Coffea2026.coffea

@@ -33,6 +33,7 @@ region_dict = {"All": "NoControlRegion",
 			"TightTCR": "TightTopControlRegion",
 			"LooseTCR": "LooseTopControlRegion",
 			"FakeCR": "FakeControlRegion",
+            "Signal": "SignalRegion",
 		}
 
 #Use arguement parser to handle command line arguemetns
@@ -63,7 +64,8 @@ if __name__ == "__main__":
 			"MET","HT","MHT", #, "Mini_Cutflow", "Mini_NMinus1"
 			"ZMult", "bJetMult",
 			"LeadingPair_dR", "NextLeadingPair_dR", "FourTauMass",
-			#"DBT_Dist",
+			"LeadingPairCharge","NextleadingPairCharge",
+			"DBT_Dist",
 			"MVA_Dist"
 			]
 
@@ -161,6 +163,8 @@ if __name__ == "__main__":
         "bJetMult": "bJetMult_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
         "LeadingPair_dR": "LeadDiTau_DeltaR_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
         "NextLeadingPair_dR": "NextLeadDiTau_DeltaR_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
+        "LeadingPairCharge": "LeadDiTau_Charge_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
+        "NextleadingPairCharge": "NextLeadDiTau_Charge_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
         "FourTauMass": "FourTauMass_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
 		"DBT_FullDist": "Raw_DBT_Distribution_Full" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
 		"MVA_FullDist": "Raw_MVA_Distribution_Full" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
@@ -380,7 +384,7 @@ if __name__ == "__main__":
 	    
 		#Text, scaling and saving the plot
 		ax_main.legend(fontsize = 14)
-		hep.yscale_legend(ax_main)
+		hep.yscale_legend(ax_main,soft_fail=True)
 		hep.cms.label(data=True, ax = ax_main, text = "2018 Data Preliminary")	
 		plt.savefig(four_tau_names[hist_name] + "_" + str(args.NumberTau) + "TauSelec")
 		plt.close()

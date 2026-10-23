@@ -222,7 +222,7 @@ def four_mass(part_arr): #Four Particle mass assuming each event has 4 particles
 		(part_arr[0].Pz + part_arr[1].Pz + part_arr[2].Pz + part_arr[3].Pz)**2)
 
 class Analysis4TauProcessor(processor.ProcessorABC):
-	def __init__(self, sumWEvents_Dict, use_DBT, nBoostedTaus = 4, Trigger_Code = 3, Tau_WP = 0.90, year = "2018"): #Additional arguements can be added later
+	def __init__(self, sumWEvents_Dict, use_DBT, parquet_loc = "", nBoostedTaus = 4, Trigger_Code = 3, Tau_WP = 0.90, year = "2018"): #Additional arguements can be added later
 		#Initial variables
 		self.isData = False #Default assumption is MC
 		self.nBoostedTau_Selec = nBoostedTaus #Number of tau selections
@@ -230,6 +230,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 		self.year = int(year)
 		self.tauWP = Tau_WP
 		self.useDBT = use_DBT
+		self.parquet_loc = parquet_loc
 
 		#Work out Triggering logic
 		self.Mu_Trigger = False
@@ -429,7 +430,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			#############	
 
 			#Control Regions Axis
-			region_array = ["All","ZCR","TCR","FakeCR"]
+			region_array = ["All","ZCR","TCR","FakeCR","Signal"]
 			#region_array = ["All","TCR","NotTCR","ZCR","NotZCR"]
 			#region_array = ["All","TightTCR","NotTCR","LooseTCR","ZCR","NotZCR"] #"NotZCR"]
 			#region_array = ["All"] 
@@ -501,6 +502,10 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			#di-boosted tau delta Rs
 			h_leading_boostedtau_deltaR = hist.Hist.new.Regular(10,0,5, label = r"Leading boosted $\tau$ pair $\Delta$R",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
 			h_nextleading_boostedtau_deltaR = hist.Hist.new.Regular(10,0,5, label = r"Next leading boosted $\tau$ pair $\Delta$R",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+
+			#Di-tau charge
+			h_leading_Charge = hist.Hist.new.Regular(11,-5,5, label = r"Leading boosted $\tau$ pair charge", overflow = False).StrCat(region_array, growth = False, name = "region").Weight()
+			h_nextleading_Charge = hist.Hist.new.Regular(11,-5,5, label = r"Next leading boosted $\tau$ pair charge", overflow = False).StrCat(region_array, growth = False, name = "region").Weight()
 
 			#Reconstructed Mass
 			h_FourTau_Mass = hist.Hist.new.Regular(15,0,3000,label=r"Reconstructed Radion Mass [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
@@ -936,20 +941,24 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			#Boosted tau selections
 			if (self.nBoostedTau_Selec > 0):
 				#Impose selections boosted taus
-				pT_Cond = boostedtau.pt > 30
+				#pT_Cond = boostedtau.pt > 30
 				eta_Cond = np.abs(boostedtau.eta) < 2.3
 				decayMode_Cond = boostedtau.decay >= 0.5
 				DBT_Iso_Cond = boostedtau.DBT >= self.tauWP #Using Raw Score
 				MVA_Iso_Cond = boostedtau.MVA >= self.tauWP #Using Raw Score
 				
 				if (self.useDBT):
-					boostedtau_selec_cond = pT_Cond & eta_Cond & decayMode_Cond & DBT_Iso_Cond
+					#boostedtau_selec_cond = pT_Cond & eta_Cond & decayMode_Cond & DBT_Iso_Cond
+					boostedtau_selec_cond = eta_Cond & decayMode_Cond & DBT_Iso_Cond
 				else:
-					boostedtau_selec_cond = pT_Cond & eta_Cond & decayMode_Cond & MVA_Iso_Cond
+					#boostedtau_selec_cond = pT_Cond & eta_Cond & decayMode_Cond & MVA_Iso_Cond
+					boostedtau_selec_cond =  eta_Cond & decayMode_Cond & MVA_Iso_Cond
 				boostedtau = boostedtau[boostedtau_selec_cond] #Apply selections to all individual taus
+				boostedtau_with_pt = boostedtau[boostedtau.pt > 30]
 			
 				#Require events have at least 1 boosted tau
-				lead_boostedtau_cond = ak.num(boostedtau,axis=1) >= 1
+				lead_boostedtau_cond = ak.num(boostedtau_with_pt,axis=1) >= 1
+				#lead_boostedtau_cond = ak.num(boostedtau,axis=1) >= 1
 					
 				boostedtau = boostedtau[lead_boostedtau_cond]
 				AK8Jet = AK8Jet[lead_boostedtau_cond]
@@ -983,7 +992,8 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				#Impose selections on Subleading boosted tau
 				if (self.nBoostedTau_Selec > 1):
 					#Require events have at least 2 boosted tau
-					sublead_boostedtau_cond = ak.num(boostedtau,axis=1) >= 2
+					boostedtau_with_pt = boostedtau[boostedtau.pt > 30]
+					sublead_boostedtau_cond = ak.num(boostedtau_with_pt,axis=1) >= 2
 						
 					boostedtau = boostedtau[sublead_boostedtau_cond]
 					AK8Jet = AK8Jet[sublead_boostedtau_cond]
@@ -1277,6 +1287,12 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				#Apply selections to higgs objects
 				leading_higgs = leading_higgs[topo_cond]
 				nextleading_higgs = nextleading_higgs[topo_cond]
+				
+				print("!!Testing Di-Higgs Delta R after applying selection (in theory)!!")
+				for x in leading_higgs.deltaR(nextleading_higgs):
+					if (x < 2):
+						print("Invalid delta R")
+						print(x)
 
 				#Fill post visable mass entries in skim and N-1 histograms
 				n_DeltaR = np.size(event_level.nFatJet)
@@ -1356,15 +1372,32 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				nextleading_dR_Arr = ak.ravel(deltaR(boostedtau[:,2],boostedtau[:,3]))
 				nextleading_dPhi_Arr = ak.ravel(delta_phi(boostedtau[:,2],boostedtau[:,3]))
 
+				lead_btau_4Vec = ak.zip({"x": boostedtau[:,0].Px, "y": boostedtau[:,0].Py, "z": boostedtau[:,0].Pz,"t": boostedtau[:,0].E},with_name="Momentum4D")
+				leadpair_btau_4Vec = ak.zip({"x": boostedtau[:,1].Px, "y": boostedtau[:,1].Py, "z": boostedtau[:,1].Pz,"t": boostedtau[:,1].E},with_name="Momentum4D") 
+				nextlead_btau_4Vec = ak.zip({"x": boostedtau[:,2].Px, "y": boostedtau[:,2].Py, "z": boostedtau[:,2].Pz,"t": boostedtau[:,2].E},with_name="Momentum4D")
+				nextleadpair_btau_4Vec = ak.zip({"x": boostedtau[:,3].Px, "y": boostedtau[:,3].Py, "z": boostedtau[:,3].Pz,"t": boostedtau[:,3].E},with_name="Momentum4D") 
+
 				#Debugging check on the delta R Values
 			#	print("Debugging Leading dR")
 			#	for x in leading_dR_Arr:
 			#		if (x >= 1):
 			#			print("!!!dR >= 1!!!")
-			#			print(x)
+			#		print(x)
+			#	
+			#	print("Alternate Debugging Leading dR")
+			#	for x in lead_btau_4Vec.deltaR(leadpair_btau_4Vec):
+			#		if (x >= 1):
+			#			print("!!!dR >= 1!!!")
+			#		print(x)
 			#	
 			#	print("Debugging Sub-Leading dR")
 			#	for x in nextleading_dR_Arr:
+			#		if (x >= 1):
+			#			print("!!!dR >= 1!!!")
+			#			print(x)
+			#	
+			#	print("Alternate Debugging Sub-Leading dR")
+			#	for x in nextlead_btau_4Vec.deltaR(nextleadpair_btau_4Vec):
 			#		if (x >= 1):
 			#			print("!!!dR >= 1!!!")
 			#			print(x)
@@ -1390,8 +1423,9 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						"E" : ak.from_iter(ELeading)
 					}
 				)
+				alt_Higgs_Leading = ak.zip({"x": PxLeading, "y": PyLeading, "z": PzLeading, "t": ELeading},with_name="Momentum4D")
 				Higgs_Leading["phi"] = ak.from_iter(np.arctan2(Higgs_Leading.Py,Higgs_Leading.Px))
-				Higgs_Leading["eta"] = ak.from_iter(np.arcsinh(Higgs_Leading.Pz)/np.sqrt(Higgs_Leading.Px**2 + Higgs_Leading.Py**2 + Higgs_Leading.Pz**2))
+				Higgs_Leading["eta"] = ak.from_iter(np.arcsinh(Higgs_Leading.Pz/np.sqrt(Higgs_Leading.Px**2 + Higgs_Leading.Py**2)))
 				Higgs_NextLeading = ak.zip(
 					{
 						"Px" : ak.from_iter(PxSubLeading),
@@ -1400,8 +1434,9 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						"E" : ak.from_iter(ESubLeading)
 					}
 				)
+				alt_Higgs_SubLeading = ak.zip({"x": PxSubLeading, "y": PySubLeading, "z": PzSubLeading, "t": ESubLeading},with_name="Momentum4D")
 				Higgs_NextLeading["phi"] = ak.from_iter(np.arctan2(Higgs_NextLeading.Py,Higgs_NextLeading.Px))
-				Higgs_NextLeading["eta"] = ak.from_iter(np.arcsinh(Higgs_NextLeading.Pz)/np.sqrt(Higgs_NextLeading.Px**2 + Higgs_NextLeading.Py**2 + Higgs_NextLeading.Pz**2))
+				Higgs_NextLeading["eta"] = ak.from_iter(np.arcsinh(Higgs_NextLeading.Pz/np.sqrt(Higgs_NextLeading.Px**2 + Higgs_NextLeading.Py**2)))
 
 
 				#Reconstructed Radion
@@ -1420,10 +1455,27 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				event_level["Radion_Charge"] = boostedtau[:,0].charge + boostedtau[:,1].charge + boostedtau[:,2].charge + boostedtau[:,3].charge
 				event_level["LeadingPair_Charge"] = boostedtau[:,0].charge + boostedtau[:,1].charge
 				event_level["SubleadingPair_Charge"] = boostedtau[:,2].charge + boostedtau[:,3].charge
+				
+				print("!!Looking at the old higgs object dR again!!")
+				for x in leading_higgs.deltaR(nextleading_higgs):
+					if (x < 2):
+						print("Invalid delta R")
+						print(x)
+				
+				print("!!Calculation of dR using only vector objects and methods (that I didn't write)!!")
+				for x in alt_Higgs_Leading.deltaR(alt_Higgs_SubLeading):
+					if (x < 2):
+						print("Invalid delta R")
+					print(x)
 
 				if (len(Higgs_Leading.eta) != 0):
 					#print("Mass Reconstructed")
 					diHiggs_dR_Arr = ak.ravel(deltaR(Higgs_Leading,Higgs_NextLeading))
+					print("=====Second Check=====")
+					for x in diHiggs_dR_Arr:
+						if (x < 2):
+							print("!!!!Invalid Di-Higgs delta R!!!!")
+						print(x)
 					LeadingHiggs_mass_Arr = ak.ravel(single_mass(Higgs_Leading))	
 					SubLeadingHiggs_mass_Arr = ak.ravel(single_mass(Higgs_NextLeading))
 				
@@ -1479,21 +1531,22 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						"dphi_rad_MET": radionMET_dPhi,
 						"H1OS": event_level.LeadingPair_Charge,
 						"H2OS": event_level.SubleadingPair_Charge,
-					#	"ZMult": ak.ravel(event_level.ZMult), 
-					#	"numBJet": event_level.nBJets,
-						#"RecoRadion_Mass": FourTau_Mass_Arr,
-						#"LeadingTau_pT": boostedtau[:,0].pt,
-						#"weight": event_level.event_weight*CrossSec_Weight,
+						"ZMult": ak.ravel(event_level.ZMult), 
+						"numBJet": event_level.nBJets,
+						"RecoRadion_Mass": FourTau_Mass_Arr,
+						"LeadingTau_pT": boostedtau[:,0].pt,
+						"weight": event_level.event_weight*CrossSec_Weight,
 					}
 				)
 				#Save parquet files
 				#file_path = "root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/"
+				file_path = "root://cmsxrootd.hep.wisc.edu//store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/" + self.parquet_loc
 				#file_path = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/" + str(self.year) + "/"
 				#file_path = "root://cmsxrootd.hep.wisc.edu//" + file_path[6:]
 				#file_path = f'/nfs_scratch/twnelson/Parquet_Files/{self.year}/'
 				#file_path = f'/nfs_scratch/twnelson/Parquet_Files/{self.year}/'
 				#file_path = '/nfs_scratch/twnelson/Parquet_Files/2018/'
-				file_path = ""
+				#file_path = ""
 				#file_path = "~/Analysis/BoostedTau/ControlPlots/BoostedHiggs4TauAnalysis/ControlPlots/Processors/"
 				print("==================Metadata Crap==================")
 				print(events.metadata['fileuuid'])
@@ -1542,6 +1595,11 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			#############
 			#Fill histograms
 			#############
+			lead_pt_mean, sublead_pt_mean, third_pt_mean, fourth_pt_mean = 0,0,0,0
+			lead_pt = ak.Array([])
+			sublead_pt = ak.Array([])
+			third_pt = ak.Array([])
+			fourth_pt = ak.Array([])
 			if (ak.num(event_level.HT,axis=0) > 0):
 				for region in region_array:
 					print("!!==================Region==================!!")
@@ -1560,21 +1618,32 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						region_cond = event_level.nBJets >= 1
 					elif (region == "LooseTCR"):
 						region_cond = (event_level.nBJets < 1) & (event_level.nBJetsLoose >= 1)
+					elif (region == "Signal"):
+						region_cond = ((event_level.ZMult < 1) & (event_level.nBJets < 1)) & ((event_level.LeadingPair_Charge != 0) & (event_level.SubleadingPair_Charge != 0))
 					else:
 						region_cond = ak.ones_like(event_level.event_num) == 1
 				
 					#Boosted Taus
+
 					if (self.nBoostedTau_Selec >= 1):
-						h_Leadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)][:,0].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(boostedtau[ak.ravel(region_cond)],axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
+						h_Leadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.argsort(boostedtau.pt,axis=1,ascending=False)][ak.ravel(region_cond)][:,0].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(boostedtau[ak.ravel(region_cond)],axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
+						if (region == "All" and ak.num(boostedtau.pt,axis=0) > 0):
+							lead_pt = ak.ravel(boostedtau[ak.argsort(boostedtau.pt,axis=1,ascending=False)][ak.ravel(region_cond)][:,0].pt)
 
 					if (self.nBoostedTau_Selec >= 2):
-						h_Subleadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)][:,1].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(boostedtau[ak.ravel(region_cond)],axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
+						h_Subleadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.argsort(boostedtau.pt,axis=1,ascending=False)][ak.ravel(region_cond)][:,1].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(boostedtau[ak.ravel(region_cond)],axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
+						if (region == "All" and ak.num(boostedtau.pt,axis=0) > 0):
+							sublead_pt = ak.ravel(boostedtau[ak.argsort(boostedtau.pt,axis=1,ascending=False)][ak.ravel(region_cond)][:,1].pt)
 					
 					if (self.nBoostedTau_Selec >= 3):
-						h_Thirdleadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)][:,2].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(boostedtau[ak.ravel(region_cond)],axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
+						h_Thirdleadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.argsort(boostedtau.pt,axis=1,ascending=False)][ak.ravel(region_cond)][:,2].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(boostedtau[ak.ravel(region_cond)],axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
+						if (region == "All" and ak.num(boostedtau.pt,axis=0) > 0):
+							third_pt = ak.ravel(boostedtau[ak.argsort(boostedtau.pt,axis=1,ascending=False)][ak.ravel(region_cond)][:,2].pt)
 					
 					if (self.nBoostedTau_Selec >= 4):
-						h_Fourthleadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)][:,3].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(boostedtau[ak.ravel(region_cond)],axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
+						h_Fourthleadingboostedtau_pT_Trigger.fill(ak.ravel(boostedtau[ak.argsort(boostedtau.pt,axis=1,ascending=False)][ak.ravel(region_cond)][:,3].pt),weight=ak.ravel(event_level[ak.ravel(region_cond)][ak.num(boostedtau[ak.ravel(region_cond)],axis=1) >= self.nBoostedTau_Selec].event_weight*CrossSec_Weight), region = region)
+						if (region == "All" and ak.num(boostedtau.pt,axis=0) > 0):
+							fourth_pt = ak.ravel(boostedtau[ak.argsort(boostedtau.pt,axis=1,ascending=False)][ak.ravel(region_cond)][:,3].pt)
 					
 					h_boostedtau_eta_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)].eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(boostedtau[ak.ravel(region_cond)].eta))[0]), region = region)
 					h_boostedtau_phi_Trigger.fill(ak.ravel(boostedtau[ak.ravel(region_cond)].phi),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(boostedtau[ak.ravel(region_cond)].phi))[0]), region = region)
@@ -1626,6 +1695,10 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 						h_leading_boostedtau_deltaR.fill(leading_dR_Arr[ak.ravel(region_cond)], weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
 						h_nextleading_boostedtau_deltaR.fill(nextleading_dR_Arr[ak.ravel(region_cond)], weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
 
+						#Store di-tau charges
+						h_leading_Charge.fill(event_level.LeadingPair_Charge[ak.ravel(region_cond)], weight = ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
+						h_nextleading_Charge.fill(event_level.SubleadingPair_Charge[ak.ravel(region_cond)], weight = ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
+
 						#Four Mass
 						h_FourTau_Mass.fill(FourTau_Mass_Arr[ak.ravel(region_cond)], weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
 			
@@ -1643,6 +1716,12 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					"n_Trigger": n_Trigger,
 					"n_VisMass": n_VisMass,
 					"n_Higgs_dR": n_DeltaR,
+					
+                    #Boosted tau pt arrays 
+					"Lead_pt": ak.to_list(lead_pt),
+					"SubLead_pt":ak.to_list(sublead_pt),
+					"Third_pt": ak.to_list(third_pt),
+					"Fourth_pt": ak.to_list(fourth_pt),
 					
 					"w_Skim": w_Skim,
 					"w_LeadBoostedTau": w_LeadBoostedTau,
@@ -1725,6 +1804,8 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					"LeadingPair_dR": h_leading_boostedtau_deltaR,
 					"NextLeadingPair_dR": h_nextleading_boostedtau_deltaR,
 					"FourTauMass": h_FourTau_Mass,
+					"LeadingPairCharge": h_leading_Charge,
+					"NextleadingPairCharge": h_nextleading_Charge,
 
 					#Gen Level information
 					"n_GenTau_Skim": n_tau_Skim,
