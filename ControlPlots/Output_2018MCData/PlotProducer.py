@@ -56,17 +56,19 @@ if __name__ == "__main__":
 
 	#Dictionaries and arrays with information on plot constrution, naming and samples
 	four_tau_hist_list = [
-			"boostedtau_pt_Trigg","boostedtau_eta_Trigg","boostedtau_phi_Trigg",
-			"electron_pt_Trigg","electron_eta_Trigg","electron_phi_Trigg",
-			"muon_pt_Trigg","muon_eta_Trigg","muon_phi_Trigg", #"Leadingmuon_pt_Trigg",#"Leadingmuon_eta_Trigg",
-			"Jet_pt_Trigg","Jet_eta_Trigg","Jet_phi_Trigg",
-			"AK8Jet_pt_Trigg","AK8Jet_eta_Trigg","AK8Jet_phi_Trigg","nAK8Jet_Trigg",
-			"MET","HT","MHT", #, "Mini_Cutflow", "Mini_NMinus1"
-			"ZMult", "bJetMult",
-			"LeadingPair_dR", "NextLeadingPair_dR", "FourTauMass",
-			"LeadingPairCharge","NextleadingPairCharge",
-			"DBT_Dist",
-			"MVA_Dist"
+		#	"boostedtau_pt_Trigg","boostedtau_eta_Trigg","boostedtau_phi_Trigg",
+		#	"electron_pt_Trigg","electron_eta_Trigg","electron_phi_Trigg",
+		#	"muon_pt_Trigg","muon_eta_Trigg","muon_phi_Trigg", #"Leadingmuon_pt_Trigg",#"Leadingmuon_eta_Trigg",
+		#	"Jet_pt_Trigg","Jet_eta_Trigg","Jet_phi_Trigg",
+		#	"AK8Jet_pt_Trigg","AK8Jet_eta_Trigg","AK8Jet_phi_Trigg","nAK8Jet_Trigg",
+		#	"MET","HT","MHT", #, "Mini_Cutflow", "Mini_NMinus1"
+		#	"ZMult", "bJetMult",
+		#	"LeadingPair_dR", "NextLeadingPair_dR", "FourTauMass",
+		#	"LeadingPairCharge","NextleadingPairCharge",
+		#	"DBT_Dist",
+		#	"MVA_Dist",
+		#	"ElectronCount", "MuonCount",
+            "ZMultElec", "ZMultMuon"
 			]
 
 	#Additional boosted tau distributions to pull based on boosted tau requirements
@@ -170,6 +172,10 @@ if __name__ == "__main__":
 		"MVA_FullDist": "Raw_MVA_Distribution_Full" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
 		"DBT_Dist": "Raw_DBT_Distribution" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
 		"MVA_Dist": "Raw_MVA_Distribution" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
+		"ElectronCount": "Electron_Count_Distribution" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
+		"MuonCount": "Muon_Count_Distribution" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
+        "ZMultElec": "ZBosonMultFromElectron_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
+        "ZMultMuon": "ZBosonMultFromMuon_Trigger" + "-" + trigger_name + "_" + region_dict[args.ControlRegion],
 	}
 
 
@@ -384,6 +390,7 @@ if __name__ == "__main__":
 	    
 		#Text, scaling and saving the plot
 		ax_main.legend(fontsize = 14)
+		ax_main.set_yscale('log')
 		hep.yscale_legend(ax_main,soft_fail=True)
 		hep.cms.label(data=True, ax = ax_main, text = "2018 Data Preliminary")	
 		plt.savefig(four_tau_names[hist_name] + "_" + str(args.NumberTau) + "TauSelec")

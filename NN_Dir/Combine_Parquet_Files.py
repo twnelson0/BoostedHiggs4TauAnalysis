@@ -4,7 +4,8 @@ import glob
 
 #Global Variables
 #parquet_dir = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/New_Dir/"
-parquet_dir = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/"
+#parquet_dir = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/"
+parquet_dir = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/ParquetFiles_2026_10_26_2158/"
 Process_Array = ["TTToSemiLeptonic",
 			"TTTo2L2Nu",
 			"TTToHadronic",

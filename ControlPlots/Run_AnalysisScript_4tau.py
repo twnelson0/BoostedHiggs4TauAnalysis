@@ -397,6 +397,13 @@ if __name__ == "__main__":
 			"Signal_3TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_3TeV_DBT],
 			"Signal_1TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_1TeV_DBT]
 		}
+	
+	Oops_All_Signal = {
+			#"Signal_2TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_2TeV_DBT[:5]],
+			#"Signal_3TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_3TeV_DBT[:5]],
+			#"Signal_1TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_1TeV_DBT[:5]]
+			"ZZ4l": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in ZZ4L_2018_DBT][:7],
+		}
 
 	file_dict_full_MVA = {
 			"TTToSemiLeptonic": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in TTToSemiLeptonic_2018],
@@ -481,8 +488,8 @@ if __name__ == "__main__":
 	trigger_bit_dict = {0:"NoTrigger",1:"SingleMuonTrigger",2:"HTMETMHTTrigger",3:"BothTriggers"}
 	#WP_Array = np.linspace(start=0.85,stop=0.95,num=11) 
 	#WP_Array = [0.92]
-	WP_Array = [0.0, 0.932]
-	#WP_Array = [0.932]
+	#WP_Array = [0.0, 0.932]
+	WP_Array = [0.932]
 	#WP_Array = [0.0,0.85,0.86,0.87,0.89,0.88,0.90,0.91,0.92,0.93,0.94,0.95,0.96]
 	#WP_Array = [0.931,0.932,0.933,0.934,0.935,0.936,0.937,0.938,0.939]
 	trigger_bit = 3
@@ -505,6 +512,7 @@ if __name__ == "__main__":
 				fourtau_out = runner(file_dict_full_MVA, treename="Events", processor_instance=AnalysisProcessor.Analysis4TauProcessor(sumWEvents_Dict = sumWEvents_Dict, nBoostedTaus = n_taus, Trigger_Code = trigger_bit, Tau_WP = wp, use_DBT = False, parquet_loc = dir_name)) #Modified for NanoAOD (changd treename)
 			if (wp != 0.0):
 				fourtau_out = runner(file_dict_full_DBT, treename="Events", processor_instance=AnalysisProcessor.Analysis4TauProcessor(sumWEvents_Dict = sumWEvents_Dict, nBoostedTaus = n_taus, Trigger_Code = trigger_bit, Tau_WP = wp, use_DBT = True, parquet_loc = dir_name)) #Modified for NanoAOD (changd treename)
+				#fourtau_out = runner(Oops_All_Signal, treename="Events", processor_instance=AnalysisProcessor.Analysis4TauProcessor(sumWEvents_Dict = sumWEvents_Dict, nBoostedTaus = n_taus, Trigger_Code = trigger_bit, Tau_WP = wp, use_DBT = True, parquet_loc = dir_name)) #Modified for NanoAOD (changd treename)
 			end_time = time.time()
 			time_running = end_time-start_time
 			print("It takes about %.1f s to run the coffea processor with %d boosted tau selections"%(time_running,n_taus))
@@ -515,7 +523,8 @@ if __name__ == "__main__":
 				outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_MVAWP_p" + str(wp)[2:] + "_FullDataMC_AllSignal_LoosePt_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026_Dup.coffea")
 				#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_MVAWP_p" + str(wp)[2:] + "_Signal_WithChargeHist_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
 			if (wp == 0.932):
-				outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_DBTWP_p" + str(wp)[2:] + "_FullDataMC_AllSignal_LoosePt_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026_Encore.coffea")
+				outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_DBTWP_p" + str(wp)[2:] + "_FullDataMC_AllSignal_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026_WithLeptonCounts.coffea")
+				#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_DBTWP_p" + str(wp)[2:] + "_OopsAllSignal_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
 				#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_DBTWP_p" + str(wp)[2:] + "_Signal_WithChargeHist_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
 			
             #outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_MVAWP_p" + str(wp)[2:] + "_Signal_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")

@@ -476,6 +476,8 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			#Add Z Multiplicity and BJet multiplicity
 			h_ZMult = hist.Hist.new.Regular(6,0,6, label=r"Z Boson Multiplicity",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
 			h_bJetMult = hist.Hist.new.Regular(6,0,6, label = r"b-Jet Multiplicity",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_ZMultElec = hist.Hist.new.Regular(6,0,6, label=r"Z Boson Multiplicity (from electrons)",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_ZMultMuon = hist.Hist.new.Regular(6,0,6, label=r"Z Boson Multiplicity (from muons)",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
 
 			#Add MVA and DBT histograms
 			h_DBTVar = hist.Hist.new.Regular(100,0,1, label=r"boostedTau_rawDeepTau2018v2p7VSjet", overflow = False).Double()
@@ -509,6 +511,10 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 
 			#Reconstructed Mass
 			h_FourTau_Mass = hist.Hist.new.Regular(15,0,3000,label=r"Reconstructed Radion Mass [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+
+			#Lepton count histograms
+			h_Electron_Count = hist.Hist.new.Regular(10,0,10,label=r"Number of Electrons per Event",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_Muon_Count = hist.Hist.new.Regular(10,0,10,label=r"Number of Muons per Event",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
 
 			#Add cutflow and N-1 tables
 			if (self.ApplyTrigger):
@@ -941,24 +947,25 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			#Boosted tau selections
 			if (self.nBoostedTau_Selec > 0):
 				#Impose selections boosted taus
-				#pT_Cond = boostedtau.pt > 30
+				pT_Cond = boostedtau.pt > 30
 				eta_Cond = np.abs(boostedtau.eta) < 2.3
 				decayMode_Cond = boostedtau.decay >= 0.5
 				DBT_Iso_Cond = boostedtau.DBT >= self.tauWP #Using Raw Score
 				MVA_Iso_Cond = boostedtau.MVA >= self.tauWP #Using Raw Score
 				
 				if (self.useDBT):
-					#boostedtau_selec_cond = pT_Cond & eta_Cond & decayMode_Cond & DBT_Iso_Cond
-					boostedtau_selec_cond = eta_Cond & decayMode_Cond & DBT_Iso_Cond
+					boostedtau_selec_cond = pT_Cond & eta_Cond & decayMode_Cond & DBT_Iso_Cond
+					#boostedtau_selec_cond = eta_Cond & decayMode_Cond & DBT_Iso_Cond
 				else:
-					#boostedtau_selec_cond = pT_Cond & eta_Cond & decayMode_Cond & MVA_Iso_Cond
-					boostedtau_selec_cond =  eta_Cond & decayMode_Cond & MVA_Iso_Cond
+					boostedtau_selec_cond = pT_Cond & eta_Cond & decayMode_Cond & MVA_Iso_Cond
+					#boostedtau_selec_cond =  eta_Cond & decayMode_Cond & MVA_Iso_Cond
+				
 				boostedtau = boostedtau[boostedtau_selec_cond] #Apply selections to all individual taus
-				boostedtau_with_pt = boostedtau[boostedtau.pt > 30]
+				#boostedtau_with_pt = boostedtau[boostedtau.pt > 30]
 			
 				#Require events have at least 1 boosted tau
-				lead_boostedtau_cond = ak.num(boostedtau_with_pt,axis=1) >= 1
-				#lead_boostedtau_cond = ak.num(boostedtau,axis=1) >= 1
+				#lead_boostedtau_cond = ak.num(boostedtau_with_pt,axis=1) >= 1
+				lead_boostedtau_cond = ak.num(boostedtau,axis=1) >= 1
 					
 				boostedtau = boostedtau[lead_boostedtau_cond]
 				AK8Jet = AK8Jet[lead_boostedtau_cond]
@@ -992,8 +999,9 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				#Impose selections on Subleading boosted tau
 				if (self.nBoostedTau_Selec > 1):
 					#Require events have at least 2 boosted tau
-					boostedtau_with_pt = boostedtau[boostedtau.pt > 30]
-					sublead_boostedtau_cond = ak.num(boostedtau_with_pt,axis=1) >= 2
+					#boostedtau_with_pt = boostedtau[boostedtau.pt > 30]
+					#sublead_boostedtau_cond = ak.num(boostedtau_with_pt,axis=1) >= 2
+					sublead_boostedtau_cond = ak.num(boostedtau,axis=1) >= 2
 						
 					boostedtau = boostedtau[sublead_boostedtau_cond]
 					AK8Jet = AK8Jet[sublead_boostedtau_cond]
@@ -1352,15 +1360,26 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				
 				#Get Z_multiplicity	
 				electron_ZMult = Z_Mult_Function(ak.materialize(electron),"ele")
+				print("Number of events present: %d"%ak.num(electron.pt,axis=0))
+				event_level["electron_count"] = ak.num(electron.pt,axis=1)
+				print("Total Electron Z Multiplicity: %d"%np.sum(electron_ZMult))
+				print("Total number of electrons: %d"%np.sum(ak.num(electron.pt,axis=1)))
+				print("Rough Average number of electrons per event: %.3f"%(np.sum(ak.num(electron.pt,axis=1))/ak.num(electron.pt,axis=0)))
 				muon_ZMult = Z_Mult_Function(ak.materialize(muon),"mu")
+				event_level["muon_count"] = ak.num(muon.pt,axis=1)
+				print("Total Muon Z Multiplicity: %d"%np.sum(muon_ZMult))
+				print("Total number of muons: %d"%np.sum(ak.num(muon.pt,axis=1)))
+				print("Rough Average number of muons per event: %.3f"%(np.sum(ak.num(muon.pt,axis=1))/ak.num(muon.pt,axis=0)))
 				event_level["ZMult"] = muon_ZMult + electron_ZMult
 				event_level["ZMult_e"] = electron_ZMult
 				event_level["ZMult_mu"] = muon_ZMult
 			else:
-				print("No BJets")
+				#print("No BJets")
 				event_level["nBJets"] = 0
 				event_level["nBJetsLoose"] = 0
 				event_level["ZMult"] = 0
+				event_level["ZMult_e"] = 0
+				event_level["ZMult_mu"] = 0
 
 			#############
 			#Get boosted tau pair objects and 4 boosted tau object
@@ -1546,7 +1565,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				#file_path = f'/nfs_scratch/twnelson/Parquet_Files/{self.year}/'
 				#file_path = f'/nfs_scratch/twnelson/Parquet_Files/{self.year}/'
 				#file_path = '/nfs_scratch/twnelson/Parquet_Files/2018/'
-				#file_path = ""
+				file_path = ""
 				#file_path = "~/Analysis/BoostedTau/ControlPlots/BoostedHiggs4TauAnalysis/ControlPlots/Processors/"
 				print("==================Metadata Crap==================")
 				print(events.metadata['fileuuid'])
@@ -1555,7 +1574,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 
 				file_name = dataset + "_" + events.metadata['fileuuid'] + "_BoostedTau.parquet"
 				#if ():
-				ak.to_parquet(var_nn,file_path + file_name)
+				#ak.to_parquet(var_nn,file_path  + "/" + file_name)
 
 			#	if not(self.isData):
 			#		print("Not Data")
@@ -1682,6 +1701,12 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					#Store Z and BJet Mupltiplcity
 					h_ZMult.fill(ak.ravel(event_level[ak.ravel(region_cond)].ZMult),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
 					h_bJetMult.fill(ak.ravel(event_level[ak.ravel(region_cond)].nBJets),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
+					h_ZMultElec.fill(ak.ravel(event_level[ak.ravel(region_cond)].ZMult_e),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
+					h_ZMultMuon.fill(ak.ravel(event_level[ak.ravel(region_cond)].ZMult_mu),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight), region = region)
+
+					#Store electron and muon counts
+					h_Electron_Count.fill(ak.ravel(event_level[ak.ravel(region_cond)].electron_count),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),region=region)
+					h_Muon_Count.fill(ak.ravel(event_level[ak.ravel(region_cond)].muon_count),weight=ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),region=region)
 
 					#Store DBT and MVA
 					h_DBTVar_FinalSelec_Full.fill(ak.ravel(boostedtau[ak.ravel(region_cond)].DBT),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level[ak.ravel(region_cond)].event_weight*CrossSec_Weight),ak.ones_like(boostedtau[ak.ravel(region_cond)].DBT))[0]), region = region)
@@ -1799,6 +1824,12 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					#Multiplicites
 					"ZMult": h_ZMult,
 					"bJetMult": h_bJetMult,
+					"ZMultElec": h_ZMultElec,
+					"ZMultMuon": h_ZMultMuon,
+
+					#Lepton Counts
+					"ElectronCount": h_Electron_Count,
+					"MuonCount": h_Muon_Count,
 
 					#Pair Delta Rs
 					"LeadingPair_dR": h_leading_boostedtau_deltaR,

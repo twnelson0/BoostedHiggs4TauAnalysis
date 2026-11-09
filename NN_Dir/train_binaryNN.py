@@ -29,7 +29,6 @@ from sklearn.svm import SVC
 from sklearn.utils import class_weight
 
 from matplotlib import pyplot
-import ROOT
 import numpy as np
 import pandas as pd
 import uproot as uprt
@@ -82,7 +81,6 @@ def prepare_data():
  
     ML_inputs = ["radion_pt", "vis_mass", "vis_mass2","radion_eta", "higgs2_dr", "higgs1_dr", "dphi_H1",
                  "dphi_H1_MET", "dphi_H2", "dphi_H2_MET", "dr_HH", "dr_H1_Rad", "dphi_HH", "dr_H2_Rad", "dphi_rad_MET"]
-                 #"H2OS", "H1OS", "numBJet"]  
 
     print('Preparing data')
 
@@ -90,7 +88,7 @@ def prepare_data():
     for s in samples:
         #file = pd.read_parquet(s + ".paquet",engine="pyarrow")
         #DataFrames[s] = pd.read_parquet("/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/New_Dir/" + s + ".parquet",engine="pyarrow")
-        DataFrames[s] = pd.read_parquet("/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/" + s + ".parquet",engine="pyarrow")
+        DataFrames[s] = pd.read_parquet("/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/ParquetFiles_2026_10_26_2158/" + s + ".parquet",engine="pyarrow")
         #DataFrames[s] = pd.Series({var : DataFrames[s][var].to_numpy() for var in ML_inputs}) #Store everything as a pandas series (using a series may be causing problems)
         #DataFrames[s] = pd.DataFrame({var: DataFrames[s][var].to_list for var in ML_inputs})
         DataFrames[s] = DataFrames[s].iloc[0:8500]
