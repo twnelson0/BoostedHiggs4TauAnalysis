@@ -5,7 +5,7 @@ import glob
 #Global Variables
 #parquet_dir = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/New_Dir/"
 #parquet_dir = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/"
-parquet_dir = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/ParquetFiles_2026_10_26_2158/"
+parquet_dir = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/ParquetFiles_2026_11_11_1952/"
 Process_Array = ["TTToSemiLeptonic",
 			"TTTo2L2Nu",
 			"TTToHadronic",
@@ -58,9 +58,18 @@ Process_Array = ["TTToSemiLeptonic",
 			"QCD_HT2000toInf",
 			"Data_Mu",
 			"Data_HT",
-			"Signal_1TeV",
-			"Signal_2TeV",
-			"Signal_3TeV"]
+			"Signal_4Tau_1TeV",
+			"Signal_4Tau_1p5TeV",
+			"Signal_4Tau_2TeV",
+			"Signal_4Tau_2p5TeV",
+			"Signal_4Tau_3TeV",
+			"Signal_2V2Tau_1TeV",
+			"Signal_2V2Tau_2TeV",
+			"Signal_2V2Tau_3TeV",
+			"Signal_4V_1TeV",
+			"Signal_4V_2TeV",
+			"Signal_4V_3TeV",
+			]
 
 if __name__ == "__main__":
 	#Produce dictionary of files

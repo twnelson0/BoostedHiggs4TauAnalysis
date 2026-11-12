@@ -219,9 +219,19 @@ if __name__ == "__main__":
 	QCD_HT1000To1500_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "QCD_HT1000to1500_23April26_0536_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	QCD_HT1500To2000_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "QCD_HT1500to2000_23April26_0539_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	QCD_HT2000ToInf_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "QCD_HT2000toInf_23April26_0541_skim_FourTauSkim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	Signal_HH_2TeV_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "2TeVSignal_4Tau_15October26_1136_skim_DBT_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	Signal_HH_3TeV_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "3TeVSignal_4Tau_08October26_1056_skim_DBT_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
-	Signal_HH_1TeV_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "1TeVSignal_4Tau_09October26_1549_skim_DBT_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	Signal_HH_4Tau_2TeV_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "2TeVSignal_4Tau_15October26_1136_skim_DBT_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	Signal_HH_4Tau_2p5TeV_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "2p5TeVSignal_4Tau_11November26_1006_skim_DBT_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	Signal_HH_4Tau_3TeV_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "3TeVSignal_4Tau_08October26_1056_skim_DBT_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	Signal_HH_4Tau_1TeV_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "1TeVSignal_4Tau_09October26_1549_skim_DBT_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	Signal_HH_4Tau_1p5TeV_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "1p5TeVSignal_4Tau_11November26_1007_skim_DBT_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	
+	Signal_HH_2V2Tau_2TeV_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "2TeVSignal_2V2Tau_08November26_1518_skim_DBT_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	Signal_HH_2V2Tau_3TeV_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "3TeVSignal_2V2Tau_08November26_1514_skim_DBT_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	Signal_HH_2V2Tau_1TeV_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "1TeVSignal_2V2Tau_08November26_1510_skim_DBT_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	
+	Signal_HH_4V_2TeV_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "2TeVSignal_4V_08November26_1521_skim_DBT_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	Signal_HH_4V_3TeV_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "3TeVSignal_4V_08November26_1528_skim_DBT_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
+	Signal_HH_4V_1TeV_DBT = glob.glob(Skimmed_4tau_loc_MC_DBT + "1TeVSignal_4V_08November26_1525_skim_DBT_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
 	
     #Make full arrays of backgrounds
 	TTToSemiLeptonic_2018 = glob.glob(Skimmed_4tau_loc_MC + "TTToSemiLeptonic_25September26_2027_skim_MVA_Skim/singleFileSkimForSubmission-NANO_NANO_*.root")
@@ -328,7 +338,7 @@ if __name__ == "__main__":
     #   "TTToSemiLeptonic": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in TTToSemiLeptonic_2018[:500]],
 	#	"TTToHadronic": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in TTToHadronic_2018_DBT[:500]],
 	#	"TTTo2L2Nu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in TTTo2L2Nu_2018_DBT[:500]],
-		"Signal_2TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_2TeV_DBT]
+		"Signal_2TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_4Tau_2TeV_DBT]
 		#"Signal_3TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_3TeV_DBT]
 	}
 
@@ -393,9 +403,17 @@ if __name__ == "__main__":
 			"QCD_HT2000toInf": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in QCD_HT2000ToInf_DBT],
 			"Data_Mu": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(SingleMu_2018A_DBT, np.append(SingleMu_2018B_DBT, np.append(SingleMu_2018C_DBT,SingleMu_2018D_DBT)))],
 			"Data_HT": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in np.append(JetHT_2018A_DBT, np.append(JetHT_2018B_DBT, np.append(JetHT_2018C_DBT,JetHT_2018D_DBT)))],
-			"Signal_2TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_2TeV_DBT],
-			"Signal_3TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_3TeV_DBT],
-			"Signal_1TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_1TeV_DBT]
+			"Signal_4Tau_2TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_4Tau_2TeV_DBT],
+			"Signal_4Tau_2p5TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_4Tau_2p5TeV_DBT],
+			"Signal_4Tau_3TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_4Tau_3TeV_DBT],
+			"Signal_4Tau_1TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_4Tau_1TeV_DBT],
+			"Signal_4Tau_1p5TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_4Tau_1p5TeV_DBT],
+			"Signal_2V2Tau_2TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_2V2Tau_2TeV_DBT],
+			"Signal_2V2Tau_3TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_2V2Tau_3TeV_DBT],
+			"Signal_2V2Tau_1TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_2V2Tau_1TeV_DBT],
+			"Signal_4V_2TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_4V_2TeV_DBT],
+			"Signal_4V_3TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_4V_3TeV_DBT],
+			"Signal_4V_1TeV": ["root://cmsxrootd.hep.wisc.edu//" + file[6:] for file in Signal_HH_4V_1TeV_DBT],
 		}
 	
 	Oops_All_Signal = {
@@ -523,7 +541,7 @@ if __name__ == "__main__":
 				outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_MVAWP_p" + str(wp)[2:] + "_FullDataMC_AllSignal_LoosePt_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026_Dup.coffea")
 				#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_MVAWP_p" + str(wp)[2:] + "_Signal_WithChargeHist_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
 			if (wp == 0.932):
-				outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_DBTWP_p" + str(wp)[2:] + "_FullDataMC_AllSignal_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026_WithLeptonCounts.coffea")
+				outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_AllFinalState_DBTWP_p" + str(wp)[2:] + "_FullDataMC_AllSignal_Withp5_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026_WithLeptonCounts_OptimizeHist.coffea")
 				#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_DBTWP_p" + str(wp)[2:] + "_OopsAllSignal_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
 				#outfile = os.path.join(os.getcwd() + "/Output_2018MCData/", f"output_{n_taus}_boosted_tau_selec_4TauSamples_DBTWP_p" + str(wp)[2:] + "_Signal_WithChargeHist_" + trigger_bit_dict[trigger_bit]	+ "_Coffea2026.coffea")
 			

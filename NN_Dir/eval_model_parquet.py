@@ -78,10 +78,12 @@ if __name__ == "__main__":
 			"QCD_HT2000toInf",
 			"Data_Mu",
 			"Data_HT",
-			"Signal_1TeV",
-			"Signal_2TeV",
-			"Signal_3TeV"]
-	file_loc = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/ParquetFiles_2026_10_26_2158/"
+			"Signal_4Tau_1TeV",
+			"Signal_4Tau_1p5TeV",
+			"Signal_4Tau_2TeV",
+			"Signal_4Tau_2p5TeV",
+			"Signal_4Tau_3TeV"]
+	file_loc = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/ParquetFiles_2026_11_11_1952/"
 
 	for file_name in file_array:
 		if not(os.path.isfile(file_loc + file_name + ".parquet")):

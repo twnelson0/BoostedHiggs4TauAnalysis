@@ -8,7 +8,7 @@ import hist
 import os
 
 hep.style.use(hep.style.CMS)
-TABLEAU_COLORS = ['blue','orange','green','red','purple','brown','pink','gray','olive','cyan']
+TABLEAU_COLORS = ['blue','orange','green','red','purple','brown','pink','olive','cyan','gray']
 
 #Produce stacked histogram
 def StackPlot(signal_array,signal_list,background_array,background_list,data_hist,plot_name,axis_label,data_blind = False):
@@ -82,9 +82,10 @@ def StackPlot(signal_array,signal_list,background_array,background_list,data_his
 if __name__ == "__main__":
 	#mass = "2000"
 	#mass_array = ["1000","2000","3000"]
-	mass_array = ["1","2","3"]
+	#mass_array = ["1","2","3"]
+	mass_array = ["1","1p5","2","2p5","3"]
 	#region_array = ["All","ZCR","TCR","FakeCR","LowPurity","HighPurity"] 
-	region_array = ["HighPurity"] 
+	region_array = ["LowPurity"] 
 	
 	#for mass in mass_array:
 	for region_name in region_array:
@@ -119,7 +120,20 @@ if __name__ == "__main__":
 		data_files = ["Data_HT","Data_Mu"]
 		signal_file = ["Signal"]
 		background_list = [r"$t\bar{t}$", r"Drell-Yan+Jets", "Di-Bosons", "Single Top", "W+Jets", r"$ZZ \rightarrow 4l$","QCD"]
-		signal_list = [r"MC Sample $m_\phi$ = 1 TeV",r"MC Sample $m_\phi$ = 2 TeV",r"MC Sample $m_\phi$ = 3 TeV"]
+		#signal_list = [r"MC Sample $m_\phi$ = 1 TeV",r"MC Sample $m_\phi$ = 2 TeV",r"MC Sample $m_\phi$ = 3 TeV"]
+		signal_list = [r"MC Sample $m_\phi$ = 1 TeV ($4\tau$)",r"MC Sample $m_\phi$ = 2 TeV ($4\tau$)",r"MC Sample $m_\phi$ = 3 TeV ($4\tau$)"]
+		#signal_list = [r"MC Sample $m_\phi$ = 1 TeV ($4\tau$)",r"MC Sample $m_\phi$ = 1.5 TeV ($4\tau$)",r"MC Sample $m_\phi$ = 2 TeV ($4\tau$)",r"MC Sample $m_\phi$ = 2.5 TeV ($4\tau$)",r"MC Sample $m_\phi$ = 3 TeV ($4\tau$)"]
+	#	signal_list = [r"MC Sample $m_\phi$ = 1 TeV ($2V2\tau$)",r"MC Sample $m_\phi$ = 2 TeV ($2V2\tau$)",r"MC Sample $m_\phi$ = 3 TeV ($2V2\tau$)"]
+	#	signal_list = [r"MC Sample $m_\phi$ = 1 TeV ($4V$)",r"MC Sample $m_\phi$ = 2 TeV ($4V$)",r"MC Sample $m_\phi$ = 3 TeV ($4V$)"]
+	#	signal_list = [r"MC Sample $m_\phi$ = 1 TeV (All Final States)",r"MC Sample $m_\phi$ = 2 TeV (All Final States)",r"MC Sample $m_\phi$ = 3 TeV (All Final States)"]
+
+		signal_dict = {r"MC Sample $m_\phi$ = 1 TeV ($4\tau$)" : ["Signal_4Tau_1TeV"], r"MC Sample $m_\phi$ = 1 TeV ($2V2\tau$)" : ["Signal_2V2Tau_1TeV"],r"MC Sample $m_\phi$ = 1 TeV ($4V$)" : ["Signal_4V_1TeV"],
+						r"MC Sample $m_\phi$ = 2 TeV ($4\tau$)" : ["Signal_4Tau_2TeV"],r"MC Sample $m_\phi$ = 2 TeV ($2V2\tau$)" : ["Signal_2V2Tau_2TeV"],r"MC Sample $m_\phi$ = 2 TeV ($4V$)" : ["Signal_4V_2TeV"],
+						r"MC Sample $m_\phi$ = 3 TeV ($4\tau$)" : ["Signal_4Tau_3TeV"],r"MC Sample $m_\phi$ = 3 TeV ($2V2\tau$)" : ["Signal_2V2Tau_3TeV"],r"MC Sample $m_\phi$ = 3 TeV ($4V$)" : ["Signal_4V_3TeV"],
+						r"MC Sample $m_\phi$ = 1.5 TeV ($4\tau$)" : ["Signal_4Tau_1p5TeV"], r"MC Sample $m_\phi$ = 2.5 TeV ($4\tau$)" : ["Signal_4Tau_2p5TeV"],
+						r"MC Sample $m_\phi$ = 1 TeV (All Final States)" : ["Signal_4Tau_1TeV","Signal_2V2Tau_1TeV","Signal_4V_1TeV"],
+						r"MC Sample $m_\phi$ = 2 TeV (All Final States)" : ["Signal_4Tau_2TeV","Signal_2V2Tau_2TeV","Signal_4V_2TeV"],
+						r"MC Sample $m_\phi$ = 3 TeV (All Final States)" : ["Signal_4Tau_3TeV","Signal_2V2Tau_3TeV","Signal_4V_3TeV"]}
 		background_plot_names = {r"$t\bar{t}$" : "_ttbar_", r"Drell-Yan+Jets": "_DYJets_", "Di-Bosons" : "_DiBosons_", "Single Top": "_SingleTop+", "QCD" : "_QCD_", "W+Jets" : "_WJets_", r"$ZZ \rightarrow 4l$" : "_ZZ4l_"}
 		background_dict = {r"$t\bar{t}$" : ["TTToSemiLeptonic","TTTo2L2Nu","TTToHadronic"], 
 					r"Drell-Yan+Jets": ["DYJetsToLL_M-4to50_HT-70to100","DYJetsToLL_M-4to50_HT-100to200","DYJetsToLL_M-4to50_HT-200to400","DYJetsToLL_M-4to50_HT-400to600","DYJetsToLL_M-4to50_HT-600toInf","DYJetsToLL_M-50_HT-70to100","DYJetsToLL_M-50_HT-100to200","DYJetsToLL_M-50_HT-200to400","DYJetsToLL_M-50_HT-400to600","DYJetsToLL_M-50_HT-600to800","DYJetsToLL_M-50_HT-800to1200","DYJetsToLL_M-50_HT-1200to2500","DYJetsToLL_M-50_HT-2500toInf"],
@@ -155,8 +169,12 @@ if __name__ == "__main__":
 
 
 		signal_input_dict = {}
-		for mass in mass_array:
-			signal_input_dict[mass] = pd.read_parquet("Signal_" + mass + "TeVwith_predictions.parquet",engine="pyarrow")
+		#for mass in mass_array: #This needs to be reworked to work with multiple final states!!!
+		for signal in signal_list:
+			#print(signal)
+			for in_file in signal_dict[signal]:
+				signal_input_dict[signal] = pd.read_parquet(in_file + "with_predictions.parquet",engine="pyarrow")
+			#signal_input_dict[mass] = pd.read_parquet("Signal_4Tau_" + mass + "TeVwith_predictions.parquet",engine="pyarrow")
 
 		data_input_dict = {}
 		for data_file in data_files:
@@ -194,27 +212,27 @@ if __name__ == "__main__":
 			}
 
 		hist_dict_signal = {
-				"radion_pt": hist.Hist.new.StrCat([r"$m_\phi$ = 1 TeV", r"$m_\phi$ = 2 TeV", r"$m_\phi$ = 3 TeV"],name="signal").Reg(N1,0,500, label=r"Radion $p_T$ (GeV)").Weight(), 
-				"vis_mass": hist.Hist.new.StrCat([r"$m_\phi$ = 1 TeV", r"$m_\phi$ = 2 TeV", r"$m_\phi$ = 3 TeV"],name="signal").Reg(N2,0,120, label=r"Leading di-$\tau$ Mass (GeV)").Weight(),
-				"vis_mass2": hist.Hist.new.StrCat([r"$m_\phi$ = 1 TeV", r"$m_\phi$ = 2 TeV", r"$m_\phi$ = 3 TeV"],name="signal").Reg(N2,0,120, label=r"Subleading di-$\tau$ Mass (GeV)").Weight(),
-				"radion_eta": hist.Hist.new.StrCat([r"$m_\phi$ = 1 TeV", r"$m_\phi$ = 2 TeV", r"$m_\phi$ = 3 TeV"],name="signal").Reg(N1,-5,5, label = r"Radion $\eta$").Weight(),
-				"higgs1_dr": hist.Hist.new.StrCat([r"$m_\phi$ = 1 TeV", r"$m_\phi$ = 2 TeV", r"$m_\phi$ = 3 TeV"],name="signal").Reg(N1,0,5, label = r"Leading di-$\tau$ $\Delta$R").Weight(),
-				"higgs2_dr": hist.Hist.new.StrCat([r"$m_\phi$ = 1 TeV", r"$m_\phi$ = 2 TeV", r"$m_\phi$ = 3 TeV"],name="signal").Reg(N1,0,5, label = r"Subleading di-$\tau$ $\Delta$R").Weight(),
-				"dphi_H1": hist.Hist.new.StrCat([r"$m_\phi$ = 1 TeV", r"$m_\phi$ = 2 TeV", r"$m_\phi$ = 3 TeV"],name="signal").Reg(N1,-pi,pi, label = r"Subleading di-$\tau$ $\Delta \phi$").Weight(),
-				"dphi_H2": hist.Hist.new.StrCat([r"$m_\phi$ = 1 TeV", r"$m_\phi$ = 2 TeV", r"$m_\phi$ = 3 TeV"],name="signal").Reg(N1,-pi,pi, label = r"Leading di-$\tau$ $\Delta \phi$").Weight(),
-				"dphi_H1_MET": hist.Hist.new.StrCat([r"$m_\phi$ = 1 TeV", r"$m_\phi$ = 2 TeV", r"$m_\phi$ = 3 TeV"],name="signal").Reg(N1,-pi,pi, label = r"Leading Higgs MET $\Delta \phi$").Weight(),
-				"dphi_H2_MET": hist.Hist.new.StrCat([r"$m_\phi$ = 1 TeV", r"$m_\phi$ = 2 TeV", r"$m_\phi$ = 3 TeV"],name="signal").Reg(N1,-pi,pi, label = r"Subleading Higgs MET $\Delta \phi$").Weight() ,
-				"dr_HH": hist.Hist.new.StrCat([r"$m_\phi$ = 1 TeV", r"$m_\phi$ = 2 TeV", r"$m_\phi$ = 3 TeV"],name="signal").Reg(N1,0,5, label = r"Higgs $\Delta$R").Weight(),
-				"dphi_HH": hist.Hist.new.StrCat([r"$m_\phi$ = 1 TeV", r"$m_\phi$ = 2 TeV", r"$m_\phi$ = 3 TeV"],name="signal").Reg(N1,-pi,pi, label = r"Higgs $\Delta \phi$").Weight(),
-				"dr_H1_Rad": hist.Hist.new.StrCat([r"$m_\phi$ = 1 TeV", r"$m_\phi$ = 2 TeV", r"$m_\phi$ = 3 TeV"],name="signal").Reg(N1,0,5, label = r"Leading Higgs Radion $\Delta$R").Weight(),
-				"dr_H2_Rad": hist.Hist.new.StrCat([r"$m_\phi$ = 1 TeV", r"$m_\phi$ = 2 TeV", r"$m_\phi$ = 3 TeV"],name="signal").Reg(N1,0,5, label = r"Subleading Higgs Radion $\Delta$R").Weight(),
-				"dphi_rad_MET": hist.Hist.new.StrCat([r"$m_\phi$ = 1 TeV", r"$m_\phi$ = 2 TeV", r"$m_\phi$ = 3 TeV"],name="signal").Reg(N1,-pi,pi, label = r"Radion MET $\Delta \phi$").Weight(),
-				"H1OS": hist.Hist.new.StrCat([r"$m_\phi$ = 1 TeV", r"$m_\phi$ = 2 TeV", r"$m_\phi$ = 3 TeV"],name = "signal").Reg(11,-5,5,label = r"Leading Higgs Electric Charge").Weight(),
-				"H2OS": hist.Hist.new.StrCat([r"$m_\phi$ = 1 TeV", r"$m_\phi$ = 2 TeV", r"$m_\phi$ = 3 TeV"],name = "signal").Reg(11,-5,5,label = r"Subleading Higgs Electric Charge").Weight(),
-				"numBJet": hist.Hist.new.StrCat([r"$m_\phi$ = 1 TeV", r"$m_\phi$ = 2 TeV", r"$m_\phi$ = 3 TeV"],name="signal").Reg(6,0,6, label = r"B Jet Multiplicity").Weight(),
-				"ZMult": hist.Hist.new.StrCat([r"$m_\phi$ = 1 TeV", r"$m_\phi$ = 2 TeV", r"$m_\phi$ = 3 TeV"],name="signal").Reg(6,0,6, label = r"Z Boson Multiplicity").Weight(),
-				"predictions": hist.Hist.new.StrCat([r"$m_\phi$ = 1 TeV", r"$m_\phi$ = 2 TeV", r"$m_\phi$ = 3 TeV"],name="signal").Reg(N1,0,1.0, label = r"Neural Network Model Output").Weight(),
-				"RecoRadion_Mass": hist.Hist.new.StrCat([r"$m_\phi$ = 1 TeV", r"$m_\phi$ = 2 TeV", r"$m_\phi$ = 3 TeV"],name="signal").Reg(N_fourMass,0,3000, label = r"Reconstructed Radion Mass (GeV)").Weight(),
+				"radion_pt": hist.Hist.new.StrCat(signal_list,name="signal").Reg(N1,0,500, label=r"Radion $p_T$ (GeV)").Weight(), 
+				"vis_mass": hist.Hist.new.StrCat(signal_list,name="signal").Reg(N2,0,120, label=r"Leading di-$\tau$ Mass (GeV)").Weight(),
+				"vis_mass2": hist.Hist.new.StrCat(signal_list,name="signal").Reg(N2,0,120, label=r"Subleading di-$\tau$ Mass (GeV)").Weight(),
+				"radion_eta": hist.Hist.new.StrCat(signal_list,name="signal").Reg(N1,-5,5, label = r"Radion $\eta$").Weight(),
+				"higgs1_dr": hist.Hist.new.StrCat(signal_list,name="signal").Reg(N1,0,5, label = r"Leading di-$\tau$ $\Delta$R").Weight(),
+				"higgs2_dr": hist.Hist.new.StrCat(signal_list,name="signal").Reg(N1,0,5, label = r"Subleading di-$\tau$ $\Delta$R").Weight(),
+				"dphi_H1": hist.Hist.new.StrCat(signal_list,name="signal").Reg(N1,-pi,pi, label = r"Subleading di-$\tau$ $\Delta \phi$").Weight(),
+				"dphi_H2": hist.Hist.new.StrCat(signal_list,name="signal").Reg(N1,-pi,pi, label = r"Leading di-$\tau$ $\Delta \phi$").Weight(),
+				"dphi_H1_MET": hist.Hist.new.StrCat(signal_list,name="signal").Reg(N1,-pi,pi, label = r"Leading Higgs MET $\Delta \phi$").Weight(),
+				"dphi_H2_MET": hist.Hist.new.StrCat(signal_list,name="signal").Reg(N1,-pi,pi, label = r"Subleading Higgs MET $\Delta \phi$").Weight() ,
+				"dr_HH": hist.Hist.new.StrCat(signal_list,name="signal").Reg(N1,0,5, label = r"Higgs $\Delta$R").Weight(),
+				"dphi_HH": hist.Hist.new.StrCat(signal_list,name="signal").Reg(N1,-pi,pi, label = r"Higgs $\Delta \phi$").Weight(),
+				"dr_H1_Rad": hist.Hist.new.StrCat(signal_list,name="signal").Reg(N1,0,5, label = r"Leading Higgs Radion $\Delta$R").Weight(),
+				"dr_H2_Rad": hist.Hist.new.StrCat(signal_list,name="signal").Reg(N1,0,5, label = r"Subleading Higgs Radion $\Delta$R").Weight(),
+				"dphi_rad_MET": hist.Hist.new.StrCat(signal_list,name="signal").Reg(N1,-pi,pi, label = r"Radion MET $\Delta \phi$").Weight(),
+				"H1OS": hist.Hist.new.StrCat(signal_list,name = "signal").Reg(11,-5,5,label = r"Leading Higgs Electric Charge").Weight(),
+				"H2OS": hist.Hist.new.StrCat(signal_list,name = "signal").Reg(11,-5,5,label = r"Subleading Higgs Electric Charge").Weight(),
+				"numBJet": hist.Hist.new.StrCat(signal_list,name="signal").Reg(6,0,6, label = r"B Jet Multiplicity").Weight(),
+				"ZMult": hist.Hist.new.StrCat(signal_list,name="signal").Reg(6,0,6, label = r"Z Boson Multiplicity").Weight(),
+				"predictions": hist.Hist.new.StrCat(signal_list,name="signal").Reg(N1,0,1.0, label = r"Neural Network Model Output").Weight(),
+				"RecoRadion_Mass": hist.Hist.new.StrCat(signal_list,name="signal").Reg(N_fourMass,0,3000, label = r"Reconstructed Radion Mass (GeV)").Weight(),
 			}
 
 		if (region_name == "HighPurity" or region_name == "All"): #Blind the data
@@ -247,25 +265,30 @@ if __name__ == "__main__":
 			}
 		
 		if (region_name == "ZCR"):
-			for mass in mass_array:
-				signal_input_dict[mass] = signal_input_dict[mass][np.bitwise_and(signal_input_dict[mass].ZMult >= 1,signal_input_dict[mass].numBJet < 1)]
+			#for mass in mass_array:
+			for signal in signal_list:
+				#signal_input_dict[mass] = signal_input_dict[mass][np.bitwise_and(signal_input_dict[mass].ZMult >= 1,signal_input_dict[mass].numBJet < 1)]
+				signal_input_dict[signal] = signal_input_dict[signal][np.bitwise_and(signal_input_dict[signal].ZMult >= 1,signal_input_dict[signal].numBJet < 1)]
 			for background_type in background_dict:
 				for background in background_dict[background_type]: 
 					background_input_dict[background] = background_input_dict[background][np.bitwise_or(background_input_dict[background].ZMult >= 1, background_input_dict[background].numBJet < 1)]
 			for data in data_files:
 				data_input_dict[data] = data_input_dict[data][np.bitwise_and(data_input_dict[data].ZMult >= 1,data_input_dict[data].numBJet < 1)]
 		if (region_name == "TCR"):
-			for mass in mass_array:
-				signal_input_dict[mass] = signal_input_dict[mass][np.bitwise_and(signal_input_dict[mass].numBJet >= 1, signal_input_dict[mass].ZMult < 1)]
+			#for mass in mass_array:
+			for signal in signal_list:
+				#signal_input_dict[mass] = signal_input_dict[mass][np.bitwise_and(signal_input_dict[mass].numBJet >= 1, signal_input_dict[mass].ZMult < 1)]
+				signal_input_dict[signal] = signal_input_dict[signal][np.bitwise_and(signal_input_dict[signal].numBJet >= 1, signal_input_dict[signal].ZMult < 1)]
 			for background_type in background_dict:
 				for background in background_dict[background_type]: 
 					background_input_dict[background] = background_input_dict[background][np.bitwise_and(background_input_dict[background].numBJet >= 1, background_input_dict[background].ZMult < 1)]
 			for data in data_files:
 				data_input_dict[data] = data_input_dict[data][np.bitwise_and(data_input_dict[data].numBJet >= 1, data_input_dict[data].ZMult < 1)]
 		if (region_name == "FakeCR"):
-			for mass in mass_array:
-				signal_input_dict[mass] = signal_input_dict[mass][np.bitwise_and(signal_input_dict[mass].ZMult < 1,signal_input_dict[mass].numBJet < 1)]
-				signal_input_dict[mass] = signal_input_dict[mass][np.bitwise_or(signal_input_dict[mass].H1OS != 0,signal_input_dict[mass].H2OS != 0)]
+			#for mass in mass_array:
+			for signal in signal_list:
+				#signal_input_dict[mass] = signal_input_dict[mass][np.bitwise_and(signal_input_dict[mass].ZMult < 1,signal_input_dict[mass].numBJet < 1)]
+				signal_input_dict[signal] = signal_input_dict[signal][np.bitwise_or(signal_input_dict[signal].H1OS != 0,signal_input_dict[signal].H2OS != 0)]
 			for background_type in background_dict:
 				for background in background_dict[background_type]: 
 					background_input_dict[background] = background_input_dict[background][np.bitwise_and(background_input_dict[background].ZMult < 1,background_input_dict[background].numBJet < 1)]
@@ -274,10 +297,15 @@ if __name__ == "__main__":
 				data_input_dict[data] = data_input_dict[data][np.bitwise_and(data_input_dict[data].ZMult < 1,data_input_dict[data].numBJet < 1)]
 				data_input_dict[data] = data_input_dict[data][np.bitwise_or(data_input_dict[data].H1OS != 0,data_input_dict[data].H2OS != 0)]
 		if (region_name == "LowPurity"):
-			for mass in mass_array:
-				signal_input_dict[mass] = signal_input_dict[mass][np.bitwise_and(signal_input_dict[mass].ZMult < 1,signal_input_dict[mass].numBJet < 1)]
-				signal_input_dict[mass] = signal_input_dict[mass][np.bitwise_and(signal_input_dict[mass].H1OS == 0,signal_input_dict[mass].H2OS == 0)]
-				signal_input_dict[mass] = signal_input_dict[mass][signal_input_dict[mass].predictions < 0.7]
+			#for mass in mass_array:
+			for signal in signal_list:
+				#signal_input_dict[mass] = signal_input_dict[mass][np.bitwise_and(signal_input_dict[mass].ZMult < 1,signal_input_dict[mass].numBJet < 1)]
+				#signal_input_dict[mass] = signal_input_dict[mass][np.bitwise_and(signal_input_dict[mass].H1OS == 0,signal_input_dict[mass].H2OS == 0)]
+				#signal_input_dict[mass] = signal_input_dict[mass][signal_input_dict[mass].predictions < 0.7]
+				
+				signal_input_dict[signal] = signal_input_dict[signal][np.bitwise_and(signal_input_dict[signal].ZMult < 1,signal_input_dict[signal].numBJet < 1)]
+				signal_input_dict[signal] = signal_input_dict[signal][np.bitwise_and(signal_input_dict[signal].H1OS == 0,signal_input_dict[signal].H2OS == 0)]
+				signal_input_dict[signal] = signal_input_dict[signal][signal_input_dict[signal].predictions < 0.7]
 			for background_type in background_dict:
 				for background in background_dict[background_type]: 
 					background_input_dict[background] = background_input_dict[background][np.bitwise_and(background_input_dict[background].ZMult < 1,background_input_dict[background].numBJet < 1)]
@@ -288,10 +316,15 @@ if __name__ == "__main__":
 				data_input_dict[data] = data_input_dict[data][np.bitwise_and(data_input_dict[data].H1OS == 0,data_input_dict[data].H2OS == 0)]
 				data_input_dict[data] = data_input_dict[data][data_input_dict[data].predictions < 0.7]
 		if (region_name == "HighPurity"):
-			for mass in mass_array:
-				signal_input_dict[mass] = signal_input_dict[mass][np.bitwise_and(signal_input_dict[mass].ZMult < 1,signal_input_dict[mass].numBJet < 1)]
-				signal_input_dict[mass] = signal_input_dict[mass][np.bitwise_and(signal_input_dict[mass].H1OS == 0,signal_input_dict[mass].H2OS == 0)]
-				signal_input_dict[mass] = signal_input_dict[mass][signal_input_dict[mass].predictions >= 0.7]
+			#for mass in mass_array:
+			for signal in signal_list:
+				#signal_input_dict[mass] = signal_input_dict[mass][np.bitwise_and(signal_input_dict[mass].ZMult < 1,signal_input_dict[mass].numBJet < 1)]
+				#signal_input_dict[mass] = signal_input_dict[mass][np.bitwise_and(signal_input_dict[mass].H1OS == 0,signal_input_dict[mass].H2OS == 0)]
+				#signal_input_dict[mass] = signal_input_dict[mass][signal_input_dict[mass].predictions >= 0.7]
+				
+				signal_input_dict[signal] = signal_input_dict[signal][np.bitwise_and(signal_input_dict[signal].ZMult < 1,signal_input_dict[signal].numBJet < 1)]
+				signal_input_dict[signal] = signal_input_dict[signal][np.bitwise_and(signal_input_dict[signal].H1OS == 0,signal_input_dict[signal].H2OS == 0)]
+				signal_input_dict[signal] = signal_input_dict[signal][signal_input_dict[signal].predictions >= 0.7]
 			for background_type in background_dict:
 				for background in background_dict[background_type]: 
 					background_input_dict[background] = background_input_dict[background][np.bitwise_and(background_input_dict[background].ZMult < 1,background_input_dict[background].numBJet < 1)]
@@ -316,8 +349,13 @@ if __name__ == "__main__":
 					#	print(background_input_dict[background][hist_name])
 			
 			#Fill in signal
-			for mass in mass_array:
-				hist_dict_signal[hist_name].fill(r"$m_\phi$ = %s TeV"%mass[0],signal_input_dict[mass][hist_name].to_numpy(),weight=signal_input_dict[mass]["weight"].to_numpy())
+			#for mass in mass_array:
+			#	if (len(mass) == 1):
+			#    	hist_dict_signal[hist_name].fill(r"$m_\phi$ = %s TeV"%mass[0],signal_input_dict[mass][hist_name].to_numpy(),weight=signal_input_dict[mass]["weight"].to_numpy())
+			#	else:
+			#    	hist_dict_signal[hist_name].fill(r"$m_\phi$ = %s.5 TeV"%mass[0],signal_input_dict[mass][hist_name].to_numpy(),weight=signal_input_dict[mass]["weight"].to_numpy())
+			for signal in signal_list:
+				hist_dict_signal[hist_name].fill(signal, signal_input_dict[signal][hist_name].to_numpy(),weight=signal_input_dict[signal]["weight"].to_numpy())
 
 			#Fill in the data
 			for data_file in data_files:
@@ -330,9 +368,12 @@ if __name__ == "__main__":
 			data_stack = hist_dict_data[hist_name].stack("data")
 			
 			signal_array = []
-			signal_array.append(hist_dict_signal[hist_name][{"signal": r"$m_\phi$ = 1 TeV"}])
-			signal_array.append(hist_dict_signal[hist_name][{"signal": r"$m_\phi$ = 2 TeV"}])
-			signal_array.append(hist_dict_signal[hist_name][{"signal": r"$m_\phi$ = 3 TeV"}])
+			for signal in signal_list:
+				signal_array.append(hist_dict_signal[hist_name][{"signal": signal}])
+			
+		#	signal_array.append(hist_dict_signal[hist_name][{"signal": r"$m_\phi$ = 1 TeV"}])
+		#	signal_array.append(hist_dict_signal[hist_name][{"signal": r"$m_\phi$ = 2 TeV"}])
+		#	signal_array.append(hist_dict_signal[hist_name][{"signal": r"$m_\phi$ = 3 TeV"}])
 			
 			data_hist = hist_dict_data[hist_name][{"data": "Data"}]
 			for background in background_list:

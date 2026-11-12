@@ -445,6 +445,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			h_boostedtau_eta_Trigger = hist.Hist.new.Regular(20,-4,4,label = r"Boosted $\tau$ $\eta$",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
 			h_boostedtau_phi_Trigger = hist.Hist.new.Regular(20,-pi,pi,label = r"Boosted$\tau$ $\phi$",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
 			h_boostedtau_raw_iso_Trigger = hist.Hist.new.Regular(20,-1,1,label=r"Raw MVA Score",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
+			h_boostedtau_eta_PreSelections = hist.Hist.new.Regular(20,-4,4,label = r"Boosted $\tau$ $\eta$",overflow = True).Double()
 			
 			#Basic Kinematic histograms leptons (muons and electrons)
 			h_electron_pT_Trigger = hist.Hist.new.Regular(15,0,300, label = r"e $p_T$ [GeV]",overflow = True).StrCat(region_array, growth=False, name = "region").Weight()
@@ -482,6 +483,10 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			#Add MVA and DBT histograms
 			h_DBTVar = hist.Hist.new.Regular(100,0,1, label=r"boostedTau_rawDeepTau2018v2p7VSjet", overflow = False).Double()
 			h_MVAVar = hist.Hist.new.Regular(100,-1,1, label=r"boostedTau_rawMVAoldDM2017v2", overflow = False).Double()
+
+			#Add di-Tau Invariant masses before selection
+			h_leadDiTauMass = hist.Hist.new.Regular(100,0,250, label=r"Leading di-$\tau$ Mass", overflow = True).Double()
+			h_subLeadDiTauMass = hist.Hist.new.Regular(100,0,250, label=r"Leading di-$\tau$ Mass", overflow = True).Double()
 
 			#Add MVA and DBT Histgorams produced at each tau cut
 			h_DBTVar_PreTrigger = hist.Hist.new.Regular(100,0,1, label=r"boostedTau_rawDeepTau2018v2p7VSjet", overflow = False).Double()
@@ -943,6 +948,8 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 			n_SubLeadBoostedTau = -1
 			n_3rdLeadBoostedTau = -1
 			n_4thLeadBoostedTau = -1
+
+			h_boostedtau_eta_PreSelections.fill(ak.ravel(boostedtau.eta),weight=ak.ravel(ak.broadcast_arrays(ak.ravel(event_level.event_weight*CrossSec_Weight),ak.ones_like(boostedtau.eta))[0]))
 				
 			#Boosted tau selections
 			if (self.nBoostedTau_Selec > 0):
@@ -1249,6 +1256,10 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				vis_mass1 = leading_higgs.mass
 				vis_mass2 = nextleading_higgs.mass
 				vis_mass_cond = (vis_mass1 >= 10) & (vis_mass2 >= 10)
+
+				#Add diTau Masses to histograms
+				h_leadDiTauMass.fill(ak.ravel(vis_mass1),weight=ak.ravel(event_level.event_weight*CrossSec_Weight))
+				h_subLeadDiTauMass.fill(ak.ravel(vis_mass2),weight=ak.ravel(event_level.event_weight*CrossSec_Weight))
 				
 				boostedtau = boostedtau[vis_mass_cond]
 				AK8Jet = AK8Jet[vis_mass_cond]
@@ -1565,7 +1576,7 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				#file_path = f'/nfs_scratch/twnelson/Parquet_Files/{self.year}/'
 				#file_path = f'/nfs_scratch/twnelson/Parquet_Files/{self.year}/'
 				#file_path = '/nfs_scratch/twnelson/Parquet_Files/2018/'
-				file_path = ""
+				#file_path = ""
 				#file_path = "~/Analysis/BoostedTau/ControlPlots/BoostedHiggs4TauAnalysis/ControlPlots/Processors/"
 				print("==================Metadata Crap==================")
 				print(events.metadata['fileuuid'])
@@ -1575,40 +1586,6 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 				file_name = dataset + "_" + events.metadata['fileuuid'] + "_BoostedTau.parquet"
 				#if ():
 				#ak.to_parquet(var_nn,file_path  + "/" + file_name)
-
-			#	if not(self.isData):
-			#		print("Not Data")
-			#		print(dataset)
-			#		file_name = dataset + "_BoostedTau.parquet"
-			#		if (dataset != "Signal"):
-			#			file_name = dataset + ".parquet"
-			#			if (os.path.isfile(file_path + file_name)): #Append to the parquet file
-			#				print("Appending file")
-			#				file_data = ak.from_parquet(file_path + file_name)
-			#				var_nn = ak.concatenate([file_data,var_nn])
-			#				ak.to_parquet(var_nn,file_path + file_name)
-			#			else: #Create the parquet file
-			#				print("Creating file")
-			#				if (ak.num(FourTau_Mass_Arr,axis=0) > 0):
-			#					#print(file_name)
-			#					#print(var_nn)
-			#					#temp_data_frame = ak.to_pandas(var_nn)
-			#					#temp_data_frame.to_parquet(file_path + file_name)
-			#					ak.to_parquet(var_nn,file_path + file_name)
-			#	else:
-			#		print("Is Data")
-			#		file_name = dataset + "_BoostedTau.parquet"
-			#		if (os.path.isfile(file_path + file_name)): #Append to the parquet file
-			#			print("Appending file")
-			#			file_data = ak.from_parquet(file_path + file_name)
-			#			var_nn = ak.concatenate([file_data,var_nn])
-			#			ak.to_parquet(var_nn,file_path + file_name)
-			#		else: #Create the parquet file
-			#			print("Creating file")
-			#			if (ak.num(FourTau_Mass_Arr,axis=0) > 0):
-			#				#temp_data_frame = ak.to_pandas(var_nn)
-			#				#temp_data_frame.to_parquet(file_path + file_name)
-			#				ak.to_parquet(var_nn,file_path + file_name)
 
 			
 			#############
@@ -1837,6 +1814,11 @@ class Analysis4TauProcessor(processor.ProcessorABC):
 					"FourTauMass": h_FourTau_Mass,
 					"LeadingPairCharge": h_leading_Charge,
 					"NextleadingPairCharge": h_nextleading_Charge,
+
+					#DiTau Mass and tau eta prior to respective selections
+					"BoostedTau_eta_PreSelec": h_boostedtau_eta_PreSelections,
+					"LeadingDiTauMass_PreSelec": h_leadDiTauMass,
+					"SubLeadingDiTauMass_PreSelec": h_subLeadDiTauMass,
 
 					#Gen Level information
 					"n_GenTau_Skim": n_tau_Skim,

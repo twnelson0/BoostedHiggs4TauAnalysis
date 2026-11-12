@@ -57,7 +57,7 @@ def prepare_data():
     #samples = ['output_ZZ', 'out_2000']  ## eventually change this to 'output_ZZ_even', 'out_2000_even' 
     #samples = ['output_ZZ_odd', 'out_2000_odd']
     #samples = ["ZZ4l","Signal"]
-    samples = ["Signal_1TeV","Signal_2TeV","Signal_3TeV","TTTo2L2Nu","TTToSemiLeptonic",#"TTToHadronic",
+    samples = ["Signal_4Tau_1TeV","Signal_4Tau_1p5TeV","Signal_4Tau_2TeV","Signal_4Tau_2p5TeV","Signal_4Tau_3TeV","TTTo2L2Nu","TTToSemiLeptonic",#"TTToHadronic",
 			#"DYJetsToLL_M-4to50_HT-70to100",
 			#"DYJetsToLL_M-4to50_HT-100to200",
 			"DYJetsToLL_M-4to50_HT-200to400",
@@ -88,7 +88,7 @@ def prepare_data():
     for s in samples:
         #file = pd.read_parquet(s + ".paquet",engine="pyarrow")
         #DataFrames[s] = pd.read_parquet("/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/New_Dir/" + s + ".parquet",engine="pyarrow")
-        DataFrames[s] = pd.read_parquet("/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/ParquetFiles_2026_10_26_2158/" + s + ".parquet",engine="pyarrow")
+        DataFrames[s] = pd.read_parquet("/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/ParquetFiles_2026_11_11_1952/" + s + ".parquet",engine="pyarrow")
         #DataFrames[s] = pd.Series({var : DataFrames[s][var].to_numpy() for var in ML_inputs}) #Store everything as a pandas series (using a series may be causing problems)
         #DataFrames[s] = pd.DataFrame({var: DataFrames[s][var].to_list for var in ML_inputs})
         DataFrames[s] = DataFrames[s].iloc[0:8500]
@@ -164,12 +164,12 @@ def prepare_data():
     y_valid, y_train_nn = y_train[:1000], y_train[1000:] # first 1000 events for validation
 
     print('Input feature correlation')
-    print(DataFrames['Signal_2TeV'].corr()) #Pearson
+    #print(DataFrames['Signal_2TeV'].corr()) #Pearson
     print("INput featuers data set printed")
     fig = pyplot.figure(figsize=(20, 16))
-    print("Obtaingin Correlation Matrix")
-    corrMatrix = DataFrames['Signal_2TeV'].corr()
-    print("Correlation matrix obtained")
+    #print("Obtaingin Correlation Matrix")
+    corrMatrix = DataFrames['Signal_4Tau_2TeV'].corr()
+    #print("Correlation matrix obtained")
     ax = pyplot.gca()    
     pyplot.text(0.5, 1.05, "CMS Simulation (Work In Progress)      (13 TeV)", fontweight="bold", horizontalalignment='center',verticalalignment='center', transform=ax.transAxes, fontsize=28)   
     sns.heatmap(corrMatrix, annot=True, cmap=pyplot.cm.Blues)

@@ -92,7 +92,7 @@ if __name__ == "__main__":
 	#background_list_full = [r"$t\bar{t}$", r"Drell-Yan+Jets", "Di-Bosons", "Single Top", "W+Jets", r"$ZZ \rightarrow 4l$"]
 	background_list_full = [r"$t\bar{t}$", r"Drell-Yan+Jets", "Di-Bosons", "Single Top", "W+Jets", r"$ZZ \rightarrow 4l$","Signal 2 TeV"]
 	background_list_fullQCD = [r"$t\bar{t}$", r"Drell-Yan+Jets", "Di-Bosons", "Single Top", "W+Jets", r"$ZZ \rightarrow 4l$","QCD","Signal 3 TeV"]
-	background_list_fullQCD_AllMassPoints = [r"$t\bar{t}$", r"Drell-Yan+Jets", "Di-Bosons", "Single Top", "W+Jets", r"$ZZ \rightarrow 4l$","QCD","Signal 1 TeV","Signal 2 TeV","Signal 3 TeV"]
+	background_list_fullQCD_AllMassPoints = [r"$t\bar{t}$", r"Drell-Yan+Jets", "Di-Bosons", "Single Top", "W+Jets", r"$ZZ \rightarrow 4l$","QCD",r"Signal 1 TeV (4$\tau$)",r"Signal 2 TeV (4$\tau$)",r"Signal 3 TeV (4$\tau$)"]
 	background_list_test = [r"$ZZ \rightarrow 4l$"]
 	background_list_none = []
 	background_list = background_list_fullQCD_AllMassPoints
@@ -118,9 +118,18 @@ if __name__ == "__main__":
 			"W+Jets HT 1200-2500 GeV": ["WJetsToLNu_HT-1200To2500"], "W+Jets HT 2500-Inf GeV": ["WJetsToLNu_HT-2500ToInf"],
 			r"$ZZ \rightarrow 4l$" : ["ZZ4l"],
 			"QCD": ["QCD_HT50to100","QCD_HT100to200","QCD_HT200to300","QCD_HT300to500","QCD_HT500to700","QCD_HT700to1000","QCD_HT1000to1500","QCD_HT1500to2000","QCD_HT2000toInf"],
-			"Signal 2 TeV": ["Signal_2TeV"],
-			"Signal 3 TeV": ["Signal_3TeV"],
-			"Signal 1 TeV": ["Signal_1TeV"],
+			r"Signal 2 TeV (4$\tau$)": ["Signal_4Tau_2TeV"],
+			r"Signal 3 TeV (4$\tau$)": ["Signal_4Tau_3TeV"],
+			r"Signal 1 TeV (4$\tau$)": ["Signal_4Tau_1TeV"],
+			r"Signal 2 TeV (2V2$\tau$)": ["Signal_2V2Tau_2TeV"],
+			r"Signal 3 TeV (2V2$\tau$)": ["Signal_2V2Tau_3TeV"],
+			r"Signal 1 TeV (2V2$\tau$)": ["Signal_2V2Tau_1TeV"],
+			r"Signal 2 TeV (4V)": ["Signal_4V_2TeV"],
+			r"Signal 3 TeV (4V)": ["Signal_4V_3TeV"],
+			r"Signal 1 TeV (4V)": ["Signal_4V_1TeV"],
+			r"Signal 2 TeV (All Channels)": ["Signal_4Tau_2TeV","Signal_4V_2TeV","Signal_2V2Tau_2TeV"],
+			r"Signal 3 TeV (All Channels)": ["Signal_4Tau_3TeV","Signal_4V_3TeV","Signal_2V2Tau_3TeV"],
+			r"Signal 1 TeV (All Channels)": ["Signal_4Tau_1TeV","Signal_4V_1TeV","Signal_2V2Tau_1TeV"],
 	}
 
 	all_sample_array = []
