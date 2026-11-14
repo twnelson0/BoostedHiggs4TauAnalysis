@@ -57,7 +57,11 @@ def prepare_data():
     #samples = ['output_ZZ', 'out_2000']  ## eventually change this to 'output_ZZ_even', 'out_2000_even' 
     #samples = ['output_ZZ_odd', 'out_2000_odd']
     #samples = ["ZZ4l","Signal"]
-    samples = ["Signal_4Tau_1TeV","Signal_4Tau_1p5TeV","Signal_4Tau_2TeV","Signal_4Tau_2p5TeV","Signal_4Tau_3TeV","TTTo2L2Nu","TTToSemiLeptonic",#"TTToHadronic",
+    #samples = ["Signal_4Tau_1TeV","Signal_4Tau_1p5TeV","Signal_4Tau_2TeV","Signal_4Tau_2p5TeV","Signal_4Tau_3TeV","TTTo2L2Nu","TTToSemiLeptonic",#"TTToHadronic",
+    samples = ["Signal_4Tau_1TeV","Signal_4Tau_2TeV","Signal_4Tau_3TeV",
+			"Signal_2V2Tau_1TeV","Signal_2V2Tau_2TeV","Signal_2V2Tau_3TeV",
+			"Signal_4V_1TeV","Signal_4V_2TeV","Signal_4V_3TeV",
+			"TTTo2L2Nu","TTToSemiLeptonic",#"TTToHadronic",
 			#"DYJetsToLL_M-4to50_HT-70to100",
 			#"DYJetsToLL_M-4to50_HT-100to200",
 			"DYJetsToLL_M-4to50_HT-200to400",

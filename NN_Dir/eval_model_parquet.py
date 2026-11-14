@@ -79,10 +79,16 @@ if __name__ == "__main__":
 			"Data_Mu",
 			"Data_HT",
 			"Signal_4Tau_1TeV",
-			"Signal_4Tau_1p5TeV",
+			#"Signal_4Tau_1p5TeV",
 			"Signal_4Tau_2TeV",
-			"Signal_4Tau_2p5TeV",
-			"Signal_4Tau_3TeV"]
+			#"Signal_4Tau_2p5TeV",
+			"Signal_4Tau_3TeV",
+			"Signal_2V2Tau_1TeV",
+			"Signal_2V2Tau_2TeV",
+			"Signal_2V2Tau_3TeV",
+			"Signal_4V_1TeV",
+			"Signal_4V_2TeV",
+			"Signal_4V_3TeV"]
 	file_loc = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/ParquetFiles_2026_11_11_1952/"
 
 	for file_name in file_array:

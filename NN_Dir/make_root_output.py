@@ -10,7 +10,8 @@ import os
 
 if __name__ == "__main__":
 	
-	mass_array = ["1","1.5","2","2.5","3"]
+	#mass_array = ["1","1.5","2","2.5","3"]
+	mass_array = ["1","2","3"]
 	#mass_array = ["2"]
 	#mass = "2000"
 	
@@ -23,6 +24,8 @@ if __name__ == "__main__":
 					"DY": ["DYJetsToLL_M-4to50_HT-70to100","DYJetsToLL_M-4to50_HT-100to200","DYJetsToLL_M-4to50_HT-200to400","DYJetsToLL_M-4to50_HT-400to600","DYJetsToLL_M-4to50_HT-600toInf","DYJetsToLL_M-50_HT-70to100","DYJetsToLL_M-50_HT-100to200","DYJetsToLL_M-50_HT-200to400","DYJetsToLL_M-50_HT-400to600","DYJetsToLL_M-50_HT-600to800","DYJetsToLL_M-50_HT-800to1200","DYJetsToLL_M-50_HT-1200to2500","DYJetsToLL_M-50_HT-2500toInf"], 
 					"VV": ["ZZTo2L2Nu","ZZTo2Nu2Q","VV2l2nu","ZZTo4Q" ,"WWTo1L1Nu2Q","WWTo4Q","WZ1l3nu","ZZ2l2q","WZ2l2q","WZ1l1nu2q"], "ZZ" : ["ZZ4l"],
 					"Radion_4Tau_" + mass: ["Signal_4Tau_" + file_mass_str + "TeV"],
+					"Radion_2V2Tau_" + mass: ["Signal_2V2Tau_" + file_mass_str + "TeV"],
+					"Radion_4V_" + mass: ["Signal_4V_" + file_mass_str + "TeV"],
 					"data_obs": ["Data_HT","Data_Mu"],
 					"WJets": ["WJetsToLNu_HT-70To100","WJetsToLNu_HT-100To200","WJetsToLNu_HT-200To400","WJetsToLNu_HT-400To600","WJetsToLNu_HT-600To800","WJetsToLNu_HT-800To1200","WJetsToLNu_HT-1200To2500","WJetsToLNu_HT-2500ToInf"],
 					"QCD": ["QCD_HT50to100","QCD_HT100to200","QCD_HT200to300","QCD_HT300to500","QCD_HT500to700","QCD_HT700to1000","QCD_HT1000to1500","QCD_HT1500to2000","QCD_HT2000toInf"],
