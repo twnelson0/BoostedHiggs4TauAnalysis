@@ -2,8 +2,14 @@ import pandas as pd
 import numpy as np
 import json
 import os
+import argparse
 import tensorflow as tf
 import awkward as ak
+
+#Command line arguements
+parse = argparse.ArgumentParser()
+parse.add_argument("-d", "--InputDir", help = "Directory with Parquet Files")
+
 
 def read_file(input_file):
 	data = pd.read_parquet(input_file,engine="pyarrow")
@@ -89,7 +95,8 @@ if __name__ == "__main__":
 			"Signal_4V_1TeV",
 			"Signal_4V_2TeV",
 			"Signal_4V_3TeV"]
-	file_loc = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/ParquetFiles_2026_11_11_1952/"
+	#file_loc = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/ParquetFiles_2026_11_11_1952/"
+	file_loc = args.InputDir
 
 	for file_name in file_array:
 		if not(os.path.isfile(file_loc + file_name + ".parquet")):

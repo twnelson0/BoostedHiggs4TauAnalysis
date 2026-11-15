@@ -135,8 +135,34 @@ From there additional packages must be installed from a requirements file using 
 source NN_Env/bin/activate
 python3 -m pip install NN_Env_Requirements.txt
 ```
+Unless stated other wise assume that all Neural Network related code must be run within this virtual environment.
 
 #### Training
+The Neural Network training script takes `.parquet` files as inputs. 
+Prior to training the `.parquet` files produced by the coffea processor must be combined together so that each process has one parquet file associated with it. 
+This step is done using the script `Combine_Parquet_Files.py`.
+The script is run in the command line and takes one argument `-d`. 
+This argument corresponds to the location of the `.parquet` files: `python3 Combine_Parquet_Files.py -d /location/of/parquet/files/`.
+This script will save the combined parquet files in the same directory as the individual parquet files.
+The names of the combined `.parquet` files are consistent with what the training script expects.
+
+Once the parquet files have been produced the network can be trained.
+This is done with the `train_binaryNN.py` script.
+At the moment this script takes only 1 argument, that being the directory containing the parquet files.
+Thus to train the network simply run `python3 train_binaryNN.py -d /location/of/parquet/files/`.
+The training script is hard coded to train on any signal sample passed in and to train on the $ZZ \rightarrow 4l$, $t\bar{t}$ and DY+Jets backgrounds.
+The script will produce a model file called `model.keras` and plots relating to the training of the neural network (the confusion matrix,  ROC curve, KS test plot, and plots comparing the signal and background distributions of the input variables the network uses).
 
 
 #### Running
+The model is run with the script `eval_model_parquet.py`. 
+This script takes 1 argument, `-d` which corresponds to the location of the combined `.parquet` files: `python3 eval_model_parquet.py -d /location/of/parquet/files/`.
+This script will evaluate the model (assumed to be stored in the file `model.keras`) on the input files and saves new `.parquet` files with the model prediction in the current directory.
+These `.parquet` files can be used to produce control region and signal region plots via the script `plot_from_parquet.py`.
+This script takes no arguments: `python3 plot_form_parquet.py`. 
+This plot will produce distributions for all control regions and signal regions.
+Finally the `.parquet` files produced with `eval_model_parquet.py` are used to produce the `.root` files that are used to produce the data cards for Combine.
+This is done by running the script `make_root_output.py`.
+This will save a root file called `HH4t_new.root`.
+
+## Combine Instructions

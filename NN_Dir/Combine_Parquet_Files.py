@@ -1,11 +1,12 @@
 import pyarrow.parquet as pq
 import os
 import glob
+import argparse
 
 #Global Variables
 #parquet_dir = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/New_Dir/"
 #parquet_dir = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/"
-parquet_dir = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/ParquetFiles_2026_11_11_1952/"
+#parquet_dir = "/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/ParquetFiles_2026_11_11_1952/"
 Process_Array = ["TTToSemiLeptonic",
 			"TTTo2L2Nu",
 			"TTToHadronic",
@@ -71,9 +72,14 @@ Process_Array = ["TTToSemiLeptonic",
 			"Signal_4V_3TeV",
 			]
 
+#Command line arguements
+parse = argparse.ArgumentParser()
+parse.add_argument("-d", "--InputDir", help = "Directory Containing Parquet Files")
+
 if __name__ == "__main__":
 	#Produce dictionary of files
 	parquet_dict = dict.fromkeys(Process_Array)
+	parquet_dir = args.InputDir
 
 	for process in Process_Array:
 		if (len(glob.glob(parquet_dir + process + "*.parquet")) > 0):

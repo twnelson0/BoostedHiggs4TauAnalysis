@@ -35,6 +35,7 @@ import uproot as uprt
 import seaborn as sns
 import h5py
 import csv
+import argparse
 
 from analysis_functions import compare_train_test_binary
 from analysis_functions import selection_criteria
@@ -42,6 +43,10 @@ from analysis_functions import plot_input_features
 from analysis_functions import AUC_ROC
 
 from keras.callbacks import LambdaCallback
+
+#Command line arguements
+parse = argparse.ArgumentParser()
+parse.add_argument("-d", "--InputDir", help = "Directory with Parquet Files")
 
 class MyCustomCallback(tf.keras.callbacks.Callback):
 
@@ -51,7 +56,7 @@ class MyCustomCallback(tf.keras.callbacks.Callback):
   def on_train_batch_end(self, batch, logs=None):
     print(self.model.layers[0].get_weights())
 
-def prepare_data():
+def prepare_data(input_dir):
 
     # Get data from root files
     #samples = ['output_ZZ', 'out_2000']  ## eventually change this to 'output_ZZ_even', 'out_2000_even' 
@@ -80,8 +85,6 @@ def prepare_data():
     #samples = ["Signal_2TeV","TTTo2L2Nu"]
     DataFrames = {} # define empty dictionary to hold dataframes
     Selection = {}    
-
-    Selection_inputs = [] ## don't need
  
     ML_inputs = ["radion_pt", "vis_mass", "vis_mass2","radion_eta", "higgs2_dr", "higgs1_dr", "dphi_H1",
                  "dphi_H1_MET", "dphi_H2", "dphi_H2_MET", "dr_HH", "dr_H1_Rad", "dphi_HH", "dr_H2_Rad", "dphi_rad_MET"]
@@ -92,7 +95,8 @@ def prepare_data():
     for s in samples:
         #file = pd.read_parquet(s + ".paquet",engine="pyarrow")
         #DataFrames[s] = pd.read_parquet("/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/New_Dir/" + s + ".parquet",engine="pyarrow")
-        DataFrames[s] = pd.read_parquet("/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/ParquetFiles_2026_11_11_1952/" + s + ".parquet",engine="pyarrow")
+        #DataFrames[s] = pd.read_parquet("/hdfs/store/user/twnelson/HH4Tau_EtAl/Parquet_Files/2018/ParquetFiles_2026_11_11_1952/" + s + ".parquet",engine="pyarrow")
+        DataFrames[s] = pd.read_parquet(input_dir + s + ".parquet",engine="pyarrow")
         #DataFrames[s] = pd.Series({var : DataFrames[s][var].to_numpy() for var in ML_inputs}) #Store everything as a pandas series (using a series may be causing problems)
         #DataFrames[s] = pd.DataFrame({var: DataFrames[s][var].to_list for var in ML_inputs})
         DataFrames[s] = DataFrames[s].iloc[0:8500]
@@ -283,9 +287,10 @@ def plot_model(history):
 
 
 def main():
+    input_dir = args.InputDir
 
     # 1 load train dataset
-    X_train, y_train, X_test, y_test, X_val, y_val = prepare_data()
+    X_train, y_train, X_test, y_test, X_val, y_val = prepare_data(input_dir)
 
     # 2 train model
     print("Training")
